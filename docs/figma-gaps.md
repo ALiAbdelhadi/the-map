@@ -11,16 +11,16 @@ an option at the phase where it lands and wait for a yes.
 
 ## Content and copy
 
-| #   | Gap                                                                                                                    | Where                  | Status                                                         |
-| --- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------- | -------------------------------------------------------------- |
-| C1  | No body copy for the Why Choose Us features — labels only (All-in-One, Flexible, Nearby, Fast, Easy)                   | `911:19600`            | PROPOSE — ship labels only unless copy is supplied             |
-| C2  | Full Arabic body copy exists per node but the Arabic reviews heading is only visible mid-typewriter                    | `1028:20692`           | Resolved in Phase 5 by reading each node; no translation by me |
-| C3  | No legal pages (privacy, terms), no cookie notice                                                                      | —                      | PROPOSE                                                        |
-| C4  | Real App Store / Google Play URLs not in the file                                                                      | footer, Get the App    | BLOCKING for Phase 5 links                                     |
-| C5  | Real social URLs (Facebook, Instagram, X, LinkedIn) not in the file                                                    | footer                 | BLOCKING for Phase 5 links                                     |
-| C6  | `info@Themap.com` is the only contact channel shown; unclear if it is the real address                                 | `998:20792`            | BLOCKING for Phase 5                                           |
-| C7  | The covered-areas dataset (which cities/areas) does not exist anywhere in the file                                     | Service Areas          | BLOCKING for Phase 5                                           |
-| C8  | Nav label conflict: desktop says "Become a Provider", mobile drawer says "Contact us", component is named `Contact us` | header vs `1038:26925` | BLOCKING — one label must win                                  |
+| #   | Gap                                                                                                                    | Where                  | Status                                                                                                                                                                  |
+| --- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| C1  | No body copy for the Why Choose Us features — labels only (All-in-One, Flexible, Nearby, Fast, Easy)                   | `911:19600`            | **RESOLVED (Phase 3)** — the copy exists in the section's variants (e.g. All-in-One: "All the services you need in one app."); it is revealed on selection, not missing |
+| C2  | Full Arabic body copy exists per node but the Arabic reviews heading is only visible mid-typewriter                    | `1028:20692`           | Resolved in Phase 5 by reading each node; no translation by me                                                                                                          |
+| C3  | No legal pages (privacy, terms), no cookie notice                                                                      | —                      | PROPOSE                                                                                                                                                                 |
+| C4  | Real App Store / Google Play URLs not in the file                                                                      | footer, Get the App    | BLOCKING for Phase 5 links                                                                                                                                              |
+| C5  | Real social URLs (Facebook, Instagram, X, LinkedIn) not in the file                                                    | footer                 | BLOCKING for Phase 5 links                                                                                                                                              |
+| C6  | `info@Themap.com` is the only contact channel shown; unclear if it is the real address                                 | `998:20792`            | BLOCKING for Phase 5                                                                                                                                                    |
+| C7  | The covered-areas dataset (which cities/areas) does not exist anywhere in the file                                     | Service Areas          | BLOCKING for Phase 5                                                                                                                                                    |
+| C8  | Nav label conflict: desktop says "Become a Provider", mobile drawer says "Contact us", component is named `Contact us` | header vs `1038:26925` | BLOCKING — one label must win                                                                                                                                           |
 
 ## Typography and localisation
 
@@ -64,13 +64,13 @@ an option at the phase where it lands and wait for a yes.
 
 ## Assets
 
-| #   | Gap                                                                                                                   | Status                                                                                  |
-| --- | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| A1  | `grok-video-5f61ff07-…` (1441 × 2136) is an AI-generated image used as a section background and bleeds past its frame | Flag — confirm it is final art                                                          |
-| A2  | Hero and Why Choose Us backgrounds are large 3D renders; total page weight not yet measured                           | Reported with numbers in Phase 3                                                        |
-| A3  | Arabic header reuses the `Areas` icon for three different nav items                                                   | BLOCKING — correct icons needed, or I ship the English mapping and report the deviation |
-| A4  | No favicon, no app icon, no OG/social share image in the file                                                         | PROPOSE                                                                                 |
-| A5  | Phone mockup screens are flattened app screenshots — unclear whether they are final                                   | Flag                                                                                    |
+| #   | Gap                                                                                                                   | Status                                                                                                                                            |
+| --- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A1  | `grok-video-5f61ff07-…` (1441 × 2136) is an AI-generated image used as a section background and bleeds past its frame | **PARTLY RESOLVED (Phase 3)** — exported and in use as the Service Areas background. Still flagged: confirm this AI-generated render is final art |
+| A2  | Hero and Why Choose Us backgrounds are large 3D renders; total page weight not yet measured                           | **RESOLVED (Phase 3)** — 25 WebP rasters, 641 KB total; heaviest is `why-choose-maze.webp` at 192 KB                                              |
+| A3  | Arabic header reuses the `Areas` icon for three different nav items                                                   | BLOCKING — correct icons needed, or I ship the English mapping and report the deviation                                                           |
+| A4  | No favicon, no app icon, no OG/social share image in the file                                                         | PROPOSE                                                                                                                                           |
+| A5  | Phone mockup screens are flattened app screenshots — unclear whether they are final                                   | **PARTLY RESOLVED (Phase 3)** — exported from the original uploaded sources (up to 1500x4096). Still flagged: confirm the screenshots are final   |
 
 ## Motion
 
