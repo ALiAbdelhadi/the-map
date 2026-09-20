@@ -1,12 +1,270 @@
 /*
  * The Map — design token layer.
  *
- * Every token in this file must trace back to a Figma variable or to a raw value
- * extracted from a specific node in the Figma file (key: jfNj5yN77f5lk3SULMAHjN).
- * Tokens are populated in Phase 2; this file exists now so the CSS entry point in
- * apps/www can import it and the monorepo wiring can be verified end to end.
+ * Source of truth: Figma file `The Map website`, key jfNj5yN77f5lk3SULMAHjN.
+ * Read Phase 2 via the Figma MCP (`get_variable_defs`, `get_design_context`).
+ *
+ * Rules for this file:
+ *   - Every token traces to a Figma variable, or to a raw value extracted from a
+ *     named node — in which case the node id is in the comment above it.
+ *   - Nothing outside this file may declare a design value.
+ *   - Default Tailwind palettes, type scale, radii, shadows and breakpoints are
+ *     cleared so that no off-design value can be used by accident.
  */
 
-@theme {
-  /* Populated in Phase 2 from docs/figma-inventory.md §3. */
+@theme static {
+  /* ---------------------------------------------------------------------
+   * Colour — Figma variables, ramps read from node 853:18554.
+   * The default Tailwind palette is cleared: only these values exist.
+   * ------------------------------------------------------------------ */
+  --color-*: initial;
+
+  /* primary — Figma collection `CSK - #087DFD` */
+  --color-primary-50: #e6f2ff;
+  --color-primary-100: #cce5ff;
+  --color-primary-200: #9acafe;
+  --color-primary-300: #67b0fe;
+  --color-primary-400: #3596fd;
+  --color-primary-500: #087dfd;
+  --color-primary-600: #0263ca;
+  --color-primary-700: #014a98;
+  --color-primary-800: #013165;
+  --color-primary-900: #001933;
+  --color-primary-950: #000c19;
+
+  /* secondary */
+  --color-secondary-50: #e7f0fd;
+  --color-secondary-100: #cfe2fc;
+  --color-secondary-200: #9fc5f9;
+  --color-secondary-300: #6fa7f6;
+  --color-secondary-400: #408af2;
+  --color-secondary-500: #05234c;
+  --color-secondary-600: #0d57bf;
+  --color-secondary-700: #094190;
+  --color-secondary-800: #062c60;
+  --color-secondary-900: #031630;
+  --color-secondary-950: #020b18;
+
+  /* green */
+  --color-green-50: #e5fff3;
+  --color-green-100: #ccffe7;
+  --color-green-200: #99ffcf;
+  --color-green-300: #66ffb8;
+  --color-green-400: #33ffa0;
+  --color-green-500: #30ff9e;
+  --color-green-600: #00cc6d;
+  --color-green-700: #009952;
+  --color-green-800: #006636;
+  --color-green-900: #00331b;
+  --color-green-950: #001a0e;
+
+  /* yellow */
+  --color-yellow-50: #fffce5;
+  --color-yellow-100: #fff9cc;
+  --color-yellow-200: #fff399;
+  --color-yellow-300: #ffed66;
+  --color-yellow-400: #ffe733;
+  --color-yellow-500: #ffe521;
+  --color-yellow-600: #ccb400;
+  --color-yellow-700: #998700;
+  --color-yellow-800: #665a00;
+  --color-yellow-900: #332d00;
+  --color-yellow-950: #1a1700;
+
+  /*
+   * natural — Figma's neutral ramp, kept under Figma's own spelling.
+   * Note: `natural-500` is #000000 in Figma, which breaks the ramp
+   * (400 is #999999, 600 is #666666). Recorded as gap K5; the value is
+   * reproduced verbatim and must not be used as a mid neutral.
+   */
+  --color-natural-50: #f2f2f2;
+  --color-natural-100: #e6e6e6;
+  --color-natural-200: #cccccc;
+  --color-natural-300: #b3b3b3;
+  --color-natural-400: #999999;
+  --color-natural-500: #000000;
+  --color-natural-600: #666666;
+  --color-natural-700: #4d4d4d;
+  --color-natural-800: #333333;
+  --color-natural-900: #1a1a1a;
+  --color-natural-950: #0d0d0d;
+
+  /* error */
+  --color-error-50: #fee9e7;
+  --color-error-100: #fcd3cf;
+  --color-error-200: #f9a69f;
+  --color-error-300: #f77a6e;
+  --color-error-400: #f44d3e;
+  --color-error-500: #f34232;
+  --color-error-600: #c11a0b;
+  --color-error-700: #911408;
+  --color-error-800: #600d06;
+  --color-error-900: #300703;
+  --color-error-950: #180301;
+
+  /* Semantic aliases that exist as Figma variables in their own right. */
+  --color-bg: #fefefe; /* Figma `Natural/BG` */
+
+  /*
+   * Translucent surfaces. Figma exposes these as the variables `gradient Cart`
+   * and `Gradient Service provider`, both of which resolve to an empty string
+   * through the MCP (gap K3). The real values were read off the nodes that use
+   * them, and are recorded here with those node ids.
+   */
+  --color-surface-glass: rgb(254 254 254 / 0.1); /* hero card, node 888:19276 */
+  --color-surface-glass-strong: rgb(5 35 76 / 0.8); /* provider pill, node 995:20699 */
+  --color-surface-header: rgb(53 150 253 / 0.2); /* header bar, node 1028:25400 */
+
+  /* ---------------------------------------------------------------------
+   * Typography — Figma variables, read from node 853:18553.
+   * One family, 23 sizes (12→56, step 2), four weights.
+   * ------------------------------------------------------------------ */
+  --text-*: initial;
+  --font-weight-*: initial;
+  --tracking-*: initial;
+  --leading-*: initial;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /*
+   * letter-spacing is -2 % at every size in Figma; `get_design_context` emits it
+   * as tracking-[-0.48px] on a 24 px node, which confirms percent, not px.
+   *
+   * line-height: the Figma *variables* claim `lineHeight: 100`, but every real
+   * text node renders with auto leading (`leading-[normal]` in the generated
+   * code — checked on nodes 888:19266, 888:19268, 995:20684, 911:19547,
+   * 1028:25400). The nodes win: `normal` is what the design actually shows.
+   * Recorded as gap T2.
+   */
+  --tracking-figma: -0.02em;
+
+  --text-12: 0.75rem;
+  --text-12--letter-spacing: -0.02em;
+  --text-12--line-height: normal;
+  --text-14: 0.875rem;
+  --text-14--letter-spacing: -0.02em;
+  --text-14--line-height: normal;
+  --text-16: 1rem;
+  --text-16--letter-spacing: -0.02em;
+  --text-16--line-height: normal;
+  --text-18: 1.125rem;
+  --text-18--letter-spacing: -0.02em;
+  --text-18--line-height: normal;
+  --text-20: 1.25rem;
+  --text-20--letter-spacing: -0.02em;
+  --text-20--line-height: normal;
+  --text-22: 1.375rem;
+  --text-22--letter-spacing: -0.02em;
+  --text-22--line-height: normal;
+  --text-24: 1.5rem;
+  --text-24--letter-spacing: -0.02em;
+  --text-24--line-height: normal;
+  --text-26: 1.625rem;
+  --text-26--letter-spacing: -0.02em;
+  --text-26--line-height: normal;
+  --text-28: 1.75rem;
+  --text-28--letter-spacing: -0.02em;
+  --text-28--line-height: normal;
+  --text-30: 1.875rem;
+  --text-30--letter-spacing: -0.02em;
+  --text-30--line-height: normal;
+  --text-32: 2rem;
+  --text-32--letter-spacing: -0.02em;
+  --text-32--line-height: normal;
+  --text-34: 2.125rem;
+  --text-34--letter-spacing: -0.02em;
+  --text-34--line-height: normal;
+  --text-36: 2.25rem;
+  --text-36--letter-spacing: -0.02em;
+  --text-36--line-height: normal;
+  --text-38: 2.375rem;
+  --text-38--letter-spacing: -0.02em;
+  --text-38--line-height: normal;
+  --text-40: 2.5rem;
+  --text-40--letter-spacing: -0.02em;
+  --text-40--line-height: normal;
+  --text-42: 2.625rem;
+  --text-42--letter-spacing: -0.02em;
+  --text-42--line-height: normal;
+  --text-44: 2.75rem;
+  --text-44--letter-spacing: -0.02em;
+  --text-44--line-height: normal;
+  --text-46: 2.875rem;
+  --text-46--letter-spacing: -0.02em;
+  --text-46--line-height: normal;
+  --text-48: 3rem;
+  --text-48--letter-spacing: -0.02em;
+  --text-48--line-height: normal;
+  --text-50: 3.125rem;
+  --text-50--letter-spacing: -0.02em;
+  --text-50--line-height: normal;
+  --text-52: 3.25rem;
+  --text-52--letter-spacing: -0.02em;
+  --text-52--line-height: normal;
+  --text-54: 3.375rem;
+  --text-54--letter-spacing: -0.02em;
+  --text-54--line-height: normal;
+  --text-56: 3.5rem;
+  --text-56--letter-spacing: -0.02em;
+  --text-56--line-height: normal;
+
+  /* ---------------------------------------------------------------------
+   * Spacing — Figma has no spacing variables (gap K1).
+   * The file's measurements are all multiples of the 4 px grid, with three
+   * sub-grid values (2, 7, 9 px) that Tailwind derives from the same base:
+   * p-0.5 = 2px, gap-1.75 = 7px, gap-2.25 = 9px.
+   * ------------------------------------------------------------------ */
+  --spacing: 0.25rem;
+
+  /* ---------------------------------------------------------------------
+   * Layout — from `Grid View & Prototype` (nodes 1046:26898, 1048:26907,
+   * 1048:26920). Only three widths are designed, so only three exist here.
+   * ------------------------------------------------------------------ */
+  --breakpoint-*: initial;
+  --breakpoint-tablet: 48rem; /* 768 — iPad mini 5 */
+  --breakpoint-desktop: 90rem; /* 1440 — Desktop */
+
+  --container-*: initial;
+  --container-mobile: 21.5rem; /* 344 = 375 − 2×15.5 */
+  --container-tablet: 44rem; /* 704 = 768 − 2×32 */
+  --container-desktop: 80.25rem; /* 1284 = 1440 − 2×80 */
+
+  /* ---------------------------------------------------------------------
+   * Radii — no Figma variables (gap K2); raw values read per node.
+   * ------------------------------------------------------------------ */
+  --radius-*: initial;
+  --radius-button: 0.75rem; /* 12 — node 942:20434 (store badge), 996:20963 */
+  --radius-card: 2rem; /* 32 — hero card, node 888:19276 */
+  --radius-chip: 2.3125rem; /* 37 — icon chip, node 911:19545 */
+  --radius-nav: 2.375rem; /* 38 — nav pill, node 1028:21475 */
+  --radius-row: 3.5rem; /* 56 — feature row, node 995:20681 */
+  --radius-header: 5rem; /* 80 — header bar, node 1028:25400 */
+  --radius-pill: 7.125rem; /* 114 — provider pill, node 995:20699 */
+  --radius-full: 9999px;
+
+  /* ---------------------------------------------------------------------
+   * Effects — Figma variables `shadow`, `Reviews`, `Click here`.
+   * Figma's GLASS effect has no CSS equivalent; it is expressed here as a
+   * blur token applied with a translucent surface colour (gap K4).
+   * ------------------------------------------------------------------ */
+  --shadow-*: initial;
+  --shadow-card: 2px 2px 4px 0 rgb(35 31 32 / 0.102), -2px -2px 4px 0 rgb(0 0 0 / 0.102);
+  --shadow-review: 2px 2px 9px 0 rgb(5 75 151 / 0.102), -2px -2px 9px 0 rgb(5 75 151 / 0.102);
+  --shadow-click: 0 4px 5px 0 rgb(5 75 151 / 0.322);
+
+  --blur-*: initial;
+  --blur-glass: 13px;
+}
+
+/*
+ * Font families are declared with `@theme inline` because their values point at
+ * CSS variables that next/font defines at runtime in apps/www.
+ */
+@theme inline {
+  --font-*: initial;
+  --font-sans: var(--font-baloo-2), system-ui, sans-serif;
+  --font-arabic: var(--font-baloo-bhaijaan-2), var(--font-baloo-2), system-ui, sans-serif;
 }

@@ -24,30 +24,30 @@ an option at the phase where it lands and wait for a yes.
 
 ## Typography and localisation
 
-| #   | Gap                                                                                     | Status                                                                                                       |
-| --- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| T1  | Arabic frames use `Baloo 2`, which has no Arabic glyphs — no Arabic typeface was chosen | BLOCKING for Phase 2. Nearest sibling is Baloo Bhaijaan 2 (same superfamily, Arabic + Latin); needs sign-off |
-| T2  | `lineHeight: 100` (1.0) on all 92 styles contradicts the rendered multi-line paragraphs | PROPOSE per-role line-heights in Phase 2, listed as a deviation                                              |
-| T3  | `letterSpacing: -2 %` applied uniformly, including 12 px                                | PROPOSE keeping as-is; flagged, not changed                                                                  |
+| #   | Gap                                                                                     | Status                                                                                                            |
+| --- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| T1  | Arabic frames use `Baloo 2`, which has no Arabic glyphs — no Arabic typeface was chosen | **RESOLVED (Phase 2)** — Baloo Bhaijaan 2 approved and loaded via `next/font`. Deviation from Figma, by approval  |
+| T2  | `lineHeight: 100` (1.0) on all 92 styles contradicts the rendered multi-line paragraphs | **RESOLVED (Phase 2)** — no text node uses it; every node checked renders `leading-[normal]`. Tokens use `normal` |
+| T3  | `letterSpacing: -2 %` applied uniformly, including 12 px                                | **KEPT AS-IS (Phase 2)** — tokenised `-0.02em` at every size; flagged, not changed                                |
 
 ## Tokens
 
-| #   | Gap                                                                                                 | Status                                                                        |
-| --- | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| K1  | No spacing variables — every gap/padding is a raw number                                            | Extract per node, register with source node id (Phase 2)                      |
-| K2  | No radius variables — raw values 13/24/38/80 observed                                               | Same                                                                          |
-| K3  | `gradient Cart` and `Gradient Service provider` resolve to empty strings                            | Extract raw stops per node (Phase 2)                                          |
-| K4  | `GLASS` effect has no CSS definition — only `radius`                                                | Derive `backdrop-filter` + fill per surface, record source node               |
-| K5  | `Natural/500` is `#000000`, breaking the neutral ramp (400 `#999999`, 600 `#666666`, 950 `#0D0D0D`) | PROPOSE: tokenise the ramp verbatim, never use `Natural/500` as a mid neutral |
+| #   | Gap                                                                                                 | Status                                                                                                                                                     |
+| --- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| K1  | No spacing variables — every gap/padding is a raw number                                            | **RESOLVED (Phase 2)** — all measured values are multiples of 4 plus three sub-grid values (2, 7, 9); one base token `--spacing: 0.25rem` derives them all |
+| K2  | No radius variables — raw values 13/24/38/80 observed                                               | **RESOLVED (Phase 2)** — seven named radius tokens (12/32/37/38/56/80/114), each carrying its source node id                                               |
+| K3  | `gradient Cart` and `Gradient Service provider` resolve to empty strings                            | **RESOLVED (Phase 2)** — neither is a gradient. Flat translucent fills: `rgb(254 254 254 / .1)` (888:19276), `rgb(5 35 76 / .8)` (995:20699)               |
+| K4  | `GLASS` effect has no CSS definition — only `radius`                                                | **RESOLVED (Phase 2)** — `--blur-glass: 13px` used as `backdrop-blur-glass` over those surface colours. An approximation of Figma's glass, flagged         |
+| K5  | `Natural/500` is `#000000`, breaking the neutral ramp (400 `#999999`, 600 `#666666`, 950 `#0D0D0D`) | **KEPT AS-IS (Phase 2)** — ramp tokenised verbatim under Figma's own spelling (`natural-*`); never use `natural-500` as a mid neutral                      |
 
 ## Responsive
 
-| #   | Gap                                                                                  | Status                                                          |
-| --- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
-| R1  | No design above 1440 — behaviour of the 1284 container on wide screens undefined     | PROPOSE: centre and cap at 1284                                 |
-| R2  | Nothing designed between 375–768 and 768–1440                                        | PROPOSE: fluid interpolation between the three designed widths  |
-| R3  | Reviews section missing from the 375 mobile frame                                    | BLOCKING — include (adapted) or omit on mobile?                 |
-| R4  | Four parallel component libraries (Components / Arabic / Tablet / Phone) may diverge | Built as one responsive set; divergences reported as deviations |
+| #   | Gap                                                                                  | Status                                                                                                                                                          |
+| --- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| R1  | No design above 1440 — behaviour of the 1284 container on wide screens undefined     | PROPOSE: centre and cap at `--container-desktop` (1284). Token exists; the behaviour is still unapproved                                                        |
+| R2  | Nothing designed between 375–768 and 768–1440                                        | **BLOCKING for Phase 5** — only `tablet` (768) and `desktop` (1440) breakpoints exist, so 1024–1439 renders the tablet layout. Confirm, or add a mid breakpoint |
+| R3  | Reviews section missing from the 375 mobile frame                                    | BLOCKING — include (adapted) or omit on mobile?                                                                                                                 |
+| R4  | Four parallel component libraries (Components / Arabic / Tablet / Phone) may diverge | Built as one responsive set; divergences reported as deviations                                                                                                 |
 
 ## Interaction states not designed
 

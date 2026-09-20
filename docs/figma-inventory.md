@@ -106,18 +106,29 @@ Semantic aliases that are also variables: `Natural/BG` `#FEFEFE`, `Why Choose ca
 `#05234C`, `Get the App Now` `#05234C`, `contact cart` `#05234C`.
 
 Two gradient variables exist but resolve to **empty strings** through the MCP:
-`gradient Cart`, `Gradient Service provider`. Their raw stops must be extracted per
-node in Phase 2 and registered as tokens with the source node id.
+`gradient Cart`, `Gradient Service provider`. Resolved in Phase 2 by reading the
+nodes that consume them — neither is a gradient. They are flat translucent fills
+behind a glass blur:
+
+| Variable                    | Real value                                  | Source node               |
+| --------------------------- | ------------------------------------------- | ------------------------- |
+| `gradient Cart`             | `rgb(254 254 254 / 0.1)` + blur 13          | `888:19276` hero card     |
+| `Gradient Service provider` | `rgb(5 35 76 / 0.8)` + 2px `#087DFD` border | `995:20699` provider pill |
+| (header, no variable)       | `rgb(53 150 253 / 0.2)` + blur 0            | `1028:25400` header bar   |
 
 ### 3.2 Typography — real Figma variables (92)
 
 Single family: **Baloo 2**. Four weights × 23 sizes (12→56 px, step 2):
 
 - Regular 400, Medium 500, Semi Bold 600, Bold 700
-- `lineHeight: 100` on every style (Figma reports 100 % — i.e. 1.0)
 - `letterSpacing: -2` on every style. Resolved as **percent**, not px:
   `get_design_context` on a 24 px node emits `tracking-[-0.48px]` = −2 % of 24.
-  Tokenise as `-0.02em`.
+  Tokenised as `-0.02em`.
+- `lineHeight: 100` on every style, but **no text node actually uses it**. Every
+  node checked in Phase 2 (888:19266, 888:19268, 995:20684, 995:20686, 911:19547,
+  996:20966, 1028:25400) renders as `leading-[normal]`, i.e. auto leading. The
+  nodes are what the design shows, so the token layer uses `normal`. Deviation
+  from the variable, recorded as gap T2.
 
 ### 3.3 Effects — real Figma variables
 
@@ -136,10 +147,23 @@ its source node id.
 
 ### 3.4 Spacing, radii, sizes — **no variables exist**
 
-Nothing in the file defines spacing or radius as a variable. Observed raw values
-that must be extracted per node and registered as tokens with a source node id:
-header radius 80, nav pill radius 38, button 194 × 56 and 165 × 58, card radii
-seen at 13–24, icon sizes 24 / 32 / 48 / 56 / 66 / 76.
+Nothing in the file defines spacing or radius as a variable. Values read per node
+in Phase 2 and registered as tokens with their source node id:
+
+| Token             | Value | Source node                                     |
+| ----------------- | ----- | ----------------------------------------------- |
+| `--radius-button` | 12    | `942:20434` store badge, `996:20963` Click here |
+| `--radius-card`   | 32    | `888:19276` hero card                           |
+| `--radius-chip`   | 37    | `911:19545` icon chip                           |
+| `--radius-nav`    | 38    | `1028:21475` nav pill                           |
+| `--radius-row`    | 56    | `995:20681` feature row                         |
+| `--radius-header` | 80    | `1028:25400` header bar                         |
+| `--radius-pill`   | 114   | `995:20699` provider pill                       |
+
+Spacing: every measured gap/padding is a multiple of 4 (4, 8, 12, 16, 20, 24, 32,
+80), with three sub-grid values — 2 (`942:20434` padding-y), 7 (`942:20394` gap),
+9 (`995:20680` gap). Tailwind derives all of them from one base
+(`--spacing: 0.25rem`), so no separate spacing tokens were invented.
 
 ---
 
@@ -152,8 +176,9 @@ seen at 13–24, icon sizes 24 / 32 / 48 / 56 / 66 / 76.
 The Arabic frames use **the same `Baloo 2` family** (confirmed in
 `get_design_context` on the Arabic header, `1028:25400` — `font-['Baloo_2:Regular']`).
 Baloo 2 has no Arabic glyphs, so the Arabic rendering in the file is a Figma
-fallback, not a chosen typeface. This is a blocking design decision for the Arabic
-build — see gaps.
+fallback, not a chosen typeface. Baloo Bhaijaan 2, the Arabic sibling from the same
+superfamily, was approved as the Arabic face in Phase 2 and is loaded alongside
+Baloo 2. Recorded as gap T1.
 
 ---
 
