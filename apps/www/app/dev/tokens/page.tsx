@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { assertDevPage } from "../dev-only";
 
 /**
  * Dev-only token sheet.
@@ -58,9 +58,7 @@ function Section({
 }
 
 export default function TokensPage() {
-  if (process.env.NODE_ENV === "production") {
-    notFound();
-  }
+  assertDevPage();
 
   return (
     <main className="mx-auto flex max-w-desktop flex-col gap-12 p-8">

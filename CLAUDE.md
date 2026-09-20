@@ -101,7 +101,7 @@ Node is pinned in `.nvmrc` (24.14.1); the package manager is pinned in
 - [x] Phase 1 — monorepo scaffold
 - [x] Phase 2 — design tokens + fonts + `/dev/tokens`
 - [x] Phase 3 — assets
-- [ ] Phase 4 — components
+- [x] Phase 4 — components
 - [ ] Phase 5 — pages (EN + AR)
 - [ ] Phase 6 — GSAP motion
 - [ ] Phase 7 — database (only if approved)
