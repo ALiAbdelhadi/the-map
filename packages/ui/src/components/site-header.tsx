@@ -38,7 +38,7 @@ export function SiteHeader({
   className,
 }: SiteHeaderProps) {
   return (
-    <GlassCard surface="header" className={cn("w-full", className)}>
+    <GlassCard surface="header" as="header" className={cn("w-full", className)}>
       <div className="flex items-center gap-9.5">
         <a
           href={homeHref}
