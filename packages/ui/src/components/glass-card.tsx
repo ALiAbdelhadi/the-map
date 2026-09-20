@@ -12,6 +12,8 @@ import { cn } from "../lib/cn";
 export type GlassCardProps = {
   children: ReactNode;
   surface?: "card" | "header" | "strong";
+  /** Element to render — `header` for the site header, `div` elsewhere. */
+  as?: "div" | "header" | "section";
   className?: string;
 };
 
@@ -21,6 +23,11 @@ const SURFACES = {
   strong: "bg-surface-glass-strong rounded-pill backdrop-blur-glass",
 } as const;
 
-export function GlassCard({ children, surface = "card", className }: GlassCardProps) {
-  return <div className={cn(SURFACES[surface], className)}>{children}</div>;
+export function GlassCard({
+  children,
+  surface = "card",
+  as: Tag = "div",
+  className,
+}: GlassCardProps) {
+  return <Tag className={cn(SURFACES[surface], className)}>{children}</Tag>;
 }

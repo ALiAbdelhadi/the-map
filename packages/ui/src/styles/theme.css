@@ -247,6 +247,7 @@
   --radius-social: 0.5rem; /* 8 — social tile, node 1023:20941 */
   --radius-review: 1.0625rem; /* 17 — review card, node 1008:20640 */
   --radius-toggle: 2.4375rem; /* 39 — menu toggle, node 1038:26944 */
+  --radius-email: 2.1875rem; /* 35 — email pill, node 998:20756 */
   --radius-search: 3.125rem; /* 50 — search field, node 984:20301 */
   --radius-full: 9999px;
 

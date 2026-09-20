@@ -102,6 +102,6 @@ Node is pinned in `.nvmrc` (24.14.1); the package manager is pinned in
 - [x] Phase 2 — design tokens + fonts + `/dev/tokens`
 - [x] Phase 3 — assets
 - [x] Phase 4 — components
-- [ ] Phase 5 — pages (EN + AR)
+- [~] Phase 5 — pages: English done; Arabic pending (docs/figma-copy-ar.md); no visual comparison yet (needs a headless browser)
 - [ ] Phase 6 — GSAP motion
 - [ ] Phase 7 — database (only if approved)
