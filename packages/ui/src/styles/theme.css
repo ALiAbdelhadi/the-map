@@ -1,0 +1,12 @@
+/*
+ * The Map — design token layer.
+ *
+ * Every token in this file must trace back to a Figma variable or to a raw value
+ * extracted from a specific node in the Figma file (key: jfNj5yN77f5lk3SULMAHjN).
+ * Tokens are populated in Phase 2; this file exists now so the CSS entry point in
+ * apps/www can import it and the monorepo wiring can be verified end to end.
+ */
+
+@theme {
+  /* Populated in Phase 2 from docs/figma-inventory.md §3. */
+}
