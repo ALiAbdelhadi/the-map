@@ -208,10 +208,10 @@ section. Most are monochrome line icons → React components using `currentColor
 - App UI screenshots inside the phone mockups (`Screens`, `936:20018`, 626 × 3043)
 - Logos: `logo blue 2`, `logo white 2`, `icon white 2`, `icon white 3`, `logo header`
 
-Exact byte sizes and the full node-id map are produced in Phase 3
-(`docs/assets-manifest.md`). The hero and Why-Choose backgrounds are large
-photographic-style 3D renders and will dominate page weight — budget and WebP
-density are a Phase 3 decision point.
+Exported in Phase 3 — `docs/assets-manifest.md` has the full node-id map, formats and byte
+sizes. Result: 27 icon components, 7 multicolour SVGs, 25 WebP rasters totalling 641 KB
+(from 19.3 MB of Figma sources). The provider illustration (`996:20823`) turned out to be
+vector, not raster, and ships as SVG.
 
 ---
 
@@ -220,32 +220,32 @@ density are a Phase 3 decision point.
 From `Components` (`853:18942`), with Arabic / Tablet / Phone duplicates in their
 own sections.
 
-| Component                        | Node id                    | Variants / states found                                                                                 | Missing states                                       |
-| -------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| Header                           | `888:20297`                | desktop bar; Arabic mirror (`1028:25400`)                                                               | scrolled/sticky state                                |
-| Header action (nav item)         | `870:18940`                | `About`, `Why Us`, `Get the App`, `Service Areas`, `Contact us`; Default + Hover                        | active/current-page state                            |
-| language                         | `888:18664`                | `EN`, `Ar`                                                                                              | —                                                    |
-| languageToogle                   | `888:18955`                | Default + Hover + `choose`                                                                              | —                                                    |
-| menu (mobile/tablet drawer)      | `1038:26925`, `1037:25660` | closed (white) + open (blue) + panel                                                                    | close animation, focus trap not expressible in Figma |
-| logo header                      | `870:18837`                | single                                                                                                  | —                                                    |
-| Cart (hero glass card)           | `888:19277`                | Default + Hover                                                                                         | —                                                    |
-| Hero section                     | `898:20007`                | 9 orbiting service icons                                                                                | —                                                    |
-| Why Choose Us                    | `914:20605`                | title + 5 items                                                                                         | —                                                    |
-| Why Choose features              | `911:19600`                | `All-in-One`, `Flexible`, `Nearby`, `Fast`, `Easy`; `Defult`, `hover`, `Select`                         | feature body copy (labels only)                      |
-| Get the App section              | `963:20033`                | 3 variants: step 1 / 2 / 3 expanded                                                                     | —                                                    |
-| Choose Your Store                | `950:20377`                | numbered step pill                                                                                      | —                                                    |
-| Screens (phone mockups)          | `936:20018`                | 5 screens                                                                                               | —                                                    |
-| Service Areas                    | `974:20059`                | title variants `Service Areas`, `Where We Operate`                                                      | —                                                    |
-| Search by location               | `984:20302`                | default, focus (blue ring), typing (caret)                                                              | results / empty / error state                        |
-| Click (cursor)                   | `997:21182`                | pointer affordance                                                                                      | —                                                    |
-| Contact us (= Become a Provider) | `998:20842`                | 5 progressive states, ending with email capture                                                         | success / validation states                          |
-| Service provider Cart            | `995:20700`                | `Wider Reach`, `Full Flexibility`, `Ready Clients`, `Simple & Organized System`, `Increase Your Income` | —                                                    |
-| Themap.com                       | `998:20792`                | email/domain chip                                                                                       | —                                                    |
-| Real Reviews                     | `1015:20920`               | 4 variants: `Ahmed Omar`, `Menna Hamza`, `Mahmoud Ali`, `Nourhan Samir` (collapsed + expanded)          | —                                                    |
-| Trust Built on Real Reviews      | `1028:23286`               | 11 variants — typewriter, one character per frame                                                       | —                                                    |
-| Button                           | `942:20435`                | Default + Hover (194 × 56)                                                                              | disabled, focus-visible, loading                     |
-| Click here                       | `996:20962`                | Default + Hover (165 × 58)                                                                              | disabled, focus-visible                              |
-| social media                     | `1023:20847` + siblings    | Facebook, instagram, X, linkedin; Default + Hover                                                       | —                                                    |
+| Component                        | Node id                    | Variants / states found                                                                                                                                                                                                             | Missing states                                       |
+| -------------------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| Header                           | `888:20297`                | desktop bar; Arabic mirror (`1028:25400`)                                                                                                                                                                                           | scrolled/sticky state                                |
+| Header action (nav item)         | `870:18940`                | `About`, `Why Us`, `Get the App`, `Service Areas`, `Contact us`; Default + Hover                                                                                                                                                    | active/current-page state                            |
+| language                         | `888:18664`                | `EN`, `Ar`                                                                                                                                                                                                                          | —                                                    |
+| languageToogle                   | `888:18955`                | Default + Hover + `choose`                                                                                                                                                                                                          | —                                                    |
+| menu (mobile/tablet drawer)      | `1038:26925`, `1037:25660` | closed (white) + open (blue) + panel                                                                                                                                                                                                | close animation, focus trap not expressible in Figma |
+| logo header                      | `870:18837`                | single                                                                                                                                                                                                                              | —                                                    |
+| Cart (hero glass card)           | `888:19277`                | Default + Hover                                                                                                                                                                                                                     | —                                                    |
+| Hero section                     | `898:20007`                | **10 variants** — `The Map` plus one per service (Service, Needed, Medical, Employee, Emergency, special, Food, Real estate, Blinkz). Each carries its own heading, body copy and centre illustration; the 9-icon orbit is constant | —                                                    |
+| Why Choose Us                    | `914:20605`                | **6 variants** — default plus one per feature; the selected item is highlighted and a tooltip bubble appears with that feature's body copy                                                                                          | —                                                    |
+| Why Choose features              | `911:19600`                | `All-in-One`, `Flexible`, `Nearby`, `Fast`, `Easy`; `Defult`, `hover`, `Select`                                                                                                                                                     | — (body copy lives in the parent's variants)         |
+| Get the App section              | `963:20033`                | 3 variants: step 1 / 2 / 3 expanded                                                                                                                                                                                                 | —                                                    |
+| Choose Your Store                | `950:20377`                | numbered step pill                                                                                                                                                                                                                  | —                                                    |
+| Screens (phone mockups)          | `936:20018`                | 5 screens                                                                                                                                                                                                                           | —                                                    |
+| Service Areas                    | `974:20059`                | title variants `Service Areas`, `Where We Operate`                                                                                                                                                                                  | —                                                    |
+| Search by location               | `984:20302`                | default, focus (blue ring), typing (caret)                                                                                                                                                                                          | results / empty / error state                        |
+| Click (cursor)                   | `997:21182`                | pointer affordance                                                                                                                                                                                                                  | —                                                    |
+| Contact us (= Become a Provider) | `998:20842`                | 5 progressive states, ending with email capture                                                                                                                                                                                     | success / validation states                          |
+| Service provider Cart            | `995:20700`                | `Wider Reach`, `Full Flexibility`, `Ready Clients`, `Simple & Organized System`, `Increase Your Income`                                                                                                                             | —                                                    |
+| Themap.com                       | `998:20792`                | email/domain chip                                                                                                                                                                                                                   | —                                                    |
+| Real Reviews                     | `1015:20920`               | 4 variants: `Ahmed Omar`, `Menna Hamza`, `Mahmoud Ali`, `Nourhan Samir` (collapsed + expanded)                                                                                                                                      | —                                                    |
+| Trust Built on Real Reviews      | `1028:23286`               | 11 variants — typewriter, one character per frame                                                                                                                                                                                   | —                                                    |
+| Button                           | `942:20435`                | Default + Hover (194 × 56)                                                                                                                                                                                                          | disabled, focus-visible, loading                     |
+| Click here                       | `996:20962`                | Default + Hover (165 × 58)                                                                                                                                                                                                          | disabled, focus-visible                              |
+| social media                     | `1023:20847` + siblings    | Facebook, instagram, X, linkedin; Default + Hover                                                                                                                                                                                   | —                                                    |
 
 ### Page composition (all breakpoints)
 
@@ -263,17 +263,19 @@ mobile frame**.
 there are **no Figma keyframe animations** in the file. All motion evidence is
 structural, encoded as variant sets:
 
-| Evidence                                                                      | What it implies                                       | Confidence                                      |
-| ----------------------------------------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------- |
-| `Trust Built on Real Reviews` — 11 variants adding one character at a time    | typewriter reveal of the heading, blue→green gradient | high                                            |
-| `Contact us` — 5 states revealing benefit bubbles one by one around the phone | scroll-driven staged reveal                           | high                                            |
-| `Get the App section` — 3 variants, one step expanded each                    | accordion/stepper, one open at a time                 | high                                            |
-| `Real Reviews` — collapsed image vs expanded card                             | hover (desktop) / active (touch) expansion            | high                                            |
-| `Search by location` — default/focus/typing                                   | input focus transition                                | high                                            |
-| Hover variants on Button, Click here, nav items, social icons, Cart           | hover transitions                                     | high                                            |
-| Hero: 9 service icons orbiting a ring with node dots                          | orbital/rotation motion                               | medium — the ring is drawn, the rotation is not |
-| `Service Areas` title `Service Areas` ↔ `Where We Operate`                    | rotating/swapping headline                            | medium                                          |
-| `Cursor` / `Click` components                                                 | a pointer that moves to a target                      | medium                                          |
+| Evidence                                                                                      | What it implies                                       | Confidence                                      |
+| --------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------- |
+| `Trust Built on Real Reviews` — 11 variants adding one character at a time                    | typewriter reveal of the heading, blue→green gradient | high                                            |
+| `Contact us` — 5 states revealing benefit bubbles one by one around the phone                 | scroll-driven staged reveal                           | high                                            |
+| `Get the App section` — 3 variants, one step expanded each                                    | accordion/stepper, one open at a time                 | high                                            |
+| `Real Reviews` — collapsed image vs expanded card                                             | hover (desktop) / active (touch) expansion            | high                                            |
+| `Search by location` — default/focus/typing                                                   | input focus transition                                | high                                            |
+| Hover variants on Button, Click here, nav items, social icons, Cart                           | hover transitions                                     | high                                            |
+| Hero — 10 variants, one per service, each swapping heading, body copy and centre illustration | the hero cycles, or an orbit icon selects the service | high (found in Phase 3)                         |
+| Why Choose Us — 6 variants, each highlighting one feature and revealing its tooltip           | selection/hover drives the whole section              | high (found in Phase 3)                         |
+| Hero: 9 service icons orbiting a ring with node dots                                          | orbital/rotation motion                               | medium — the ring is drawn, the rotation is not |
+| `Service Areas` title `Service Areas` ↔ `Where We Operate`                                    | rotating/swapping headline                            | medium                                          |
+| `Cursor` / `Click` components                                                                 | a pointer that moves to a target                      | medium                                          |
 
 A `Prototype TheMAP` frame exists (`1048:26936`) but is a label only — the MCP
 exposes no prototype flows or transitions. Durations and easings are **not** in
@@ -289,7 +291,11 @@ English, verbatim:
 - Hero: "The Map" / "At The Map, our vision is to provide a smart platform that
   helps people live easier and more organized lives. Our goal is to bring essential
   services together in one place, saving you time and keeping everything within your reach."
-- Why Choose Us: All-in-One · Flexible · Nearby · Fast · Easy
+- Why Choose Us: All-in-One · Flexible · Nearby · Fast · Easy — each with body copy in the
+  section's variants (e.g. All-in-One: "All the services you need in one app.")
+- Hero, per service, inside the 10 hero variants (e.g. Service: "All the skilled services you
+  need, in one trusted platform. Find verified plumbers, carpenters, electricians, and
+  builders, and book the right service in minutes—right where you are.")
 - Get the App Now: "Start your journey in seconds and enjoy all services from your phone."
   1 "Choose Your Store" / "Tap on App Store or Google Play based on your device."
   2 "Tap Install" / "Tap 'Install' and wait for the download to complete."
