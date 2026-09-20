@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { notFound } from "next/navigation";
 
 import { AboutIcon } from "@themap/ui/icons/about";
 import { AllInOneIcon } from "@themap/ui/icons/all-in-one";
@@ -28,6 +27,7 @@ import { ServiceProviderIcon } from "@themap/ui/icons/service-provider";
 import { SimpleIcon } from "@themap/ui/icons/simple";
 import { StarIcon } from "@themap/ui/icons/star";
 import { WiderReachIcon } from "@themap/ui/icons/wider-reach";
+import { assertDevPage } from "../dev-only";
 
 /**
  * Dev-only asset sheet.
@@ -112,9 +112,7 @@ function kb(bytes: number) {
 }
 
 export default function AssetsPage() {
-  if (process.env.NODE_ENV === "production") {
-    notFound();
-  }
+  assertDevPage();
 
   return (
     <main className="mx-auto flex max-w-desktop flex-col gap-12 p-8">

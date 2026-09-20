@@ -114,6 +114,7 @@
   --color-surface-glass: rgb(254 254 254 / 0.1); /* hero card, node 888:19276 */
   --color-surface-glass-strong: rgb(5 35 76 / 0.8); /* provider pill, node 995:20699 */
   --color-surface-header: rgb(53 150 253 / 0.2); /* header bar, node 1028:25400 */
+  --color-surface-field: rgb(5 35 76 / 0.5); /* search field 984:20301, step pill 950:20368 */
 
   /* ---------------------------------------------------------------------
    * Typography — Figma variables, read from node 853:18553.
@@ -243,6 +244,10 @@
   --radius-row: 3.5rem; /* 56 — feature row, node 995:20681 */
   --radius-header: 5rem; /* 80 — header bar, node 1028:25400 */
   --radius-pill: 7.125rem; /* 114 — provider pill, node 995:20699 */
+  --radius-social: 0.5rem; /* 8 — social tile, node 1023:20941 */
+  --radius-review: 1.0625rem; /* 17 — review card, node 1008:20640 */
+  --radius-toggle: 2.4375rem; /* 39 — menu toggle, node 1038:26944 */
+  --radius-search: 3.125rem; /* 50 — search field, node 984:20301 */
   --radius-full: 9999px;
 
   /* ---------------------------------------------------------------------

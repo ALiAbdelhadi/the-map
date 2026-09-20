@@ -51,16 +51,16 @@ an option at the phase where it lands and wait for a yes.
 
 ## Interaction states not designed
 
-| #   | Gap                                                                                             | Status                                                              |
-| --- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| S1  | No focus-visible state on any interactive element                                               | PROPOSE in Phase 4 (accessibility requirement, cannot ship without) |
-| S2  | No disabled or loading state for Button / Click here                                            | PROPOSE                                                             |
-| S3  | Search by location: no results, empty, or error state; "Check Availability" has no result state | BLOCKING for Phase 5 behaviour                                      |
-| S4  | Provider email capture: no validation, success or error state                                   | BLOCKING for Phase 5 behaviour                                      |
-| S5  | No active/current nav item state                                                                | PROPOSE                                                             |
-| S6  | Header has no scrolled/sticky state although it floats over the hero                            | PROPOSE                                                             |
-| S7  | No 404, no loading, no empty states                                                             | PROPOSE                                                             |
-| S8  | Mobile drawer: no close/overlay/scroll-lock spec                                                | PROPOSE                                                             |
+| #   | Gap                                                                                             | Status                                                                                                                                                                                                 |
+| --- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| S1  | No focus-visible state on any interactive element                                               | **RESOLVED (Phase 4)** — every interactive component has a `focus-visible` outline in a token colour. Not in Figma; added because the components are unusable by keyboard without it                   |
+| S2  | No disabled or loading state for Button / Click here                                            | PROPOSE                                                                                                                                                                                                |
+| S3  | Search by location: no results, empty, or error state; "Check Availability" has no result state | BLOCKING for Phase 5 behaviour                                                                                                                                                                         |
+| S4  | Provider email capture: no validation, success or error state                                   | BLOCKING for Phase 5 behaviour                                                                                                                                                                         |
+| S5  | No active/current nav item state                                                                | **RESOLVED (Phase 4)** — Figma's `choose` variant (`870:18937`) is the current-item state; rendered with `aria-current`                                                                                |
+| S6  | Header has no scrolled/sticky state although it floats over the hero                            | PROPOSE                                                                                                                                                                                                |
+| S7  | No 404, no loading, no empty states                                                             | PROPOSE                                                                                                                                                                                                |
+| S8  | Mobile drawer: no close/overlay/scroll-lock spec                                                | **PARTLY RESOLVED (Phase 4)** — Escape closes, focus moves into the panel and back to the toggle, focus is trapped while open. No overlay or scroll lock: neither is in Figma, so neither was invented |
 
 ## Assets
 

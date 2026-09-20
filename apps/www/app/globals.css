@@ -1,12 +1,3 @@
-/*
- * Single CSS entry point for the whole monorepo.
- *
- * - `@source` points Tailwind at packages/ui, which its automatic detection skips
- *   because the package lives outside this app's directory.
- * - The token layer lives in packages/ui and is imported here, so apps/www never
- *   defines a design value of its own.
- */
-
 @import "tailwindcss";
 @import "@themap/ui/styles/theme.css";
 

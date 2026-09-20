@@ -1,0 +1,26 @@
+import type { ReactNode } from "react";
+
+import { cn } from "../lib/cn";
+
+/**
+ * Translucent surface used for the hero card and the header bar.
+ *
+ * Figma hero card `888:19276`: fill rgb(254 254 254 / .1), padding 24,
+ * radius 32, Figma GLASS effect radius 13 (approximated with backdrop-blur).
+ * Header bar `1028:25400`: fill rgb(53 150 253 / .2), padding 20, radius 80.
+ */
+export type GlassCardProps = {
+  children: ReactNode;
+  surface?: "card" | "header" | "strong";
+  className?: string;
+};
+
+const SURFACES = {
+  card: "bg-surface-glass rounded-card p-6 backdrop-blur-glass",
+  header: "bg-surface-header rounded-header p-5",
+  strong: "bg-surface-glass-strong rounded-pill backdrop-blur-glass",
+} as const;
+
+export function GlassCard({ children, surface = "card", className }: GlassCardProps) {
+  return <div className={cn(SURFACES[surface], className)}>{children}</div>;
+}

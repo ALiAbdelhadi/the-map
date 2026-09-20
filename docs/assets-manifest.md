@@ -149,3 +149,16 @@ dependency was added to the project.
   (checked `hero-map-scene.webp` = 33,252 bytes and `logo-wordmark.svg` = 28,899 bytes).
 - No browser screenshot was taken — there is no browser tooling in this session. Visual
   confirmation against Figma is yours to make on `/dev/assets`.
+
+## Addendum — assets added in Phase 4
+
+Building the components surfaced three assets the Phase 3 sweep had missed, because
+they only appear inside component variants rather than in the Images section.
+
+| File                                           | Figma layer         | Node id      | Notes                                                                                                                                                                            |
+| ---------------------------------------------- | ------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/www/public/images/avatar-6660.webp`      | image 6660          | `1009:20646` | The portrait used by the **expanded** review card. Phase 3 exported only the four collapsed portraits (`image 6661`–`6664`); the expanded card uses a fifth image. 214x614, 7 KB |
+| `packages/ui/src/icons/language-toggle-en.tsx` | languageToogle · EN | `888:18953`  | 59x24 toggle artwork, monochrome, recoloured to `currentColor`                                                                                                                   |
+| `packages/ui/src/icons/language-toggle-ar.tsx` | languageToogle · Ar | `888:18954`  | as above, Arabic state                                                                                                                                                           |
+
+Raster total is now **692 KB** across 26 WebP files.

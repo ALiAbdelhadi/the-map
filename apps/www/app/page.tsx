@@ -1,9 +1,5 @@
 import { VisuallyHidden } from "@themap/ui/visually-hidden";
 
-/**
- * Scaffold page. Phase 1 verifies the toolchain only — no design values, no copy
- * and no layout from Figma are implemented here. Phase 5 replaces this file.
- */
 export default function Page() {
   return (
     <main className="p-6">
