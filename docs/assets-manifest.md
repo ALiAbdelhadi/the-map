@@ -177,3 +177,13 @@ The first screenshot pass showed three assets were wrong.
 (`888:20656`, now `logo-mark.svg`), not that scene.
 
 Raster total after the corrections: **25 WebP files, 646 KB.**
+
+## Addendum — Phase 5 Arabic pass
+
+| File                                   | Change                                                                                                                                                                                                                                                        | Node                                                                                                                |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `illustration-{service,…,blinkz}.webp` | Re-exported again. The 3x node exports were opaque — flattened onto a dark background — so every icon was a dark rectangle that cut into the ring. Now the uploaded transparent sources, cropped to the figure's alpha bounds (empty pixels only), max 360 px | `888:20873`, `888:20869`, `888:20884`, `888:20692`, `888:20894`, `888:20908`, `888:20915`, `888:20919`, `891:19648` |
+| `apps/www/public/svg/orbit-ring.svg`   | New. The hero ring, 26 px stroke, gradient primary/500 → white                                                                                                                                                                                                | `888:20654`                                                                                                         |
+
+Lesson recorded in CLAUDE.md: for image fills, prefer the node's raw source when it has
+alpha — Figma's node export silently flattens transparency in several places.

@@ -1,49 +1,40 @@
 # Arabic copy lifted from Figma
 
-The Arabic page (`عربي`, `1028:20692`) is a full RTL mirror of the English frame.
-This file holds the Arabic strings read **verbatim** through the Figma MCP so far,
-with the node each one came from. Nothing here is translated by me; nothing that is
-still missing has been guessed.
+Every Arabic string on `/ar` is read verbatim through the Figma MCP from the Arabic
+frame `عربي` (`1028:20692`) and the Arabic component set (`1028:21461`). The live
+source is `apps/www/content/ar.ts`; this file records where each group came from.
 
-Status: the Arabic route is **not built yet**. It ships when every string below is
-filled in — see "Still to lift".
+| Group                                                                     | Node                                               |
+| ------------------------------------------------------------------------- | -------------------------------------------------- |
+| Nav                                                                       | `1028:21471`–`1028:21475`                          |
+| Hero card                                                                 | `I1028:26386;1028:21550`, `I1028:26386;1028:21552` |
+| Why Choose Us title + five labels                                         | `1028:22136`                                       |
+| Get the App badge + subtitle                                              | `1029:27994`, `1029:27819`                         |
+| Steps 1 / 2 / 3                                                           | `1030:24656`, `1030:24652`, `1030:24648`           |
+| Service Areas                                                             | `1028:20709`                                       |
+| Become a Provider (badge, body, email card, download heading, five pills) | `1028:22478`                                       |
+| Reviews heading (last typewriter variant)                                 | `1015:21033`                                       |
+| Reviews subheading                                                        | `1028:20722`                                       |
+| Ahmed Omar's review                                                       | `1028:23154`                                       |
+| Footer                                                                    | `1028:20726`                                       |
 
-## Lifted
+The five provider pills were matched to their icons by reading which icon sits next
+to each Arabic title in `1028:22478` — not by translating the English.
 
-| Key                    | Arabic                                                                                                                                                                    | Node                     |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| nav.about              | من نحن                                                                                                                                                                    | `1028:21471`             |
-| nav.whyUs              | لماذا نحن                                                                                                                                                                 | `1028:21472`             |
-| nav.getApp             | حمّل التطبيق                                                                                                                                                              | `1028:21473`             |
-| nav.areas              | أماكن خدماتنا                                                                                                                                                             | `1028:21474`             |
-| nav.provider           | كن مقدم خدمة                                                                                                                                                              | `1028:21475`             |
-| hero.title             | The Map (left in Latin in the Arabic frame)                                                                                                                               | `I1028:26386;1028:21550` |
-| hero.body              | في The Map, رؤيتنا هي تقديم منصة ذكية تساعد الناس على حياة أسهل وأكثر تنظيمًا. هدفنا هو جمع الخدمات الأساسية في مكان واحد، لتوفير الوقت وجعل كل ما تحتاجه في متناول يدك . | `I1028:26386;1028:21552` |
-| getApp.badge           | حمّل التطبيق الآن                                                                                                                                                         | `I1029:27994;1028:22349` |
-| getApp.subtitle        | ابدأ رحلتك في ثوانٍ واستمتع بكل الخدمات من هاتفك.                                                                                                                         | `1029:27819`             |
-| getApp.step1.title     | اختر متجرك                                                                                                                                                                | `1030:24632`             |
-| getApp.step1.body      | اختر المتجر المناسب لهاتفك لتحميل التطبيق                                                                                                                                 | `1030:24633`             |
-| areas.title            | مناطق الخدمة                                                                                                                                                              | `1028:22390`             |
-| areas.subtitle         | تعرف على المناطق التي تغطيها خدماتنا بالقرب منك.                                                                                                                          | `1028:20713`             |
-| areas.placeholder      | ابحث بحسب منطقتك                                                                                                                                                          | `1028:22405`             |
-| areas.cta              | تحقق من التوافر                                                                                                                                                           | `I1028:20715;942:20400`  |
-| reviews.subheading     | تجارب حقيقية من مستخدمين فعليين تعكس جودة خدماتنا وتساعدك على اتخاذ قرارك بثقة.                                                                                           | `1028:20722`             |
-| footer.tagline         | طريقتك الذكية لاستكشاف كل ما حولك. تجربة أسرع وأكثر وضوحًا لتصل إلى ما تحتاجه بثقة.                                                                                       | `1028:20755`             |
-| footer.downloadHeading | حمّل تطبيق TheMap لأجهزة iOS وAndroid                                                                                                                                     | `1028:20757`             |
-| footer.socialHeading   | ابقَ على تواصل معنا                                                                                                                                                       | `1028:20762`             |
+## Not from Figma
 
-## Still to lift
+- Accessibility labels the design has no text for: `hero.ringLabel`,
+  `getApp.screensAlt`, `serviceAreas.locateLabel`, `provider.illustrationAlt`,
+  `a11y.skipToContent`, `a11y.home`, `a11y.menu`, `language.switchLabel`. Authored,
+  like their English counterparts — please review.
+- Three reviewers (Menna Hamza, Mahmoud Ali, Nourhan Samir) exist in Figma only as
+  English variant names; `/ar` uses those names for their collapsed cards.
 
-| Key                                                                               | Where it lives                                                                 |
-| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| whyChoose.title and the five feature labels                                       | `1029:27728` (Why Choose Us Arabic)                                            |
-| getApp.step2 / step3 title and body                                               | the Arabic stepper's other variants under `1030:24656`                         |
-| provider.* — badge, body, email card, download heading, five benefit pills        | `1030:23332` (Contact us Arabic)                                               |
-| reviews.heading — the Arabic frame renders it mid-typewriter as "ثقة مبنية على ت" | the last variant of the Arabic `Trust Built on Real Reviews` set, `1015:21030` |
-| reviews items — the reviewers' Arabic names and quotes                            | `1030:24297` (Real Reviews Arabic)                                             |
+## Oddities in the Arabic frame
 
-## Note on the Arabic typeface
-
-The Arabic frames inherit `Baloo 2`, which has no Arabic glyphs. Baloo Bhaijaan 2
-was approved as the Arabic face in Phase 2 and is already loaded and wired to the
-`font-arabic` token, so the Arabic page has a typeface waiting for it.
+- The Why Choose Us feature descriptions are not in the Arabic default variant, same
+  as English — they belong to the selection interaction (Phase 6).
+- `1028:22478` contains one stray English pill ("Wider Reach / Expand your presence
+  across your city") alongside the five Arabic ones. Not used.
+- The Arabic provider body is one sentence where the English has two. Used verbatim.
+- Store badges stay in English in the Arabic frame; so they do on `/ar`.

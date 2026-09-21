@@ -11,7 +11,7 @@ import { cn } from "../lib/cn";
  */
 export type GlassCardProps = {
   children: ReactNode;
-  surface?: "card" | "header" | "strong";
+  surface?: "card" | "field" | "header" | "strong";
   /** Element to render — `header` for the site header, `div` elsewhere. */
   as?: "div" | "header" | "section";
   className?: string;
@@ -19,6 +19,8 @@ export type GlassCardProps = {
 
 const SURFACES = {
   card: "bg-surface-glass rounded-card p-6 backdrop-blur-glass",
+  /** Why Choose Us card, Figma 1028:22140 — Secondary-tinted field behind the glass blur. */
+  field: "bg-surface-field rounded-card p-6 backdrop-blur-glass",
   header: "bg-surface-header rounded-header p-5",
   strong: "bg-surface-glass-strong rounded-pill backdrop-blur-glass",
 } as const;

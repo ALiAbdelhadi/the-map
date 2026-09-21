@@ -39,21 +39,28 @@ export function SiteHeader({
 }: SiteHeaderProps) {
   return (
     <GlassCard surface="header" as="header" className={cn("w-full", className)}>
-      <div className="flex items-center gap-9.5">
-        <a
-          href={homeHref}
-          className="flex h-10 w-44.5 shrink-0 items-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg"
-        >
-          {logo}
-          <span className="sr-only">{homeLabel}</span>
-        </a>
+      {/*
+        Figma keeps the logo on the left and the language switch on the right in
+        both frames; only the nav items reverse for Arabic. So the outer row stays
+        visually LTR (row-reverse under rtl) while the nav keeps the page direction.
+      */}
+      <div className="flex items-center gap-2 rtl:flex-row-reverse">
+        <div className="flex min-w-0 flex-1 items-center gap-9.5 rtl:flex-row-reverse">
+          <a
+            href={homeHref}
+            className="flex h-10 w-44.5 shrink-0 items-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg"
+          >
+            {logo}
+            <span className="sr-only">{homeLabel}</span>
+          </a>
 
-        <nav aria-label="Main" className="hidden flex-1 items-center gap-2 desktop:flex">
-          {nav}
-          {languageSwitch}
-        </nav>
+          <nav aria-label="Main" className="hidden flex-1 items-center gap-2 desktop:flex">
+            {nav}
+          </nav>
+        </div>
+        <div className="hidden shrink-0 desktop:block">{languageSwitch}</div>
 
-        <div className="ms-auto desktop:hidden">{drawer}</div>
+        <div className="ms-auto desktop:hidden rtl:ms-0 rtl:me-auto">{drawer}</div>
       </div>
     </GlassCard>
   );

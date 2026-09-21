@@ -38,21 +38,17 @@ export function StepItem({
         type="button"
         id={buttonId}
         aria-expanded={expanded}
-        aria-controls={panelId}
         onClick={onExpand}
         className={cn(
-          "flex min-h-25 w-full items-center gap-3 overflow-hidden rounded-card border border-secondary-500 bg-surface-field px-6 py-3 text-start text-bg",
+          "flex min-h-25 items-center gap-3 overflow-hidden rounded-card border border-secondary-500 bg-surface-field px-6 py-3 text-start text-bg",
+          // Figma 963:20033: the expanded step fills the column, a collapsed one is
+          // a pill the width of its number.
+          expanded ? "w-full" : "w-auto",
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500",
         )}
       >
         <span className="w-5.25 shrink-0 text-center text-42 font-medium">{index}</span>
-        <span
-          id={panelId}
-          role="region"
-          aria-labelledby={buttonId}
-          hidden={!expanded}
-          className="flex flex-col gap-3"
-        >
+        <span id={panelId} hidden={!expanded} className="flex flex-col gap-3">
           <span className="text-24 font-semibold">{title}</span>
           <span className={compactDescription ? "text-14 font-regular" : "text-16 font-regular"}>
             {description}

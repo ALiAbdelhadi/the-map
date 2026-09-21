@@ -53,17 +53,19 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
         width={216}
         height={659}
         sizes="(min-width: 90rem) 20vw, 35vw"
-        className="-z-10 pointer-events-none absolute end-[14%] bottom-[8%] h-[45%] w-auto tablet:h-[56%]"
+        className="-z-10 pointer-events-none absolute end-[12%] bottom-[2%] h-[62%] w-auto tablet:h-[86%] rtl:-scale-x-100"
       />
 
       <div className="flex w-full max-w-container-desktop justify-start">
-        <GlassCard className="w-full max-w-152">
+        <GlassCard surface="field" className="w-full max-w-152">
           <div className="flex flex-col gap-8">
             <div className="flex items-center gap-4">
-              <span className="flex size-15.5 items-center justify-center rounded-chip bg-secondary-950 p-3 text-bg">
+              <span className="flex size-15.5 shrink-0 items-center justify-center rounded-chip bg-secondary-500 p-2 text-bg">
                 <ChooseIcon width={40} height={40} />
               </span>
-              <h2 className="text-48 font-semibold text-bg">{content.whyChoose.title}</h2>
+              <h2 className="text-40 font-regular text-bg desktop:text-56">
+                {content.whyChoose.title}
+              </h2>
             </div>
 
             <WhyChooseList
