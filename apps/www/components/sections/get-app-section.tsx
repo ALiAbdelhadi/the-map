@@ -21,16 +21,15 @@ import type { SiteContent } from "../../content/types";
 /**
  * The tile is Figma `Screens` variant 1 (`936:20017`): two 200 px columns of app
  * screenshots, the first scrolled up 1258 px, the second offset 143 px down. The
- * numbers are expressed in container-query units of the 565 px tile so the crop
- * holds at any size.
+ * numbers are expressed in container-query units of the 565 px tile (px / 565 × 100)
+ * so the crop holds at any size. Each column is 200 px wide with a 24 px gap. Class
+ * strings are written out in full so Tailwind can find them.
  */
-const TILE = 565;
-const cq = (px: number) => `${((px / TILE) * 100).toFixed(3)}cqw`;
 
 const COLUMNS = [
   {
-    left: 42,
-    top: -1258,
+    /* left 42, top −1258 */
+    position: "start-[7.434cqw] -top-[222.655cqw]",
     shots: [
       { src: "/images/app-screen-splash.webp", width: 420, height: 910 },
       { src: "/images/app-screen-new-order.webp", width: 420, height: 1218 },
@@ -38,8 +37,8 @@ const COLUMNS = [
     ],
   },
   {
-    left: 322,
-    top: 143,
+    /* left 322, top 143 */
+    position: "start-[56.991cqw] top-[25.310cqw]",
     shots: [
       { src: "/images/app-screen-meal-details.webp", width: 420, height: 941 },
       { src: "/images/app-screen-documents.webp", width: 420, height: 1273 },
@@ -86,9 +85,8 @@ export function GetAppSection({ content }: { content: SiteContent }) {
           >
             {COLUMNS.map((column) => (
               <div
-                key={column.left}
-                className="absolute flex flex-col"
-                style={{ left: cq(column.left), top: cq(column.top), width: cq(200), gap: cq(24) }}
+                key={column.position}
+                className={`absolute flex w-[35.398cqw] flex-col gap-[4.248cqw] ${column.position}`}
               >
                 {column.shots.map((shot) => (
                   <Image

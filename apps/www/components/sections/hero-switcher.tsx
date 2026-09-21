@@ -23,15 +23,33 @@ import type { SiteContent } from "../../content/types";
  * default variant `898:20006`, in container-query units of its 669.642 px orbit box.
  */
 
-const BOX = 669.642;
-const u = (px: number) => `${((px / BOX) * 100).toFixed(3)}cqw`;
+/*
+ * Geometry from `898:20006`, as container-query units of the 669.642 px orbit box
+ * (px / 669.642 × 100). Class strings are written out in full so Tailwind finds them.
+ *
+ * - wheel: ring centre (331, 423.8), icon radius 260 → box at (71, 163.8), 520 wide
+ * - ring `Ellipse 1593` (888:20654): 376
+ * - slot: service icon 74 × 74, logo 62 × 74, pushed out by the 260 radius
+ * - featured item: centred on the default variant's logo position (331, 134),
+ *   300 wide for a service, 165 for the logo
+ */
+const WHEEL = "left-[10.603cqw] top-[24.461cqw] size-[77.653cqw]";
+const RING = "size-[56.149cqw]";
+const FEATURED = "left-[49.429cqw] top-[20.011cqw]";
 
-/** Ring centre, ring size and icon radius, from `898:20006`. */
-const CENTER = { x: 331, y: 423.8 };
-const RING = 376;
-const RADIUS = 260;
-/** Where the featured (top) item sits — the default variant's logo position. */
-const FEATURED = { x: 331, y: 134 };
+/** One transform per slot, 36° apart clockwise from the top. */
+const SLOT_POSITION = [
+  "[transform:translate(-50%,-50%)_rotate(0deg)_translateY(-38.827cqw)_rotate(0deg)]",
+  "[transform:translate(-50%,-50%)_rotate(36deg)_translateY(-38.827cqw)_rotate(-36deg)]",
+  "[transform:translate(-50%,-50%)_rotate(72deg)_translateY(-38.827cqw)_rotate(-72deg)]",
+  "[transform:translate(-50%,-50%)_rotate(108deg)_translateY(-38.827cqw)_rotate(-108deg)]",
+  "[transform:translate(-50%,-50%)_rotate(144deg)_translateY(-38.827cqw)_rotate(-144deg)]",
+  "[transform:translate(-50%,-50%)_rotate(180deg)_translateY(-38.827cqw)_rotate(-180deg)]",
+  "[transform:translate(-50%,-50%)_rotate(216deg)_translateY(-38.827cqw)_rotate(-216deg)]",
+  "[transform:translate(-50%,-50%)_rotate(252deg)_translateY(-38.827cqw)_rotate(-252deg)]",
+  "[transform:translate(-50%,-50%)_rotate(288deg)_translateY(-38.827cqw)_rotate(-288deg)]",
+  "[transform:translate(-50%,-50%)_rotate(324deg)_translateY(-38.827cqw)_rotate(-324deg)]",
+];
 const STEP = 36;
 
 type Hero = SiteContent["hero"];
@@ -115,28 +133,17 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
         <div
           role="group"
           aria-label={hero.ringLabel}
-          className="@container relative w-full max-w-167.25 shrink-0"
-          style={{ aspectRatio: "669.642 / 767.626" }}
+          className="@container relative aspect-[669.642/767.626] w-full max-w-167.25 shrink-0"
         >
           {/* `Ellipse 1593` (888:20654) */}
-          <div
-            ref={wheel}
-            className="absolute"
-            style={{
-              left: u(CENTER.x - RADIUS),
-              top: u(CENTER.y - RADIUS),
-              width: u(RADIUS * 2),
-              height: u(RADIUS * 2),
-            }}
-          >
+          <div ref={wheel} className={`absolute ${WHEEL}`}>
             <Image
               src="/svg/orbit-ring.svg"
               alt=""
               width={376}
               height={376}
               unoptimized
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-              style={{ width: u(RING), height: u(RING) }}
+              className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${RING}`}
             />
 
             {slots.map((slot, index) => {
@@ -152,12 +159,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
                   onClick={() => {
                     setSelected(index);
                   }}
-                  className={`absolute top-1/2 left-1/2 flex items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bg ${hidden(index)}`}
-                  style={{
-                    width: u(isHome ? 62 : 74),
-                    height: u(isHome ? 74 : 74),
-                    transform: `translate(-50%, -50%) rotate(${index * STEP}deg) translateY(-${u(RADIUS)}) rotate(-${index * STEP}deg)`,
-                  }}
+                  className={`absolute top-1/2 left-1/2 flex h-[11.051cqw] items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bg ${isHome ? "w-[9.259cqw]" : "w-[11.051cqw]"} ${SLOT_POSITION[index]} ${hidden(index)}`}
                 >
                   <Image
                     src={service ? service.image : "/svg/logo-mark.svg"}
@@ -180,8 +182,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
                 key={slot.id}
                 data-featured={index}
                 aria-hidden="true"
-                className={`pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 ${shown(index)}`}
-                style={{ left: u(FEATURED.x), top: u(FEATURED.y), width: u(service ? 300 : 165) }}
+                className={`pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 ${FEATURED} ${service ? "w-[44.8cqw]" : "w-[24.64cqw]"} ${shown(index)}`}
               >
                 <Image
                   src={service ? service.imageLarge : "/svg/logo-mark.svg"}
