@@ -47,7 +47,7 @@ export function ReviewCard({
         aria-label={name}
         aria-expanded={false}
         className={cn(
-          "h-76.75 w-52.5 shrink-0 overflow-hidden rounded-review border border-primary-300 bg-white shadow-click",
+          "h-76.75 w-full max-w-52.5 shrink-0 overflow-hidden rounded-review border border-primary-300 bg-white shadow-click",
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500",
           className,
         )}
@@ -60,14 +60,14 @@ export function ReviewCard({
   return (
     <figure
       className={cn(
-        "flex w-103.75 shrink-0 items-center gap-3.5 overflow-hidden rounded-review border border-primary-300 bg-primary-50 pe-6 shadow-review",
+        "flex w-full max-w-103.75 shrink-0 items-center gap-3.5 overflow-hidden rounded-review border border-primary-300 bg-primary-50 pe-6 shadow-review",
         className,
       )}
     >
       <div className="h-76.75 w-26.75 shrink-0 overflow-hidden rounded-review border border-primary-500 bg-white shadow-click">
         {photo}
       </div>
-      <div className="flex w-67.5 flex-col gap-3 py-4">
+      <div className="flex min-w-0 flex-1 flex-col gap-3 py-4">
         <figcaption className="flex flex-col gap-3.75">
           <span className="text-center text-24 font-regular text-primary-400">{name}</span>
           <span className="flex items-center gap-2">

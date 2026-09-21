@@ -31,7 +31,7 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
   return (
     <section
       id="why-us"
-      className="relative isolate flex w-full items-center overflow-hidden px-4 py-24 tablet:px-8 desktop:min-h-[1024px] desktop:py-0"
+      className="relative isolate flex w-full justify-center overflow-hidden px-4 py-24 tablet:px-8 desktop:min-h-[1024px] desktop:items-center desktop:py-0"
     >
       <Image
         src="/images/why-choose-maze.webp"
@@ -40,13 +40,20 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
         sizes="100vw"
         className="-z-20 object-cover"
       />
+      {/*
+        Figma layers `image 6659` (the character) over `image 6658` (the maze).
+        Figma's node export flattens the character onto white; the uploaded source
+        behind that node is a cut-out with real alpha, so that is what ships —
+        cropped to the figure's alpha bounds (216x659 of 1408x768). The crop removes
+        empty pixels only; no artwork was altered.
+      */}
       <Image
         src="/images/why-choose-character.webp"
         alt=""
-        width={2880}
-        height={2384}
-        sizes="(min-width: 90rem) 60vw, 100vw"
-        className="-z-10 absolute end-0 bottom-0 h-full w-auto max-w-none object-contain object-bottom"
+        width={216}
+        height={659}
+        sizes="(min-width: 90rem) 20vw, 35vw"
+        className="-z-10 pointer-events-none absolute end-[14%] bottom-[8%] h-[45%] w-auto tablet:h-[56%]"
       />
 
       <div className="flex w-full max-w-container-desktop justify-start">
