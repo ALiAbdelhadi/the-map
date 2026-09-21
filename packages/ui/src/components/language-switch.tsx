@@ -38,7 +38,8 @@ export function LanguageSwitch({
   className,
 }: LanguageSwitchProps) {
   return (
-    <div className={cn("flex items-center gap-2 rounded-nav px-4 py-2", className)}>
+    // Figma keeps English flag → toggle → Arabic flag left-to-right in both frames.
+    <div dir="ltr" className={cn("flex items-center gap-2 rounded-nav px-4 py-2", className)}>
       <a
         href={englishHref}
         hrefLang="en"

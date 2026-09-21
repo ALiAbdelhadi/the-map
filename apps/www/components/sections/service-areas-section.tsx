@@ -25,10 +25,11 @@ export function ServiceAreasSection({ content }: { content: SiteContent }) {
         alt=""
         fill
         sizes="100vw"
-        className="-z-10 object-cover"
+        className="-z-20 object-cover"
       />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-primary-300/80" />
 
-      <form className="flex w-full max-w-container-desktop flex-col items-center gap-17" action="#">
+      <form className="flex w-full max-w-185.25 flex-col items-center gap-17" action="#">
         <div className="flex w-full flex-col items-center gap-8">
           <div className="flex w-full flex-col items-center gap-20">
             <h2 className="text-center text-56 font-bold text-secondary-500 desktop:text-[100px]">

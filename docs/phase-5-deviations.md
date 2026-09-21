@@ -1,5 +1,8 @@
 # Phase 5 — deviations from Figma
 
+**Status:** English (`/en`) and Arabic (`/ar`, RTL) are both built and compared against
+the Figma renders at 1440. `/` redirects to `/en`.
+
 The English home page is built from the Figma frame `The map English` (`853:19390`).
 Everything below is a place where what ships differs from that file, or where the
 file did not answer the question. Nothing here was decided silently.
@@ -80,12 +83,35 @@ social marks photographed blank. That was the screenshot script, not the page.
    animates it.
 8. **Orbit icons are not rotated.** The Arabic dump gives a rotation per service; the
    English variant's metadata does not, so the icons render upright rather than guessed.
-9. **The ring is drawn with a border, not the Figma ellipse asset.** `Ellipse 1593` is a
-   gradient stroke; it renders here as a 16 px primary/200 ring. Replace with the
-   exported asset once the gradient stops are read.
+9. **The ring is the real asset now** (`Ellipse 1593`, `888:20654` → `orbit-ring.svg`,
+   26 px, primary/500 → white). Still missing: the small node dots on the ring and the
+   dark 32 px marker at its top.
 10. **External links are `#`.** No App Store, Google Play or social URL exists in the
     file (gaps C4, C5). The email link uses the address Figma shows.
-11. **The Arabic page is not built.** Four of its nine string groups have not been read
-    out of Figma yet; the ones that have are in `docs/figma-copy-ar.md`. Shipping half a
-    page would mean inventing the rest.
+11. **Arabic page** — built. See "Arabic pass" below.
 12. **Focus and skip-link styling are mine.** Figma specifies neither (gap S1).
+
+## Arabic pass — comparing `/ar` against `عربي` (1028:20692) at 1440
+
+Putting the two locales side by side against Figma exposed layout mistakes that were
+wrong in **English too**, and were fixed for both:
+
+| Section         | Was                                                                                                             | Now (Figma node)                                                                                                                                                                          |
+| --------------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Header          | logo and language switch swapped ends in Arabic; English nav wrapped to two lines                               | logo left and switch right in both frames, only the nav reverses; nav items never wrap (`1028:25400`)                                                                                     |
+| Hero            | ring was a hand-drawn border; the nine orbit icons were opaque, so they cut notches into the ring               | the Figma ring asset; icons re-exported from their transparent sources, sized to the Figma boxes                                                                                          |
+| Why Choose Us   | white glass card, dark chip, 48 px semibold title, small character                                              | Secondary-tinted card `rgb(5 35 76 / .5)` + blur, Secondary/500 chip, 56 px regular title, character ~86 % of the section, mirrored in Arabic (`1028:22136`)                              |
+| Get the App     | tile and text in the wrong order; collapsed steps full width; store badges missing; screenshot crop approximate | text first (tile right in English, left in Arabic); collapsed steps are number pills; badges centred below; the exact `Screens` crop in container-query units (`936:20017`, `1029:27815`) |
+| Service Areas   | full-colour background; single-line subtitle                                                                    | primary/300 at 80 % over the render; 741 px column (`974:20034`)                                                                                                                          |
+| Badges / social | reversed in Arabic                                                                                              | kept left-to-right, as the Arabic frame has them (`1028:20758`, `1028:20763`)                                                                                                             |
+
+Still different from the Arabic frame:
+
+- **Provider section shows its final state.** Figma's page frame shows the first state of
+  a five-step reveal (illustration only); the copy arrives through the variants. The
+  reveal is motion — Phase 6. Rendering the first state would hide all the copy.
+- **Hero orbit positions are the English ones.** The Arabic variant arranges the nine
+  icons differently and rotates each; that arrangement has not been ported.
+- **Footer has no gradient top stroke.** Figma draws a thin primary→green line along the
+  footer's rounded top edge in both frames.
+- **Arabic accessibility labels are authored**, listed in `docs/figma-copy-ar.md`.

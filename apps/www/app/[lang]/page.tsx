@@ -1,21 +1,25 @@
-import { Footer, Header } from "../components/site-chrome";
-import { GetAppSection } from "../components/sections/get-app-section";
-import { HeroSection } from "../components/sections/hero-section";
-import { ProviderSection } from "../components/sections/provider-section";
-import { ReviewsSection } from "../components/sections/reviews-section";
-import { ServiceAreasSection } from "../components/sections/service-areas-section";
-import { WhyChooseSection } from "../components/sections/why-choose-section";
-import { en } from "../content/en";
+import { notFound } from "next/navigation";
+
+import { Footer, Header } from "../../components/site-chrome";
+import { GetAppSection } from "../../components/sections/get-app-section";
+import { HeroSection } from "../../components/sections/hero-section";
+import { ProviderSection } from "../../components/sections/provider-section";
+import { ReviewsSection } from "../../components/sections/reviews-section";
+import { ServiceAreasSection } from "../../components/sections/service-areas-section";
+import { WhyChooseSection } from "../../components/sections/why-choose-section";
+import { getContent, hasLocale } from "../../content";
 
 /**
- * The Map — home page.
+ * The Map — home page, rendered once per locale (`/en`, `/ar`).
  *
  * Section order and geometry follow the Figma frame `The map English`
  * (`853:19390`): hero, Why Choose Us, Get the App Now, Service Areas,
  * Become a Provider, Reviews, footer. The header floats over the hero.
  */
-export default function Page() {
-  const content = en;
+export default async function Page({ params }: PageProps<"/[lang]">) {
+  const { lang } = await params;
+  if (!hasLocale(lang)) notFound();
+  const content = getContent(lang);
 
   return (
     <>

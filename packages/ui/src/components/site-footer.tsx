@@ -50,12 +50,16 @@ export function SiteFooter({
 
       <div className="flex flex-col items-center justify-center gap-7.75">
         <p className={cn(GRADIENT_TEXT, "max-w-108.75")}>{downloadHeading}</p>
-        <div className="flex flex-wrap items-start gap-12">{storeBadges}</div>
+        <div dir="ltr" className="flex flex-wrap items-start gap-12">
+          {storeBadges}
+        </div>
       </div>
 
       <div className="flex w-60 flex-col items-center justify-center gap-8">
         <p className={cn(GRADIENT_TEXT, "text-center")}>{socialHeading}</p>
-        <div className="flex w-full items-center gap-4">{socialLinks}</div>
+        <div dir="ltr" className="flex w-full items-center gap-4 rtl:justify-end">
+          {socialLinks}
+        </div>
       </div>
     </footer>
   );

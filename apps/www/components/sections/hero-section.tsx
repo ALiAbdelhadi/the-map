@@ -52,14 +52,20 @@ export function HeroSection({ content }: { content: SiteContent }) {
 
       <div className="flex w-full max-w-container-desktop flex-col items-center gap-16 desktop:flex-row-reverse desktop:justify-center">
         <div
+          role="img"
           aria-label={content.hero.ringLabel}
           className="relative w-full max-w-[669px] shrink-0"
           style={{ aspectRatio: "669.642 / 767.626" }}
         >
-          <div
-            aria-hidden="true"
-            className="absolute rounded-full border-[16px] border-primary-200/90"
-            style={{ left: "21.05%", top: "31%", width: "56.74%", aspectRatio: "1 / 1" }}
+          {/* `Ellipse 1593` (888:20654): 26 px ring, gradient primary/500 → white. */}
+          <Image
+            src="/svg/orbit-ring.svg"
+            alt=""
+            width={376}
+            height={376}
+            unoptimized
+            className="absolute"
+            style={{ left: "21.05%", top: "31%", width: "56.74%", height: "auto" }}
           />
           <Image
             src="/svg/logo-mark.svg"
@@ -76,11 +82,11 @@ export function HeroSection({ content }: { content: SiteContent }) {
               <Image
                 key={item.id}
                 src={service.image}
-                alt={service.label}
-                width={135}
-                height={74}
+                alt=""
+                width={360}
+                height={260}
                 className="absolute"
-                style={{ left: `${item.left}%`, top: `${item.top}%`, width: "20%", height: "auto" }}
+                style={{ left: `${item.left}%`, top: `${item.top}%`, width: "11%", height: "auto" }}
               />
             );
           })}
@@ -88,7 +94,7 @@ export function HeroSection({ content }: { content: SiteContent }) {
 
         <GlassCard className="w-full max-w-136 shrink-0">
           <div className="flex flex-col gap-20">
-            <div className="flex flex-col gap-3">
+            <div dir="auto" className="flex flex-col gap-3">
               <h1 className="text-38 font-bold text-primary-300">{content.hero.title}</h1>
               <span aria-hidden="true" className="h-[5px] w-35.5 rounded-full bg-primary-200" />
             </div>

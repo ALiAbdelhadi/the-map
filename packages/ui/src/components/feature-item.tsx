@@ -42,7 +42,7 @@ export function FeatureItem({
       tabIndex={selected ? 0 : -1}
       onClick={onSelect}
       className={cn(
-        "group flex items-center gap-6 rounded-row px-5 py-1 text-40 font-regular text-bg",
+        "group flex items-center gap-6 rounded-row px-5 py-1 text-24 font-regular text-bg tablet:text-32 desktop:text-40",
         "hover:bg-gradient-to-r hover:from-primary-500 hover:to-white hover:text-secondary-500",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg",
         selected && "border-4 border-primary-500",

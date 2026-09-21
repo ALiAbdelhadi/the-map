@@ -15,6 +15,7 @@ import { ChooseIcon } from "@themap/ui/icons/choose";
 import { ContactUsIcon } from "@themap/ui/icons/contact-us";
 import { FacebookIcon } from "@themap/ui/icons/facebook";
 import { InstagramIcon } from "@themap/ui/icons/instagram";
+import { LanguageToggleArIcon } from "@themap/ui/icons/language-toggle-ar";
 import { LanguageToggleEnIcon } from "@themap/ui/icons/language-toggle-en";
 import { LogoWordmarkIcon } from "@themap/ui/icons/logo-wordmark";
 import { MenuIcon } from "@themap/ui/icons/menu";
@@ -48,13 +49,19 @@ function LocaleSwitch({ content }: { content: SiteContent }) {
   return (
     <LanguageSwitch
       current={content.locale}
-      englishHref="/"
-      arabicHref="/"
+      englishHref="/en"
+      arabicHref="/ar"
       englishLabel={content.language.english}
       arabicLabel={content.language.arabic}
       englishFlag={<Image src="/svg/flag-english.svg" alt="" width={32} height={32} />}
       arabicFlag={<Image src="/svg/flag-arabic.svg" alt="" width={32} height={32} />}
-      toggle={<LanguageToggleEnIcon width={59} height={24} />}
+      toggle={
+        content.locale === "ar" ? (
+          <LanguageToggleArIcon width={59} height={24} />
+        ) : (
+          <LanguageToggleEnIcon width={59} height={24} />
+        )
+      }
     />
   );
 }
@@ -68,7 +75,7 @@ export function Header({ content }: { content: SiteContent }) {
     <div className="absolute inset-x-0 top-5 z-20 flex justify-center px-4 tablet:px-8 desktop:top-22">
       <SiteHeader
         className="max-w-container-desktop"
-        homeHref="/"
+        homeHref={`/${content.locale}`}
         homeLabel={content.a11y.home}
         logo={<LogoWordmarkIcon width={178} height={40} className="text-primary-500" />}
         nav={<NavItems content={content} />}

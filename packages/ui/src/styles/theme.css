@@ -238,7 +238,9 @@
    * ------------------------------------------------------------------ */
   --radius-*: initial;
   --radius-button: 0.75rem; /* 12 — node 942:20434 (store badge), 996:20963 */
+  --radius-screen: 1.25rem; /* 20 — app screenshots, node 938:19978 */
   --radius-card: 2rem; /* 32 — hero card, node 888:19276 */
+  --radius-tile: 2.0625rem; /* 33 — phone-mockup tile, node 936:20017 */
   --radius-chip: 2.3125rem; /* 37 — icon chip, node 911:19545 */
   --radius-nav: 2.375rem; /* 38 — nav pill, node 1028:21475 */
   --radius-row: 3.5rem; /* 56 — feature row, node 995:20681 */

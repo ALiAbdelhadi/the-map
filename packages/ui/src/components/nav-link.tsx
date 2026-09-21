@@ -25,7 +25,7 @@ export function NavLink({ href, children, icon, current = false, className }: Na
       href={href}
       aria-current={current ? "page" : undefined}
       className={cn(
-        "inline-flex items-center gap-2 rounded-nav px-4 py-1 text-24 font-regular text-bg",
+        "inline-flex items-center gap-2 whitespace-nowrap rounded-nav px-4 py-1 text-24 font-regular text-bg",
         "hover:bg-primary-400",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg",
         current && "border border-white",

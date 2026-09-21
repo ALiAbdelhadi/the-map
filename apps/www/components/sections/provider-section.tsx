@@ -76,7 +76,7 @@ export function ProviderSection({ content }: { content: SiteContent }) {
               <h3 className="text-30 font-semibold text-primary-950">
                 {content.provider.downloadHeading}
               </h3>
-              <div className="flex flex-wrap items-center justify-center gap-17">
+              <div dir="ltr" className="flex flex-wrap items-center justify-center gap-17">
                 <StoreBadge
                   icon={<AppStoreIcon />}
                   topLine={content.stores.apple.topLine}
