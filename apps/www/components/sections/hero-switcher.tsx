@@ -4,8 +4,10 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 
 import { GlassCard } from "@themap/ui/components/glass-card";
+import { figmaTween } from "@themap/ui/motion/figma-easing";
 import { gsap, useGSAP } from "@themap/ui/motion/gsap";
-import { motion } from "@themap/ui/motion/tokens";
+import { prototype } from "@themap/ui/motion/tokens";
+import { useAfterDelay } from "@themap/ui/motion/use-after-delay";
 
 import type { SiteContent } from "../../content/types";
 
@@ -65,6 +67,8 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
   const wheel = useRef<HTMLDivElement>(null);
   const angle = useRef(0);
   const firstRun = useRef(true);
+  // Only a visitor's own choice is announced; the auto-advance is not.
+  const [announce, setAnnounce] = useState(false);
 
   // Slot 0 is the logo ("The Map"); slots 1–9 are the services in ring order.
   const slots = [{ id: "the-map" }, ...hero.services];
@@ -76,35 +80,41 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
       const animate = !firstRun.current && !reduce;
       firstRun.current = false;
 
-      const duration = animate ? motion.hero.duration : 0;
-      const fade = animate ? motion.hero.fade : 0;
+      // Figma: every hero transition is Smart Animate, 0.3 s ease-out.
+      const tween = animate ? figmaTween(prototype.hero.click) : { duration: 0 };
 
       // Turn the short way round to bring the selected slot to the top.
       const target = -selected * STEP;
       const delta = ((((target - angle.current) % 360) + 540) % 360) - 180;
       angle.current += delta;
-      gsap.to(wheel.current, { rotation: angle.current, duration, ease: motion.hero.ease });
+      gsap.to(wheel.current, { rotation: angle.current, ...tween });
 
       gsap.utils.toArray<HTMLElement>("[data-slot]").forEach((el) => {
-        gsap.to(el, { autoAlpha: Number(el.dataset.slot) === selected ? 0 : 1, duration: fade });
+        gsap.to(el, { autoAlpha: Number(el.dataset.slot) === selected ? 0 : 1, ...tween });
       });
       gsap.utils.toArray<HTMLElement>("[data-featured]").forEach((el) => {
-        gsap.to(el, { autoAlpha: Number(el.dataset.featured) === selected ? 1 : 0, duration });
+        gsap.to(el, { autoAlpha: Number(el.dataset.featured) === selected ? 1 : 0, ...tween });
       });
       gsap.utils.toArray<HTMLElement>("[data-scene]").forEach((el) => {
-        gsap.to(el, { autoAlpha: Number(el.dataset.scene) === selected ? 1 : 0, duration });
+        gsap.to(el, { autoAlpha: Number(el.dataset.scene) === selected ? 1 : 0, ...tween });
       });
       if (animate) {
-        gsap.from("[data-hero-copy]", {
-          autoAlpha: 0,
-          y: motion.swap.distance,
-          duration: motion.swap.duration,
-          ease: motion.swap.ease,
-        });
+        gsap.from("[data-hero-copy]", { autoAlpha: 0, ...tween });
       }
     },
     { scope, dependencies: [selected] },
   );
+
+  // Figma: each variant advances to the next service in ring order after 0.8 s,
+  // and Blinkz returns to The Map.
+  useAfterDelay(scope, {
+    key: selected,
+    wait: prototype.hero.auto.duration + prototype.hero.auto.delay,
+    onFire: () => {
+      setAnnounce(false);
+      setSelected((index) => (index + 1) % slots.length);
+    },
+  });
 
   const hidden = (index: number) => (index === selected ? "invisible opacity-0" : "");
   const shown = (index: number) => (index === selected ? "" : "invisible opacity-0");
@@ -162,6 +172,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
                   aria-label={service ? service.title : hero.homeLabel}
                   aria-pressed={selected === index}
                   onClick={() => {
+                    setAnnounce(true);
                     setSelected(index);
                   }}
                   className={`absolute top-1/2 left-1/2 flex h-[11.051cqw] items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bg ${isHome ? "w-[9.259cqw]" : "w-[11.051cqw]"} ${SLOT_POSITION[index]} ${hidden(index)}`}
@@ -206,7 +217,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
         <GlassCard className="flex h-76.25 w-full max-w-88 shrink-0 flex-col justify-center tablet:block tablet:h-auto tablet:max-w-136">
           <div
             data-hero-copy=""
-            aria-live="polite"
+            aria-live={announce ? "polite" : "off"}
             className="flex flex-col gap-10.25 tablet:gap-20"
           >
             <div dir="auto" className="flex flex-col gap-3">

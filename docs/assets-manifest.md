@@ -187,3 +187,14 @@ Raster total after the corrections: **25 WebP files, 646 KB.**
 
 Lesson recorded in CLAUDE.md: for image fills, prefer the node's raw source when it has
 alpha — Figma's node export silently flattens transparency in several places.
+
+## Motion assets (2026-09-21)
+
+Exported from the Figma nodes named, for the prototype motion.
+
+| File                                               | Figma node                          | Use                                      |
+| -------------------------------------------------- | ----------------------------------- | ---------------------------------------- |
+| `public/svg/why-choose-arrow.svg`                  | `arrow` in `914:20602`              | Why Choose Us feature pill arrow         |
+| `public/images/step-rocket.webp`                   | `business-startup 1` in `950:20404` | rocket under the open step               |
+| `public/svg/click-hand.svg`                        | `Click` `997:21181`                 | hand in the provider `Click here` button |
+| `public/svg/connector-43.svg` … `connector-47.svg` | `Vector 43`–`47` in `998:20840`     | provider stage connectors                |

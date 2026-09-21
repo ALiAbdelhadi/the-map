@@ -104,6 +104,12 @@
 
   /* Semantic aliases that exist as Figma variables in their own right. */
   --color-bg: #fefefe; /* Figma `Natural/BG` */
+  /*
+   * Pure white — not a Figma variable, but the raw end stop of the animated gradient
+   * strokes (badge 936:20234, search field 984:20300, selected feature row 911:19597)
+   * and the review card fill (1015:20919).
+   */
+  --color-white: #ffffff;
 
   /*
    * Translucent surfaces. Figma exposes these as the variables `gradient Cart`

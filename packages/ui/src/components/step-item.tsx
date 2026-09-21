@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { cn } from "../lib/cn";
 
 /**
@@ -7,6 +9,11 @@ import { cn } from "../lib/cn";
  * 433x100, fill rgb(5 35 76 / .5), 1 px Secondary/500 border, radius 32,
  * px 24, py 12. Collapsed shows the number only (42 px medium); expanded adds a
  * 352 px column with a 24 px semibold title and a 16 px body (14 px on step 3).
+ *
+ * The open step is Figma's `Action` → `3D` pair (`950:20376` → `950:20404`): the
+ * step is 156 tall, and 0.2 s after it opens the `business-startup 1` rocket (86 px)
+ * slides from (−57, 113) to (0, 70) with a 0.417 s `SLOW` spring, fading in — the
+ * `Action` variant has no image fill.
  */
 export type StepItemProps = {
   index: number;
@@ -16,6 +23,8 @@ export type StepItemProps = {
   onExpand: () => void;
   /** Figma renders step 3's body at 14 px rather than 16 px. */
   compactDescription?: boolean;
+  /** The rocket shown under the open step. */
+  rocket?: ReactNode;
   panelId: string;
   buttonId: string;
   className?: string;
@@ -28,12 +37,13 @@ export function StepItem({
   expanded,
   onExpand,
   compactDescription = false,
+  rocket,
   panelId,
   buttonId,
   className,
 }: StepItemProps) {
   return (
-    <div className={cn("w-full", expanded && "pb-14 tablet:pb-0", className)}>
+    <div data-flip-id={buttonId} className={cn("relative w-full", expanded && "pb-14", className)}>
       <button
         type="button"
         id={buttonId}
@@ -70,6 +80,15 @@ export function StepItem({
           </span>
         </span>
       </button>
+      {expanded && rocket ? (
+        <span
+          data-rocket=""
+          aria-hidden="true"
+          className="pointer-events-none absolute start-0 top-17.5 size-21.5"
+        >
+          {rocket}
+        </span>
+      ) : null}
     </div>
   );
 }

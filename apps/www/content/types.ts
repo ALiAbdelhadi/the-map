@@ -39,6 +39,8 @@ export type SiteContent = {
   };
   serviceAreas: {
     title: string;
+    /** The title's second state, Figma `974:20057` / `1028:22387`. */
+    titleAlt: string;
     subtitle: string;
     searchLabel: string;
     searchPlaceholder: string;
@@ -52,9 +54,13 @@ export type SiteContent = {
     downloadHeading: string;
     benefits: { id: string; title: string; description: string }[];
     illustrationAlt: string;
+    /** The button that opens the full section, Figma `Click here` `996:20962`. */
+    clickHere: string;
   };
   reviews: {
     heading: string;
+    /** The typewriter's states, each exactly as a Figma variant spells it. */
+    headingSteps: string[];
     subheading: string;
     items: { id: string; name: string; rating: string; quote: string; photo: string }[];
   };

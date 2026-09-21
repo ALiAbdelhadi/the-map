@@ -14,7 +14,6 @@ import { SiteFooter } from "@themap/ui/components/site-footer";
 import { SiteHeader } from "@themap/ui/components/site-header";
 import { SocialLink } from "@themap/ui/components/social-link";
 import { StoreBadge } from "@themap/ui/components/store-badge";
-import { WhyChooseList } from "@themap/ui/components/why-choose-list";
 import { AboutIcon } from "@themap/ui/icons/about";
 import { AllInOneIcon } from "@themap/ui/icons/all-in-one";
 import { ApostropheIcon } from "@themap/ui/icons/apostrophe";
@@ -35,6 +34,8 @@ import { MenuIcon } from "@themap/ui/icons/menu";
 import { NearbyIcon } from "@themap/ui/icons/nearby";
 import { StarIcon } from "@themap/ui/icons/star";
 import { assertDevPage } from "../dev-only";
+
+import { WhyChooseDemo } from "./why-choose-demo";
 
 /**
  * Dev-only component sheet.
@@ -324,14 +325,10 @@ export default function ComponentsPage() {
 
       <Section
         title="Why Choose Us list"
-        note="914:20605 — select a row to reveal its description."
+        note="914:20605 — select a row to outline it; the section shows the description."
       >
         <div className="rounded-card bg-secondary-500 p-6">
-          <WhyChooseList
-            label="Why choose us"
-            features={FEATURES}
-            descriptionClassName="text-24 font-regular text-bg"
-          />
+          <WhyChooseDemo features={FEATURES} />
         </div>
       </Section>
 

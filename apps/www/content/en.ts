@@ -118,10 +118,10 @@ export const en: SiteContent = {
         label: "All-in-One",
         description: "All the services you need in one app.",
       },
-      { id: "flexible", label: "Flexible", description: "" },
-      { id: "nearby", label: "Nearby", description: "" },
-      { id: "fast", label: "Fast", description: "" },
-      { id: "easy", label: "Easy", description: "" },
+      { id: "flexible", label: "Flexible", description: "Flexible solutions for every need." },
+      { id: "nearby", label: "Nearby", description: "Services available near your location." },
+      { id: "fast", label: "Fast", description: "Quick booking and instant access." },
+      { id: "easy", label: "Easy", description: "Simple and user-friendly experience." },
     ],
   },
   getApp: {
@@ -143,6 +143,7 @@ export const en: SiteContent = {
   },
   serviceAreas: {
     title: "Service Areas",
+    titleAlt: "Where We Operate",
     subtitle: "Explore the areas where our services are available in your city.",
     searchLabel: "Search by location",
     searchPlaceholder: "Search by location",
@@ -186,9 +187,25 @@ export const en: SiteContent = {
       },
     ],
     illustrationAlt: "A phone showing provider analytics",
+    // Figma keeps this English in the Arabic frame too (1028:22477).
+    clickHere: "Click here",
   },
   reviews: {
     heading: "Trust Built on Real Reviews",
+    /** The 11 typewriter variants, Figma `1028:23286`. */
+    headingSteps: [
+      "Trust Built on R",
+      "Trust Built on Re",
+      "Trust Built on Rea",
+      "Trust Built on Real",
+      "Trust Built on Real R",
+      "Trust Built on Real Re",
+      "Trust Built on Real Rev",
+      "Trust Built on Real Revi",
+      "Trust Built on Real Revie",
+      "Trust Built on Real Review",
+      "Trust Built on Real Reviews",
+    ],
     subheading:
       "Genuine user experiences that reflect our service quality and help you decide with confidence.",
     items: [

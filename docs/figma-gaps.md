@@ -100,6 +100,14 @@ an option at the phase where it lands and wait for a yes.
 | P6  | Step 1 is followed by an empty 86 px `business-startup 1` slot (`I1041:27796;1038:25424;1038:25401`)                 | Reproduced as spacing (56 px); the slot has no fill — probably a missing image       |
 | P7  | Provider pills: two of five use a 24/16 chip instead of 32/22, and the border is a green gradient                    | All five use 32/22 and the primary/500 border                                        |
 
+## Motion (2026-09-21)
+
+| #   | Gap                                                                                                                                                                                                                                                                                                                                                        | Status                                                                                                 |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| M6  | Figma publishes no numbers for its easing presets. Used: `EASE_OUT`/`EASE_IN_AND_OUT` = CSS `ease-out`/`ease-in-out`; `EASE_IN_AND_OUT_BACK` = cubic-bezier(0.7, -0.4, 0.4, 1.4); springs (mass, stiffness, damping) GENTLE (1, 100, 15), QUICK (1, 300, 20), SLOW (1, 80, 20) — these reproduce the settle times stored in the file (SLOW exactly 1.25 s) | Documented in `packages/ui/src/motion/figma-easing.ts`; replace if Figma's values become available     |
+| M7  | The provider's full state returns to the illustration 0.8 s after `Click here`, hiding the copy and links                                                                                                                                                                                                                                                  | Built as Figma has it, but held while the pointer or focus is in the section; confirm this is intended |
+| M8  | QUICK spring on Why Choose Easy → default overshoots below scale 1, briefly showing the section background at the edges                                                                                                                                                                                                                                    | Reproduced as Figma animates it                                                                        |
+
 ## Data
 
 | #   | Gap                                                         | Status                            |

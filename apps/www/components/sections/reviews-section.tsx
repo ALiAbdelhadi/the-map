@@ -14,8 +14,8 @@ import type { SiteContent } from "../../content/types";
  * heading (primary/500 -> green/600, `1015:21009`) and the 48 px Natural/300
  * subheading, then the review row 481 px down.
  *
- * The heading is a typewriter in Figma (11 variants, one character each) and types
- * itself in on scroll — see TypewriterHeading.
+ * The heading is a typewriter in Figma (11 variants, one step each), looping — see
+ * TypewriterHeading.
  *
  * The phone frame (`853:19401`) has no Reviews section — the footer follows the
  * provider section directly — so it is not rendered below the tablet breakpoint.
@@ -29,8 +29,9 @@ export function ReviewsSection({ content }: { content: SiteContent }) {
       <div className="flex w-full max-w-container-desktop flex-col items-center gap-12">
         <div className="flex w-full flex-col items-center gap-12">
           <TypewriterHeading
-            splitBy={content.locale === "ar" ? "words" : "chars"}
-            className="bg-gradient-to-r from-primary-500 to-green-600 bg-clip-text text-center text-38 font-semibold text-transparent desktop:text-62"
+            steps={content.reviews.headingSteps}
+            className="text-center text-38 font-semibold desktop:text-62"
+            textClassName="bg-gradient-to-r from-primary-500 to-green-600 bg-clip-text text-transparent"
           >
             {content.reviews.heading}
           </TypewriterHeading>

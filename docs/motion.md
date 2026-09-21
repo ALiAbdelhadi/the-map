@@ -12,52 +12,46 @@ transition, duration, easing). Those are only readable through the Plugin API
 `packages/ui/src/motion/tokens.ts` were proposals made before this was known, and most of
 them differ from the prototype.
 
-## Implemented — evidenced in Figma
+## Implemented — the Figma prototype, 2026-09-21
 
-| Motion                          | Figma evidence                                                                 | Implementation                                                                                                                                                                                                    |
-| ------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Reviews heading types itself in | 11 variants, one character longer each — `1028:23286`, Arabic `1015:21041`     | `TypewriterHeading`: SplitText, one character per 60 ms (English) or one word per 240 ms (Arabic, so letters stay joined), on scroll, once                                                                        |
-| Provider section builds up      | five variants: illustration alone → pills one by one → full copy — `998:20842` | `RevealGroup`: pills 1–5, then badge, email card, downloads, in that order (`data-reveal`), fade + 24 px rise, 120 ms apart, on scroll, once                                                                      |
-| Stepper step opens              | three variants, one step open each — `963:20033`                               | `useSwapIn`: the newly opened step's text fades + rises 8 px                                                                                                                                                      |
-| Review card expands             | four variants, one expanded each — `1015:20920`                                | `useSwapIn` on the expanded card's contents                                                                                                                                                                       |
-| Why-Choose row selected         | six variants — `914:20605`                                                     | `useSwapIn` on the revealed panel                                                                                                                                                                                 |
-| Hero service switcher           | ten variants — default + one per service — `898:20007`                         | `HeroSwitcher`: click/Enter on a ring icon turns the ring the short way (0.8 s, `power3.inOut`) so it reaches the top, shown large; scene and illustration crossfade, card copy swaps in. Reduced motion: instant |
+Every timing now comes from the prototype reactions and lives in
+`packages/ui/src/motion/tokens.ts` (`prototype`), with Figma's easing types turned
+into GSAP eases in `packages/ui/src/motion/figma-easing.ts`. "After delay" is
+`useAfterDelay` (`packages/ui/src/motion/use-after-delay.ts`): the timer starts when
+a state has finished arriving, as in Figma.
 
-Rules applied everywhere:
+| Component                                                        | What plays                                                                                                                                                                                                                                                                                       |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Hero `898:20007`                                                 | auto-cycles the ten states in ring order every 0.8 s; click jumps; 0.3 s ease-out for the ring, scene, illustration and card copy                                                                                                                                                                |
+| Why Choose Us `914:20605` / `1038:25190`                         | auto-cycles default → five features → default; maze zooms per variant, character leaves, selected row gets the gradient stroke, the feature pill appears (with the arrow at 768+, under the card on the phone); `GENTLE` / `QUICK` / 0.3 s ease-out; clicking the selected row returns instantly |
+| Screens `936:20018`                                              | five column positions, 1.25 s `SLOW`, looping                                                                                                                                                                                                                                                    |
+| Get the App Now badge `936:20234` (also in the provider section) | gradient stroke swaps and swaps back (0.3 s ease-in-out / ease-in-and-out-back)                                                                                                                                                                                                                  |
+| Stepper `963:20033` / `950:20377`                                | 1 → 2 → 3 (`GENTLE`), 3 → 1 after 0.4 s (`QUICK`), Flip between layouts; the rocket slides in 0.2 s after a step opens (`SLOW` 0.417 s)                                                                                                                                                          |
+| Service Areas title `974:20059`                                  | "Service Areas" ↔ "Where We Operate": out over 1.022 s, in from the left 0.1 s later in 0.128 s                                                                                                                                                                                                  |
+| Search field `984:20302` / Cursor `982:20292`                    | hover/focus fades in a 3 px gradient stroke (`GENTLE`); empty and focused shows Figma's cursor, blinking to 6 % every 0.8 s                                                                                                                                                                      |
+| Provider `998:20842` (1440 only)                                 | cart hide → cart 1 → cart 5 hide → cart 5, then `Click here` opens the full section, which returns to cart hide 0.8 s later; hand pulses (`997:21182`)                                                                                                                                           |
+| Pills `995:20700`                                                | primary → green stroke flips every 0.8 s                                                                                                                                                                                                                                                         |
+| Real Reviews `1015:20920`                                        | expanded card moves on every 0.8 s; click jumps; Flip, 0.3 s ease-in-out                                                                                                                                                                                                                         |
+| Typewriter `1028:23286` / `1015:21041`                           | the 11 variants verbatim, one every 0.8 s, cross-fading 0.3 s, looping                                                                                                                                                                                                                           |
+| Hovers                                                           | store badges 1.25 s `SLOW`; email card stroke and `Click here` 0.3 s ease-out                                                                                                                                                                                                                    |
+| Phone menu `1038:26925`                                          | opens and closes out of the toggle, 0.3 s ease-in-out                                                                                                                                                                                                                                            |
 
-- only `opacity`, `translateY` and — for the typewriter only — `visibility` change.
-  The heading is gradient text (`background-clip: text` on the parent), which paints
-  every character whatever that character's opacity; `visibility` is what removes an
-  un-typed character. It never affects layout.
-- `gsap.matchMedia()` gates every animation on `prefers-reduced-motion: no-preference`.
-  With reduced motion nothing is split and nothing is hidden.
-- nothing is hidden by CSS: server-rendered content is complete without JavaScript;
-  GSAP applies starting states only when it runs, and only to content below the fold or
-  on interaction, so there is no flash and no layout shift.
-- `useGSAP` with a scope ref everywhere; swap animations never run on first render.
+### Where the web page differs from the prototype, on purpose
 
-## Verified in a real browser (production build, Playwright)
-
-- typewriter, English: 0 → 1 → 6 → 12 → 23 of 23 characters visible at 0 / 50 / 300 /
-  700 / 1600 ms; frames captured mid-type in both locales
-- typewriter keeps the heading's accessible name: `aria-label="Trust Built on Real
-Reviews"` / `"ثقة مبنية على تقييمات حقيقية"`
-- provider: mid-reveal frame shows the illustration and first two pills with the copy
-  still hidden — Figma's order; all eight reveal targets end at opacity 1
-- stepper: opened step at opacity 0.59 after 90 ms, 1 after 690 ms
-- reduced motion: heading not split, every reveal target at opacity 1 immediately
-- no page or console errors
-
-## Proposed, not built — needs your call
-
-P1 (hero switcher) is built — see the table above. Deviations: the ring uses ten even 36° slots at the default variant's radius, because Figma places each variant's icons by hand at irregular spacing; the ring turning is inferred from the variants, not specified; no auto-cycle was built.
-
-| #   | Evidence                                                                                                  | Why it isn't built                                                                                                                   |
-| --- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| P2  | Why-Choose selected state shows a tooltip bubble with the feature's text and a curved arrow (`914:20602`) | The fade is built, but four English and five Arabic descriptions haven't been read out, and the bubble/arrow artwork isn't exported. |
-| P3  | `Service Areas` title has a `Where We Operate` variant (`974:20059`)                                      | No trigger in the file — rotating headline, or a state after searching?                                                              |
-| P4  | `Cursor` / `Click` components (`982:20292`, `997:21182`)                                                  | A guided pointer, but what it points at and when is not in the file.                                                                 |
-| P5  | Hover states (nav, badges, buttons, feature rows)                                                         | They switch instantly. Figma has the end states but no transition; a short fade would be mine, not Figma's.                          |
+- **Reduced motion:** nothing auto-plays; every section shows its default state and
+  the provider section shows its full content.
+- **Timers wait** while a component is off-screen or the tab is hidden, and while
+  keyboard focus is inside it (WCAG 2.2.2). The provider's full state also waits
+  while the pointer is in the section, so the copy does not vanish mid-read.
+- **Announcements:** the hero card is announced only when the visitor picks a
+  service; the auto-advance is silent. The typewriter and the Service Areas title
+  keep their full text as the accessible name.
+- **Provider sequence runs at 1440 only.** The tablet set (`1037:26838`) has no
+  `cart 5` variant and the phone symbol has no sequence; both show the full
+  section with the looping pill strokes.
+- **Provider final state** keeps the pills as a list, not scattered around the
+  illustration (Phase 5 deviation 3).
+- **Spring and back-ease numbers** are not published by Figma — see gap M6.
 
 ## Prototype audit — Figma reactions vs. what is built (2026-09-21)
 
@@ -85,6 +79,4 @@ transition is Smart Animate.
 | Header, nav, language, social, logo            | hover and click instant                                                                                                                                                                       | instant — matches                                         |
 | Mobile menu `1038:26925`                       | open/close 0.3 s `EASE_IN_AND_OUT`                                                                                                                                                            | check                                                     |
 
-Not yet done: the exact `GENTLE` / `QUICK` / `SLOW` spring parameters must be taken from
-Figma's documentation (not memory) before they are ported to GSAP. Nothing above is
-implemented yet — this is the audit only.
+All of the above is now built — see "Implemented".
