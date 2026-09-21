@@ -39,21 +39,35 @@ const ICONS = {
   "full-flexibility": FullFlexibilityIcon,
 } as const;
 
+/*
+ * The phone frame (`1041:29327`) lists the pills Wider Reach, Income, Simple, Full
+ * Flexibility, Ready Clients — the last two swapped against the desktop order.
+ */
+const PHONE_ORDER: Record<string, string> = {
+  "wider-reach": "order-1 tablet:order-none",
+  income: "order-2 tablet:order-none",
+  simple: "order-3 tablet:order-none",
+  "full-flexibility": "order-4 tablet:order-none",
+  "ready-clients": "order-5 tablet:order-none",
+};
+
 export function ProviderSection({ content }: { content: SiteContent }) {
   return (
     <section
       id="become-a-provider"
-      className="flex w-full justify-center bg-primary-50 px-4 py-24 tablet:px-8 desktop:min-h-256 desktop:items-center desktop:py-0"
+      className="flex w-full justify-center bg-primary-50 px-4 py-21.25 tablet:px-8 tablet:py-24 desktop:min-h-256 desktop:items-center desktop:py-0"
     >
       <RevealGroup className="flex w-full max-w-container-desktop flex-col gap-8">
         <div data-reveal="6" className="flex flex-col items-start gap-6">
-          <div className="flex items-center justify-center gap-4 rounded-button border-4 border-primary-500 bg-secondary-500/10 px-6 py-3 shadow-card">
-            <span className="flex size-12 items-center justify-center text-primary-700">
-              <AppIcon width={48} height={48} />
+          <div className="flex w-full items-center justify-center gap-4 rounded-button border-4 border-primary-500 bg-secondary-500/10 px-6 py-3 shadow-card tablet:w-auto">
+            <span className="flex size-6 items-center justify-center text-primary-700 tablet:size-12">
+              <AppIcon width={48} height={48} className="h-full w-full" />
             </span>
-            <h2 className="text-48 font-semibold text-primary-700">{content.provider.badge}</h2>
+            <h2 className="text-20 font-semibold whitespace-nowrap text-primary-700 tablet:text-48 tablet:whitespace-normal">
+              {content.provider.badge}
+            </h2>
           </div>
-          <p className="max-w-186.75 text-22 font-regular text-primary-950">
+          <p className="max-w-186.75 text-16 font-regular text-primary-950 tablet:text-22">
             {content.provider.body}
           </p>
         </div>
@@ -65,8 +79,12 @@ export function ProviderSection({ content }: { content: SiteContent }) {
               className="flex flex-col gap-6 rounded-search bg-surface-field p-6"
             >
               <div className="flex flex-col gap-3">
-                <p className="text-24 font-regular text-bg">{content.provider.email.title}</p>
-                <p className="text-20 font-regular text-bg">{content.provider.email.subtitle}</p>
+                <p className="text-18 font-regular text-bg tablet:text-24">
+                  {content.provider.email.title}
+                </p>
+                <p className="text-14 font-regular text-bg tablet:text-20">
+                  {content.provider.email.subtitle}
+                </p>
               </div>
               <a
                 href={`mailto:${content.provider.email.address}`}
@@ -80,10 +98,13 @@ export function ProviderSection({ content }: { content: SiteContent }) {
             </div>
 
             <div data-reveal="8" className="flex flex-col items-center gap-6.5">
-              <h3 className="text-30 font-semibold text-primary-950">
+              <h3 className="text-14 font-semibold text-primary-950 tablet:text-30">
                 {content.provider.downloadHeading}
               </h3>
-              <div dir="ltr" className="flex flex-wrap items-center justify-center gap-17">
+              <div
+                dir="ltr"
+                className="flex flex-col items-center justify-center gap-6.25 tablet:flex-row tablet:flex-wrap tablet:gap-17"
+              >
                 <StoreBadge
                   icon={<AppStoreIcon />}
                   topLine={content.stores.apple.topLine}
@@ -100,23 +121,24 @@ export function ProviderSection({ content }: { content: SiteContent }) {
             </div>
           </div>
 
-          <div className="flex w-full flex-col items-center gap-6 desktop:max-w-1/2">
+          <div className="flex w-full flex-col items-center gap-0 tablet:gap-6 desktop:max-w-1/2">
             <Image
               src="/svg/illustration-provider-phone.svg"
               alt={content.provider.illustrationAlt}
               width={626}
               height={471}
-              className="h-auto w-full max-w-156.5"
+              className="order-2 -mt-4 h-auto w-full max-w-67.5 tablet:order-none tablet:mt-0 tablet:max-w-156.5"
             />
-            <ul className="flex list-none flex-col gap-4">
+            <ul className="order-1 flex list-none flex-col gap-3.5 tablet:order-none tablet:gap-4">
               {content.provider.benefits.map((benefit, index) => {
                 const Icon = ICONS[benefit.id as keyof typeof ICONS];
                 return (
-                  <li key={benefit.id} data-reveal={index + 1}>
+                  <li key={benefit.id} data-reveal={index + 1} className={PHONE_ORDER[benefit.id]}>
                     <BenefitPill
                       title={benefit.title}
                       description={benefit.description}
                       icon={<Icon />}
+                      className="h-25.75 w-78.25 tablet:h-auto tablet:w-auto"
                     />
                   </li>
                 );

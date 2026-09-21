@@ -78,12 +78,12 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
           setOpen((value) => !value);
         }}
         className={cn(
-          "flex items-center justify-center overflow-hidden rounded-toggle p-3",
+          "flex size-8 items-center justify-center overflow-hidden rounded-toggle tablet:size-auto tablet:p-3",
           open ? "bg-primary-500 text-bg" : "bg-bg text-primary-500",
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500",
         )}
       >
-        <span className="flex size-6 items-center justify-center">{icon}</span>
+        <span className="flex size-4.5 items-center justify-center tablet:size-6">{icon}</span>
       </button>
 
       <div

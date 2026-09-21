@@ -8,6 +8,7 @@ import { cn } from "../lib/cn";
  * Figma hero card `888:19276`: fill rgb(254 254 254 / .1), padding 24,
  * radius 32, Figma GLASS effect radius 13 (approximated with backdrop-blur).
  * Header bar `1028:25400`: fill rgb(53 150 253 / .2), padding 20, radius 80.
+ * Phone header bar `1040:26239`: same fill, 359x62, radius 12, logo inset 14.
  */
 export type GlassCardProps = {
   children: ReactNode;
@@ -21,7 +22,7 @@ const SURFACES = {
   card: "bg-surface-glass rounded-card p-6 backdrop-blur-glass",
   /** Why Choose Us card, Figma 1028:22140 — Secondary-tinted field behind the glass blur. */
   field: "bg-surface-field rounded-card p-6 backdrop-blur-glass",
-  header: "bg-surface-header rounded-header p-5",
+  header: "bg-surface-header rounded-button px-3.5 py-3.75 tablet:rounded-header tablet:p-5",
   strong: "bg-surface-glass-strong rounded-pill backdrop-blur-glass",
 } as const;
 

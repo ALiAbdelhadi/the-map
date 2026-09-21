@@ -48,7 +48,7 @@ export function SiteHeader({
         <div className="flex min-w-0 flex-1 items-center gap-9.5 rtl:flex-row-reverse">
           <a
             href={homeHref}
-            className="flex h-10 w-44.5 shrink-0 items-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg"
+            className="flex h-4.25 w-19 shrink-0 items-center tablet:h-10 tablet:w-44.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg"
           >
             {logo}
             <span className="sr-only">{homeLabel}</span>

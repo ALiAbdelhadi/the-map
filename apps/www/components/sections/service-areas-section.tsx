@@ -18,7 +18,7 @@ export function ServiceAreasSection({ content }: { content: SiteContent }) {
   return (
     <section
       id="service-areas"
-      className="relative isolate flex w-full justify-center overflow-hidden px-4 py-24 tablet:px-8 desktop:min-h-256 desktop:items-center desktop:py-0"
+      className="relative isolate flex w-full justify-center overflow-hidden py-16.5 tablet:px-8 tablet:py-24 desktop:min-h-256 desktop:items-center desktop:py-0"
     >
       <Image
         src="/images/service-areas-scene.webp"
@@ -29,13 +29,16 @@ export function ServiceAreasSection({ content }: { content: SiteContent }) {
       />
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-primary-300/80" />
 
-      <form className="flex w-full max-w-185.25 flex-col items-center gap-17" action="#">
+      <form
+        className="flex w-full max-w-185.25 flex-col items-center gap-8 tablet:gap-17"
+        action="#"
+      >
         <div className="flex w-full flex-col items-center gap-8">
           <div className="flex w-full flex-col items-center gap-20">
-            <h2 className="text-center text-56 font-bold text-secondary-500 desktop:text-100">
+            <h2 className="py-5 text-center text-32 font-bold text-secondary-500 tablet:py-0 tablet:text-56 desktop:text-100">
               {content.serviceAreas.title}
             </h2>
-            <p className="max-w-3xl text-center text-32 font-semibold text-bg desktop:text-48">
+            <p className="max-w-3xl px-3.5 text-center text-24 font-medium text-bg tablet:px-0 tablet:text-32 tablet:font-semibold desktop:text-48">
               {content.serviceAreas.subtitle}
             </p>
           </div>
@@ -47,7 +50,7 @@ export function ServiceAreasSection({ content }: { content: SiteContent }) {
             actionLabel={content.serviceAreas.locateLabel}
             icon={<AreasIcon />}
             actionIcon={<FocusIcon />}
-            className="w-full max-w-151.75"
+            className="w-full max-w-85.25 tablet:max-w-151.75"
           />
         </div>
 

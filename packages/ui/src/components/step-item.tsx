@@ -33,29 +33,39 @@ export function StepItem({
   className,
 }: StepItemProps) {
   return (
-    <div className={cn("w-full", className)}>
+    <div className={cn("w-full", expanded && "pb-14 tablet:pb-0", className)}>
       <button
         type="button"
         id={buttonId}
         aria-expanded={expanded}
         onClick={onExpand}
         className={cn(
-          "flex min-h-25 items-center gap-3 overflow-hidden rounded-card border border-secondary-500 bg-surface-field px-6 py-3 text-start text-bg",
+          "flex min-h-25 items-center overflow-hidden rounded-card border border-secondary-500 bg-surface-field py-3 text-start text-bg tablet:gap-3 tablet:px-6",
           // Figma 963:20033: the expanded step fills the column, a collapsed one is
-          // a pill the width of its number.
-          expanded ? "w-full" : "w-auto",
+          // a pill the width of its number. Phone (`1041:27796`): the open step has
+          // 12 px padding and a 4 px gap, a collapsed one keeps 24 px; the open step
+          // is followed by Figma's empty 86 px `business-startup 1` slot (156 px tall).
+          expanded ? "w-max min-w-full gap-1 px-3 tablet:w-full" : "w-auto px-6",
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500",
         )}
       >
-        <span className="w-5.25 shrink-0 text-center text-42 font-medium">{index}</span>
+        <span className="w-5.25 shrink-0 text-center text-24 font-medium tablet:text-42">
+          {index}
+        </span>
         <span
           id={panelId}
           hidden={!expanded}
           data-step-open={expanded ? "" : undefined}
           className="flex flex-col gap-3"
         >
-          <span className="text-24 font-semibold">{title}</span>
-          <span className={compactDescription ? "text-14 font-regular" : "text-16 font-regular"}>
+          <span className="text-20 font-semibold tablet:text-24">{title}</span>
+          <span
+            className={
+              compactDescription
+                ? "text-14 font-regular"
+                : "text-14 font-regular whitespace-nowrap tablet:text-16 tablet:whitespace-normal"
+            }
+          >
             {description}
           </span>
         </span>

@@ -259,6 +259,7 @@
   --radius-toggle: 2.4375rem; /* 39 — menu toggle, node 1038:26944 */
   --radius-email: 2.1875rem; /* 35 — email pill, node 998:20756 */
   --radius-search: 3.125rem; /* 50 — search field, node 984:20301 */
+  --radius-footer: 3.875rem; /* 62 — phone footer top corners, node 1041:29724 */
   --radius-full: 9999px;
 
   /* ---------------------------------------------------------------------
@@ -270,6 +271,7 @@
   --shadow-card: 2px 2px 4px 0 rgb(35 31 32 / 0.102), -2px -2px 4px 0 rgb(0 0 0 / 0.102);
   --shadow-review: 2px 2px 9px 0 rgb(5 75 151 / 0.102), -2px -2px 9px 0 rgb(5 75 151 / 0.102);
   --shadow-click: 0 4px 5px 0 rgb(5 75 151 / 0.322);
+  --shadow-footer: 0 -1px 5px 0 rgb(5 75 151 / 0.32); /* phone footer, node 1041:29724 */
 
   --blur-*: initial;
   --blur-glass: 13px;

@@ -11,6 +11,7 @@ import { cn } from "../lib/cn";
  * circular Natural/BG button holding a 24 px icon. The focus and typing
  * variants add a 3 px primary/500 border, which is reproduced with
  * :focus-within so the same element covers both states.
+ * Phone (`1041:27905`): 341x65, the padding overflows and the row is centred.
  */
 export type SearchFieldProps = {
   /** Field name submitted with the form. */
@@ -42,7 +43,7 @@ export function SearchField({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 rounded-search border-3 border-transparent bg-surface-field p-6 text-bg",
+        "flex h-16.25 items-center gap-3 rounded-search border-3 border-transparent bg-surface-field px-6 text-bg tablet:h-auto tablet:p-6",
         "focus-within:border-primary-500",
         className,
       )}
