@@ -39,7 +39,7 @@ export function HeroSection({ content }: { content: SiteContent }) {
   return (
     <section
       id="about"
-      className="relative isolate flex w-full flex-col items-center justify-center overflow-hidden bg-primary-800 px-4 py-24 tablet:px-8 desktop:min-h-[1024px] desktop:py-0"
+      className="relative isolate flex w-full flex-col items-center justify-center overflow-hidden bg-primary-800 px-4 py-24 tablet:px-8 desktop:min-h-256 desktop:py-0"
     >
       <Image
         src="/images/hero-map-scene.webp"
@@ -54,7 +54,7 @@ export function HeroSection({ content }: { content: SiteContent }) {
         <div
           role="img"
           aria-label={content.hero.ringLabel}
-          className="relative w-full max-w-[669px] shrink-0"
+          className="relative w-full max-w-167.25 shrink-0"
           style={{ aspectRatio: "669.642 / 767.626" }}
         >
           {/* `Ellipse 1593` (888:20654): 26 px ring, gradient primary/500 → white. */}
@@ -96,7 +96,7 @@ export function HeroSection({ content }: { content: SiteContent }) {
           <div className="flex flex-col gap-20">
             <div dir="auto" className="flex flex-col gap-3">
               <h1 className="text-38 font-bold text-primary-300">{content.hero.title}</h1>
-              <span aria-hidden="true" className="h-[5px] w-35.5 rounded-full bg-primary-200" />
+              <span aria-hidden="true" className="h-1.25 w-35.5 rounded-full bg-primary-200" />
             </div>
             <p className="text-28 font-medium text-bg">{content.hero.body}</p>
           </div>

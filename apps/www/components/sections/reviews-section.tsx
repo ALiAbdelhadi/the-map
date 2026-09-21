@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { ReviewCarousel } from "@themap/ui/components/review-carousel";
+import { TypewriterHeading } from "@themap/ui/components/typewriter-heading";
 import { ApostropheIcon } from "@themap/ui/icons/apostrophe";
 import { StarIcon } from "@themap/ui/icons/star";
 
@@ -13,20 +14,23 @@ import type { SiteContent } from "../../content/types";
  * heading (primary/500 -> green/600, `1015:21009`) and the 48 px Natural/300
  * subheading, then the review row 481 px down.
  *
- * The heading is a typewriter in Figma (11 variants, one character each). That
- * is motion, so Phase 6 animates it; here it renders complete.
+ * The heading is a typewriter in Figma (11 variants, one character each) and types
+ * itself in on scroll — see TypewriterHeading.
  */
 export function ReviewsSection({ content }: { content: SiteContent }) {
   return (
     <section
       id="reviews"
-      className="flex w-full justify-center bg-bg px-4 py-24 tablet:px-8 desktop:min-h-[1024px] desktop:items-center desktop:py-0"
+      className="flex w-full justify-center bg-bg px-4 py-24 tablet:px-8 desktop:min-h-256 desktop:items-center desktop:py-0"
     >
       <div className="flex w-full max-w-container-desktop flex-col items-center gap-12">
         <div className="flex w-full flex-col items-center gap-12">
-          <h2 className="bg-gradient-to-r from-primary-500 to-green-600 bg-clip-text text-center text-38 font-semibold text-transparent desktop:text-[62px]">
+          <TypewriterHeading
+            splitBy={content.locale === "ar" ? "words" : "chars"}
+            className="bg-gradient-to-r from-primary-500 to-green-600 bg-clip-text text-center text-38 font-semibold text-transparent desktop:text-62"
+          >
             {content.reviews.heading}
-          </h2>
+          </TypewriterHeading>
           <p className="max-w-307.25 text-center text-32 font-medium text-natural-300 desktop:text-48">
             {content.reviews.subheading}
           </p>

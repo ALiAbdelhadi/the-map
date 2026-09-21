@@ -103,5 +103,5 @@ Node is pinned in `.nvmrc` (24.14.1); the package manager is pinned in
 - [x] Phase 3 — assets
 - [x] Phase 4 — components
 - [x] Phase 5 — pages, English and Arabic (`/en`, `/ar`)
-- [ ] Phase 6 — GSAP motion
+- [x] Phase 6 — GSAP motion (evidenced motion built; P1–P5 proposed in docs/motion.md)
 - [ ] Phase 7 — database (only if approved)

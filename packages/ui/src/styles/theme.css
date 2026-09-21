@@ -212,6 +212,14 @@
   --text-56--letter-spacing: -0.02em;
   --text-56--line-height: normal;
 
+  /* Display sizes used by nodes but absent from the variable scale. */
+  --text-62: 3.875rem; /* reviews heading, node 1015:21009 */
+  --text-62--letter-spacing: -0.02em;
+  --text-62--line-height: normal;
+  --text-100: 6.25rem; /* Service Areas title, node 974:20045 */
+  --text-100--letter-spacing: -0.02em;
+  --text-100--line-height: normal;
+
   /* ---------------------------------------------------------------------
    * Spacing — Figma has no spacing variables (gap K1).
    * The file's measurements are all multiples of the 4 px grid, with three

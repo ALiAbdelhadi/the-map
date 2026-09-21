@@ -48,7 +48,12 @@ export function StepItem({
         )}
       >
         <span className="w-5.25 shrink-0 text-center text-42 font-medium">{index}</span>
-        <span id={panelId} hidden={!expanded} className="flex flex-col gap-3">
+        <span
+          id={panelId}
+          hidden={!expanded}
+          data-step-open={expanded ? "" : undefined}
+          className="flex flex-col gap-3"
+        >
           <span className="text-24 font-semibold">{title}</span>
           <span className={compactDescription ? "text-14 font-regular" : "text-16 font-regular"}>
             {description}
