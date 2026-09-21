@@ -19,6 +19,9 @@ and approved before it is implemented — never filled in silently.
    `get_variable_defs`, `get_design_context`, `get_motion_context`,
    `get_screenshot`). If they are unavailable or fail, stop and say so. Never
    reconstruct a design from memory or from a screenshot alone.
+   Exception (approved 2026-09-21): `use_figma` may be used **read-only** to read
+   prototype `reactions` (triggers, transitions, durations, easings), which no other
+   tool exposes. Never write to the Figma file.
 2. No design value — colour, font, size, spacing, radius, shadow, blur — may exist
    outside the token layer in `packages/ui/src/styles/theme.css`. Every token traces
    to a Figma variable. Where Figma has no variable, extract the raw value and
