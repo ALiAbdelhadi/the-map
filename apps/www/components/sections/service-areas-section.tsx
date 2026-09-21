@@ -5,6 +5,7 @@ import { AreasIcon } from "@themap/ui/icons/areas";
 import { FocusIcon } from "@themap/ui/icons/focus";
 
 import type { SiteContent } from "../../content/types";
+import { ServiceAreasTitle } from "./service-areas-title";
 
 /**
  * Service Areas.
@@ -35,9 +36,11 @@ export function ServiceAreasSection({ content }: { content: SiteContent }) {
       >
         <div className="flex w-full flex-col items-center gap-8">
           <div className="flex w-full flex-col items-center gap-20">
-            <h2 className="py-5 text-center text-32 font-bold text-secondary-500 tablet:py-0 tablet:text-56 desktop:text-100">
-              {content.serviceAreas.title}
-            </h2>
+            <ServiceAreasTitle
+              title={content.serviceAreas.title}
+              titleAlt={content.serviceAreas.titleAlt}
+              className="py-5 text-center text-32 font-bold text-secondary-500 tablet:py-0 tablet:text-56 desktop:text-100"
+            />
             <p className="max-w-3xl px-3.5 text-center text-24 font-medium text-bg tablet:px-0 tablet:text-32 tablet:font-semibold desktop:text-48">
               {content.serviceAreas.subtitle}
             </p>

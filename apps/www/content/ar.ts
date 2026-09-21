@@ -120,11 +120,19 @@ export const ar: SiteContent = {
   whyChoose: {
     title: "لماذا نحن؟",
     features: [
-      { id: "all-in-one", label: "كل ما تحتاجه هنا", description: "" },
-      { id: "flexible", label: "تناسب مع احتياجاتك", description: "" },
-      { id: "nearby", label: "في محيطك", description: "" },
-      { id: "fast", label: "بسرعة فائقة", description: "" },
-      { id: "easy", label: "بسيط وسلس", description: "" },
+      {
+        id: "all-in-one",
+        label: "كل ما تحتاجه هنا",
+        description: "جميع الخدمات التي تحتاجها في تطبيق واحد .",
+      },
+      {
+        id: "flexible",
+        label: "تناسب مع احتياجاتك",
+        description: "المرونة التي تجعل كل شيء أسهل لك .",
+      },
+      { id: "nearby", label: "في محيطك", description: "اكتشف الخدمات القريبة منك بسهولة ." },
+      { id: "fast", label: "بسرعة فائقة", description: "سهولة الحجز والوصول الفوري للخدمات ." },
+      { id: "easy", label: "بسيط وسلس", description: "واجهة سهلة وتجربة مريحة للمستخدم ." },
     ],
   },
   getApp: {
@@ -143,6 +151,7 @@ export const ar: SiteContent = {
   },
   serviceAreas: {
     title: "مناطق الخدمة",
+    titleAlt: "أين نقدم خدماتنا",
     subtitle: "تعرف على المناطق التي تغطيها خدماتنا بالقرب منك.",
     searchLabel: "ابحث بحسب منطقتك",
     searchPlaceholder: "ابحث بحسب منطقتك",
@@ -166,9 +175,25 @@ export const ar: SiteContent = {
       { id: "full-flexibility", title: "مرونة كاملة", description: "اشتغل في الوقت اللي يناسبك." },
     ],
     illustrationAlt: "هاتف يعرض إحصائيات مقدم الخدمة",
+    // Figma keeps this English in the Arabic frame too (1028:22477).
+    clickHere: "Click here",
   },
   reviews: {
     heading: "ثقة مبنية على تقييمات حقيقية",
+    /** The 11 typewriter variants, Figma `1015:21041`. */
+    headingSteps: [
+      "ثقة مبنية على ت",
+      "ثقة مبنية على تق",
+      "ثقة مبنية على تقي",
+      "ثقة مبنية على تقيي",
+      "ثقة مبنية على تقييم",
+      "ثقة مبنية على تقييمات",
+      "ثقة مبنية على تقييمات ح",
+      "ثقة مبنية على تقييمات حق",
+      "ثقة مبنية على تقييمات حقي",
+      "ثقة مبنية على تقييمات حقيق",
+      "ثقة مبنية على تقييمات حقيقية",
+    ],
     subheading: "تجارب حقيقية من مستخدمين فعليين تعكس جودة خدماتنا وتساعدك على اتخاذ قرارك بثقة.",
     items: [
       {

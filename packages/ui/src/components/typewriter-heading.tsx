@@ -1,77 +1,91 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 import { cn } from "../lib/cn";
-import { gsap, MOTION_OK, SplitText, useGSAP } from "../motion/gsap";
-import { motion } from "../motion/tokens";
+import { figmaTween } from "../motion/figma-easing";
+import { gsap, useGSAP } from "../motion/gsap";
+import { prototype } from "../motion/tokens";
+import { useAfterDelay } from "../motion/use-after-delay";
 
 /**
- * Heading that types itself in when it scrolls into view.
+ * Heading that types itself, looping.
  *
- * Figma evidence: `Trust Built on Real Reviews` (`1028:23286`) and its Arabic twin
- * (`1015:21041`) are 11-variant sets, each variant one character longer than the
- * last — a typewriter. Timing is not in the file; see motion/tokens.ts.
+ * Figma `Trust Built on Real Reviews` (`1028:23286`) and its Arabic twin
+ * (`1015:21041`) are 11-variant sets. Each variant is one step longer and advances
+ * after 0.8 s with a 0.3 s ease-in-out Smart Animate; the last returns to the first.
+ * Smart Animate cross-fades a text layer whose content changes, so the outgoing and
+ * incoming text are stacked in one cell and faded against each other. The heading is
+ * centred and auto-width, so each state is centred on its own width, and the
+ * gradient spans the text as far as it has been typed.
  *
- * Arabic is revealed a word at a time, not a character at a time: Arabic letters
- * join, and splitting them into separate elements breaks the joining.
- *
- * With reduced motion, or before JavaScript runs, the heading is simply complete.
- * SplitText keeps an aria-label on the heading so it is announced once, whole.
+ * `steps` are the variants verbatim — Arabic grows by whole letter groups, exactly
+ * as Figma spells it, so letters stay joined. The full heading is the accessible
+ * name throughout. Before JavaScript runs, and under reduced motion, the heading is
+ * shown complete.
  */
 export type TypewriterHeadingProps = {
   children: string;
-  /** `words` for scripts whose letters join (Arabic). */
-  splitBy?: "chars" | "words";
+  /** Figma's variants, shortest first; the last is normally the full heading. */
+  steps: string[];
   className?: string;
+  /** Classes for the typed text itself — where the gradient goes. */
+  textClassName?: string;
 };
 
 export function TypewriterHeading({
   children,
-  splitBy = "chars",
+  steps,
   className,
+  textClassName,
 }: TypewriterHeadingProps) {
   const ref = useRef<HTMLHeadingElement>(null);
+  // null until the client takes over: the server renders the whole heading.
+  const [step, setStep] = useState<number | null>(null);
+  const [outgoing, setOutgoing] = useState<string | null>(null);
 
   useGSAP(
     () => {
-      const heading = ref.current;
-      if (!heading) return;
-
-      const mm = gsap.matchMedia();
-      mm.add(MOTION_OK, () => {
-        const split = SplitText.create(heading, { type: splitBy, aria: "auto" });
-        const pieces = splitBy === "chars" ? split.chars : split.words;
-        const step =
-          splitBy === "chars" ? motion.typewriter.stepDuration : motion.typewriter.stepDuration * 4;
-
-        // autoAlpha, not opacity: the heading is gradient text (background-clip:
-        // text on the parent), which paints every character regardless of the
-        // character's own opacity. `visibility: hidden` is what actually removes an
-        // un-typed character from the clip. Visibility never affects layout.
-        gsap.from(pieces, {
-          autoAlpha: 0,
-          duration: 0.01,
-          ease: motion.typewriter.ease,
-          stagger: step,
-          scrollTrigger: { trigger: heading, start: motion.triggerStart, once: true },
-        });
-
-        return () => {
-          split.revert();
-        };
-      });
-
-      return () => {
-        mm.revert();
-      };
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      setStep(0);
     },
-    { scope: ref, dependencies: [children, splitBy] },
+    { scope: ref },
   );
 
+  useGSAP(
+    () => {
+      if (outgoing === null) return;
+      const tween = figmaTween(prototype.typewriter);
+      gsap.fromTo("[data-typed-in]", { opacity: 0 }, { opacity: 1, ...tween });
+      gsap.fromTo("[data-typed-out]", { opacity: 1 }, { opacity: 0, ...tween });
+    },
+    { scope: ref, dependencies: [step] },
+  );
+
+  useAfterDelay(ref, {
+    key: step,
+    wait: prototype.typewriter.duration + prototype.typewriter.delay,
+    enabled: step !== null,
+    onFire: () => {
+      if (step === null) return;
+      setOutgoing(steps[step] ?? null);
+      setStep((step + 1) % steps.length);
+    },
+  });
+
+  const shown = step === null ? children : (steps[step] ?? children);
+  const layer = cn("col-start-1 row-start-1 justify-self-center whitespace-nowrap", textClassName);
+
   return (
-    <h2 ref={ref} className={cn(className)}>
-      {children}
+    <h2 ref={ref} aria-label={children} className={cn("grid", className)}>
+      {outgoing !== null ? (
+        <span key={`out-${String(step)}`} data-typed-out="" aria-hidden="true" className={layer}>
+          {outgoing}
+        </span>
+      ) : null}
+      <span key={`in-${String(step)}`} data-typed-in="" aria-hidden="true" className={layer}>
+        {shown}
+      </span>
     </h2>
   );
 }

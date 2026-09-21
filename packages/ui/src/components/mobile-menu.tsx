@@ -3,6 +3,9 @@
 import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 
 import { cn } from "../lib/cn";
+import { figmaTween } from "../motion/figma-easing";
+import { gsap, MOTION_OK, useGSAP } from "../motion/gsap";
+import { prototype } from "../motion/tokens";
 
 /**
  * Drawer navigation for the 375 and 768 frames.
@@ -14,6 +17,9 @@ import { cn } from "../lib/cn";
  * Keyboard behaviour is not in Figma and is required for the control to work:
  * Escape closes, focus moves into the panel on open and back to the toggle on
  * close, and focus is kept inside the panel while it is open.
+ *
+ * Motion: Figma opens and closes it with a 0.3 s ease-in-out Smart Animate, the
+ * panel growing out of the toggle (`1038:26925`).
  */
 export type MobileMenuProps = {
   /** 24x24 menu glyph. */
@@ -30,6 +36,40 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
+  // Grow the panel out of the toggle on open; shrink it back before hiding it.
+  const close = () => {
+    const panel = panelRef.current;
+    if (!panel || !window.matchMedia(MOTION_OK).matches) {
+      setOpen(false);
+      return;
+    }
+    gsap.to(panel, {
+      opacity: 0,
+      scale: 0.2,
+      ...figmaTween(prototype.menu),
+      onComplete: () => {
+        setOpen(false);
+      },
+    });
+  };
+
+  useGSAP(
+    () => {
+      const panel = panelRef.current;
+      if (!open || !panel || !window.matchMedia(MOTION_OK).matches) return;
+      gsap.fromTo(
+        panel,
+        {
+          opacity: 0,
+          scale: 0.2,
+          transformOrigin: document.dir === "rtl" ? "top left" : "top right",
+        },
+        { opacity: 1, scale: 1, ...figmaTween(prototype.menu) },
+      );
+    },
+    { dependencies: [open] },
+  );
+
   useEffect(() => {
     if (!open) return;
 
@@ -38,7 +78,7 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
 
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        setOpen(false);
+        close();
         toggleRef.current?.focus();
         return;
       }
@@ -75,7 +115,8 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
         aria-controls={panelId}
         aria-label={label}
         onClick={() => {
-          setOpen((value) => !value);
+          if (open) close();
+          else setOpen(true);
         }}
         className={cn(
           "flex size-8 items-center justify-center overflow-hidden rounded-toggle tablet:size-auto tablet:p-3",

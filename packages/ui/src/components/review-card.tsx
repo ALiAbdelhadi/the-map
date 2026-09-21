@@ -25,6 +25,8 @@ export type ReviewCardProps = {
   quoteMark?: ReactNode;
   expanded: boolean;
   onExpand?: () => void;
+  /** Shared by both states so a Flip can animate one into the other. */
+  flipId?: string;
   className?: string;
 };
 
@@ -37,12 +39,14 @@ export function ReviewCard({
   quoteMark,
   expanded,
   onExpand,
+  flipId,
   className,
 }: ReviewCardProps) {
   if (!expanded) {
     return (
       <button
         type="button"
+        data-flip-id={flipId}
         onClick={onExpand}
         aria-label={name}
         aria-expanded={false}
@@ -60,6 +64,7 @@ export function ReviewCard({
   return (
     <figure
       data-review-expanded=""
+      data-flip-id={flipId}
       className={cn(
         "flex w-full max-w-103.75 shrink-0 items-center gap-3.5 overflow-hidden rounded-review border border-primary-300 bg-primary-50 pe-6 shadow-review",
         className,

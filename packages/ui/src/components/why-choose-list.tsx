@@ -1,9 +1,8 @@
 "use client";
 
-import { type ReactNode, useRef, useState } from "react";
+import type { ReactNode } from "react";
 
 import { cn } from "../lib/cn";
-import { useSwapIn } from "../motion/use-swap-in";
 import { FeatureItem } from "./feature-item";
 
 /**
@@ -11,13 +10,13 @@ import { FeatureItem } from "./feature-item";
  *
  * Figma `Why Choose Us` `914:20605` has six variants: a default plus one per
  * feature, where the selected row is outlined and that feature's description is
- * revealed. Rows are a tab list; the description is the matching panel.
+ * shown beside the card. The rows are a tab list; the page renders the matching
+ * panels (`feature-<id>-panel`) and owns the selection, because the whole section
+ * changes with it.
  */
 export type WhyChooseFeature = {
   id: string;
   label: string;
-  /** Revealed when the row is selected. */
-  description: ReactNode;
   /** 32x32 icon. */
   icon: ReactNode;
 };
@@ -25,56 +24,39 @@ export type WhyChooseFeature = {
 export type WhyChooseListProps = {
   features: WhyChooseFeature[];
   label: string;
+  selectedId: string | null;
+  onSelect: (id: string) => void;
   className?: string;
-  /** Classes for the revealed description panel. */
-  descriptionClassName?: string;
 };
 
 export function WhyChooseList({
   features,
   label,
+  selectedId,
+  onSelect,
   className,
-  descriptionClassName,
 }: WhyChooseListProps) {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const selected = features.find((feature) => feature.id === selectedId) ?? null;
-  const ref = useRef<HTMLDivElement>(null);
-  useSwapIn(ref, '[role="tabpanel"]:not([hidden])', selectedId);
-
   return (
-    <div ref={ref} className={cn("flex flex-col gap-6", className)}>
-      <div
-        role="tablist"
-        aria-label={label}
-        aria-orientation="vertical"
-        className="flex flex-col gap-6"
-      >
-        {features.map((feature) => (
-          <FeatureItem
-            key={feature.id}
-            id={`feature-${feature.id}`}
-            controls={`feature-${feature.id}-panel`}
-            icon={feature.icon}
-            selected={selected?.id === feature.id}
-            onSelect={() => {
-              setSelectedId(feature.id);
-            }}
-          >
-            {feature.label}
-          </FeatureItem>
-        ))}
-      </div>
-      {features.map((feature) => (
-        <div
+    <div
+      role="tablist"
+      aria-label={label}
+      aria-orientation="vertical"
+      className={cn("flex flex-col gap-6", className)}
+    >
+      {features.map((feature, index) => (
+        <FeatureItem
           key={feature.id}
-          id={`feature-${feature.id}-panel`}
-          role="tabpanel"
-          aria-labelledby={`feature-${feature.id}`}
-          hidden={selected?.id !== feature.id}
-          className={descriptionClassName}
+          id={`feature-${feature.id}`}
+          controls={`feature-${feature.id}-panel`}
+          icon={feature.icon}
+          selected={selectedId === feature.id}
+          focusable={selectedId === feature.id || (selectedId === null && index === 0)}
+          onSelect={() => {
+            onSelect(feature.id);
+          }}
         >
-          {feature.description}
-        </div>
+          {feature.label}
+        </FeatureItem>
       ))}
     </div>
   );
