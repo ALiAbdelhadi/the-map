@@ -176,4 +176,4 @@ The first screenshot pass showed three assets were wrong.
 `illustration-the-map.webp` was deleted: the hero's default state shows the logo mark
 (`888:20656`, now `logo-mark.svg`), not that scene.
 
-Raster total after the corrections: **26 WebP files, 608 KB.**
+Raster total after the corrections: **25 WebP files, 646 KB.**
