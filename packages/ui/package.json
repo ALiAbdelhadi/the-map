@@ -6,6 +6,7 @@
   "license": "UNLICENSED",
   "exports": {
     "./styles/theme.css": "./src/styles/theme.css",
+    "./motion/*": "./src/motion/*.ts",
     "./*": "./src/*.tsx"
   },
   "scripts": {

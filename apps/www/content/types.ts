@@ -9,8 +9,22 @@ export type SiteContent = {
     /** Card heading — the default hero state, Figma 888:19266. */
     title: string;
     body: string;
-    /** The nine services orbiting the ring, Figma 898:20006. */
-    services: { id: string; label: string; image: string }[];
+    /**
+     * The nine services orbiting the ring, in ring order clockwise from the top.
+     * Selecting one swaps the card copy (`title`, `lead`, `body`), the background scene
+     * and the large illustration — Figma hero variants 898:20004 … 898:20005.
+     */
+    services: {
+      id: string;
+      title: string;
+      lead: string;
+      body: string;
+      image: string;
+      imageLarge: string;
+      background: string;
+    }[];
+    /** Accessible name for the button that returns to the default "The Map" state. */
+    homeLabel: string;
     ringLabel: string;
   };
   whyChoose: {

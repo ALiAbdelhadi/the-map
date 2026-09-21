@@ -14,6 +14,8 @@ export const motion = {
   swap: { duration: 0.35, ease: "power2.out", distance: 8 },
   /** Typewriter heading — one step per character (per word for Arabic). */
   typewriter: { stepDuration: 0.06, ease: "none" },
+  /** Hero service switcher — ring turn, background and illustration crossfade. */
+  hero: { duration: 0.8, ease: "power3.inOut", fade: 0.5 },
   /** Where a scroll reveal starts: when the element's top passes 80 % of the viewport. */
   triggerStart: "top 80%",
 } as const;
