@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { cn } from "../lib/cn";
+import { useSwapIn } from "../motion/use-swap-in";
 import { StepItem } from "./step-item";
 
 /**
@@ -29,9 +30,16 @@ export type AppStepperProps = {
 
 export function AppStepper({ steps, defaultStep = 1, label, className }: AppStepperProps) {
   const [openStep, setOpenStep] = useState(defaultStep);
+  const ref = useRef<HTMLDivElement>(null);
+  useSwapIn(ref, "[data-step-open]", openStep);
 
   return (
-    <div className={cn("flex w-full flex-col gap-7.25", className)} role="group" aria-label={label}>
+    <div
+      ref={ref}
+      className={cn("flex w-full flex-col gap-7.25", className)}
+      role="group"
+      aria-label={label}
+    >
       {steps.map((step, index) => {
         const number = index + 1;
         return (

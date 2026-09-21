@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { BenefitPill } from "@themap/ui/components/benefit-pill";
+import { RevealGroup } from "@themap/ui/components/reveal-group";
 import { StoreBadge } from "@themap/ui/components/store-badge";
 import { AppIcon } from "@themap/ui/icons/app";
 import { AppStoreIcon } from "@themap/ui/icons/app-store";
@@ -21,6 +22,9 @@ import type { SiteContent } from "../../content/types";
  * `info@Themap.com` pill, the 30 px download heading over the two store badges,
  * and five benefit pills scattered around the provider illustration.
  *
+ * Motion: Figma steps through five variants — illustration alone, then the pills
+ * one by one, then the copy. RevealGroup plays that order on scroll (`data-reveal`).
+ *
  * The pills are absolutely positioned and rotated ~1.1° around the illustration
  * on the 1440 frame. Here they are a list beside the illustration: their Figma
  * positions are tied to the 813x637 desktop box and do not survive a narrower
@@ -39,10 +43,10 @@ export function ProviderSection({ content }: { content: SiteContent }) {
   return (
     <section
       id="become-a-provider"
-      className="flex w-full justify-center bg-primary-50 px-4 py-24 tablet:px-8 desktop:min-h-[1024px] desktop:items-center desktop:py-0"
+      className="flex w-full justify-center bg-primary-50 px-4 py-24 tablet:px-8 desktop:min-h-256 desktop:items-center desktop:py-0"
     >
-      <div className="flex w-full max-w-container-desktop flex-col gap-8">
-        <div className="flex flex-col items-start gap-6">
+      <RevealGroup className="flex w-full max-w-container-desktop flex-col gap-8">
+        <div data-reveal="6" className="flex flex-col items-start gap-6">
           <div className="flex items-center justify-center gap-4 rounded-button border-4 border-primary-500 bg-secondary-500/10 px-6 py-3 shadow-card">
             <span className="flex size-12 items-center justify-center text-primary-700">
               <AppIcon width={48} height={48} />
@@ -56,7 +60,10 @@ export function ProviderSection({ content }: { content: SiteContent }) {
 
         <div className="flex flex-col items-center gap-16 desktop:flex-row desktop:items-center">
           <div className="flex w-full flex-col gap-15.5 desktop:max-w-1/2">
-            <div className="flex flex-col gap-6 rounded-search bg-surface-field p-6">
+            <div
+              data-reveal="7"
+              className="flex flex-col gap-6 rounded-search bg-surface-field p-6"
+            >
               <div className="flex flex-col gap-3">
                 <p className="text-24 font-regular text-bg">{content.provider.email.title}</p>
                 <p className="text-20 font-regular text-bg">{content.provider.email.subtitle}</p>
@@ -72,7 +79,7 @@ export function ProviderSection({ content }: { content: SiteContent }) {
               </a>
             </div>
 
-            <div className="flex flex-col items-center gap-6.5">
+            <div data-reveal="8" className="flex flex-col items-center gap-6.5">
               <h3 className="text-30 font-semibold text-primary-950">
                 {content.provider.downloadHeading}
               </h3>
@@ -102,10 +109,10 @@ export function ProviderSection({ content }: { content: SiteContent }) {
               className="h-auto w-full max-w-156.5"
             />
             <ul className="flex list-none flex-col gap-4">
-              {content.provider.benefits.map((benefit) => {
+              {content.provider.benefits.map((benefit, index) => {
                 const Icon = ICONS[benefit.id as keyof typeof ICONS];
                 return (
-                  <li key={benefit.id}>
+                  <li key={benefit.id} data-reveal={index + 1}>
                     <BenefitPill
                       title={benefit.title}
                       description={benefit.description}
@@ -117,7 +124,7 @@ export function ProviderSection({ content }: { content: SiteContent }) {
             </ul>
           </div>
         </div>
-      </div>
+      </RevealGroup>
     </section>
   );
 }

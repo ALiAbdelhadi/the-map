@@ -31,7 +31,7 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
   return (
     <section
       id="why-us"
-      className="relative isolate flex w-full justify-center overflow-hidden px-4 py-24 tablet:px-8 desktop:min-h-[1024px] desktop:items-center desktop:py-0"
+      className="relative isolate flex w-full justify-center overflow-hidden px-4 py-24 tablet:px-8 desktop:min-h-256 desktop:items-center desktop:py-0"
     >
       <Image
         src="/images/why-choose-maze.webp"

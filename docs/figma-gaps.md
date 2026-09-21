@@ -80,13 +80,13 @@ an option at the phase where it lands and wait for a yes.
 
 ## Motion
 
-| #   | Gap                                                                                                 | Status                                                 |
-| --- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| M1  | `get_motion_context` returns no keyframes; no durations, easings or delays anywhere                 | All timing proposed in Phase 6, never invented earlier |
-| M2  | Hero orbit ring is drawn but its rotation is not specified (direction, speed, on-scroll or ambient) | PROPOSE                                                |
-| M3  | `Service Areas` ↔ `Where We Operate` title swap — trigger unspecified                               | PROPOSE                                                |
-| M4  | `Cursor` / `Click` components imply a guided pointer, purpose unspecified                           | PROPOSE                                                |
-| M5  | No prototype flows exposed by the MCP; the `Prototype TheMAP` frame is a label only                 | Ask whether prototype links exist elsewhere            |
+| #   | Gap                                                                                                 | Status                                                                                                                           |
+| --- | --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| M1  | `get_motion_context` returns no keyframes; no durations, easings or delays anywhere                 | **Handled (Phase 6)** — every timing is a proposed default in `packages/ui/src/motion/tokens.ts`, documented in `docs/motion.md` |
+| M2  | Hero orbit ring is drawn but its rotation is not specified (direction, speed, on-scroll or ambient) | **PROPOSED (Phase 6, P1)** — see `docs/motion.md`                                                                                |
+| M3  | `Service Areas` ↔ `Where We Operate` title swap — trigger unspecified                               | **PROPOSED (Phase 6, P3)** — see `docs/motion.md`                                                                                |
+| M4  | `Cursor` / `Click` components imply a guided pointer, purpose unspecified                           | **PROPOSED (Phase 6, P4)** — see `docs/motion.md`                                                                                |
+| M5  | No prototype flows exposed by the MCP; the `Prototype TheMAP` frame is a label only                 | Ask whether prototype links exist elsewhere                                                                                      |
 
 ## Data
 

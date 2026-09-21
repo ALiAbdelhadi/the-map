@@ -1,8 +1,9 @@
 "use client";
 
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useRef, useState } from "react";
 
 import { cn } from "../lib/cn";
+import { useSwapIn } from "../motion/use-swap-in";
 import { ReviewCard } from "./review-card";
 
 /**
@@ -37,9 +38,15 @@ export function ReviewCarousel({
   className,
 }: ReviewCarouselProps) {
   const [expandedId, setExpandedId] = useState(reviews[0]?.id ?? "");
+  const ref = useRef<HTMLUListElement>(null);
+  useSwapIn(ref, "[data-review-expanded] > *", expandedId);
 
   return (
-    <ul aria-label={label} className={cn("flex list-none items-center gap-17", className)}>
+    <ul
+      ref={ref}
+      aria-label={label}
+      className={cn("flex list-none items-center gap-17", className)}
+    >
       {reviews.map((review) => (
         <li key={review.id} className="contents">
           <ReviewCard

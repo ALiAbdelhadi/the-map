@@ -59,6 +59,7 @@ export function ReviewCard({
 
   return (
     <figure
+      data-review-expanded=""
       className={cn(
         "flex w-full max-w-103.75 shrink-0 items-center gap-3.5 overflow-hidden rounded-review border border-primary-300 bg-primary-50 pe-6 shadow-review",
         className,

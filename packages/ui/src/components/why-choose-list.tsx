@@ -1,8 +1,9 @@
 "use client";
 
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useRef, useState } from "react";
 
 import { cn } from "../lib/cn";
+import { useSwapIn } from "../motion/use-swap-in";
 import { FeatureItem } from "./feature-item";
 
 /**
@@ -37,9 +38,11 @@ export function WhyChooseList({
 }: WhyChooseListProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = features.find((feature) => feature.id === selectedId) ?? null;
+  const ref = useRef<HTMLDivElement>(null);
+  useSwapIn(ref, '[role="tabpanel"]:not([hidden])', selectedId);
 
   return (
-    <div className={cn("flex flex-col gap-6", className)}>
+    <div ref={ref} className={cn("flex flex-col gap-6", className)}>
       <div
         role="tablist"
         aria-label={label}
