@@ -16,12 +16,15 @@ import type { SiteContent } from "../../content/types";
  *
  * The heading is a typewriter in Figma (11 variants, one character each) and types
  * itself in on scroll — see TypewriterHeading.
+ *
+ * The phone frame (`853:19401`) has no Reviews section — the footer follows the
+ * provider section directly — so it is not rendered below the tablet breakpoint.
  */
 export function ReviewsSection({ content }: { content: SiteContent }) {
   return (
     <section
       id="reviews"
-      className="flex w-full justify-center bg-bg px-4 py-24 tablet:px-8 desktop:min-h-256 desktop:items-center desktop:py-0"
+      className="hidden w-full justify-center bg-bg px-4 py-24 tablet:flex tablet:px-8 desktop:min-h-256 desktop:items-center desktop:py-0"
     >
       <div className="flex w-full max-w-container-desktop flex-col items-center gap-12">
         <div className="flex w-full flex-col items-center gap-12">

@@ -21,6 +21,11 @@ import type { SiteContent } from "../../content/types";
  * ring here is ten even slots (36° apart, in the default variant's clockwise order)
  * at the radius the default variant uses. Every geometry value below is from the
  * default variant `898:20006`, in container-query units of its 669.642 px orbit box.
+ *
+ * Phone (`1041:26353`, 375 frame): the ring is 218 px, so the orbit box is drawn
+ * 388 px wide (218 / 0.56149) and may overflow the 359 px column, as it does in
+ * Figma. The box starts 142 px down so the ring centre lands at y 387; the card is
+ * 352x305 (content centred, as Figma clips it), 75 px below, with a 16 px regular body and a 41 px title gap.
  */
 
 /*
@@ -107,7 +112,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
   return (
     <div
       ref={scope}
-      className="flex w-full items-center justify-center px-4 py-24 tablet:px-8 desktop:min-h-256 desktop:py-0"
+      className="flex w-full items-center justify-center px-2 pt-35.5 pb-3 tablet:px-8 tablet:py-24 desktop:min-h-256 desktop:py-0"
     >
       {/* Background scenes — Figma exports them already composited, so no extra opacity. */}
       <div aria-hidden="true" className="absolute inset-0 -z-10">
@@ -129,11 +134,11 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
         ))}
       </div>
 
-      <div className="flex w-full max-w-container-desktop flex-col items-center gap-16 pt-16 desktop:flex-row-reverse desktop:justify-center desktop:pt-0">
+      <div className="flex w-full max-w-container-desktop flex-col items-center gap-18.75 tablet:gap-16 tablet:pt-16 desktop:flex-row-reverse desktop:justify-center desktop:pt-0">
         <div
           role="group"
           aria-label={hero.ringLabel}
-          className="@container relative aspect-[669.642/767.626] w-full max-w-167.25 shrink-0"
+          className="@container relative aspect-[669.642/767.626] w-97 shrink-0 tablet:w-full tablet:max-w-167.25"
         >
           {/* `Ellipse 1593` (888:20654) */}
           <div ref={wheel} className={`absolute ${WHEEL}`}>
@@ -198,15 +203,19 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
           })}
         </div>
 
-        <GlassCard className="w-full max-w-136 shrink-0">
-          <div data-hero-copy="" aria-live="polite" className="flex flex-col gap-20">
+        <GlassCard className="flex h-76.25 w-full max-w-88 shrink-0 flex-col justify-center tablet:block tablet:h-auto tablet:max-w-136">
+          <div
+            data-hero-copy=""
+            aria-live="polite"
+            className="flex flex-col gap-10.25 tablet:gap-20"
+          >
             <div dir="auto" className="flex flex-col gap-3">
               <h1 className="text-38 font-bold text-primary-300">
                 {active ? active.title : hero.title}
               </h1>
               <span aria-hidden="true" className="h-1.25 w-35.5 rounded-full bg-primary-200" />
             </div>
-            <p className="text-28 font-medium text-bg">
+            <p className="text-16 font-regular text-bg tablet:text-28 tablet:font-medium">
               {active ? (
                 <>
                   {active.lead}

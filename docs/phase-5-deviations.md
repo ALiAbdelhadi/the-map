@@ -57,7 +57,8 @@ social marks photographed blank. That was the screenshot script, not the page.
 
 ## Deviations
 
-1. **Tablet and mobile are adaptations, not measurements.** They now screenshot clean
+1. **Tablet is still an adaptation, not a measurement. The phone was measured on
+   2026-09-21** (see "Phone pass" below). They now screenshot clean
    (no overflow, everything renders), but the 768 and 375 frames' nodes have still not
    been measured.
    Below 1440 the page uses the desktop composition reflowed (single column, fluid
@@ -115,3 +116,40 @@ Still different from the Arabic frame:
 - **Footer has no gradient top stroke.** Figma draws a thin primary→green line along the
   footer's rounded top edge in both frames.
 - **Arabic accessibility labels are authored**, listed in `docs/figma-copy-ar.md`.
+
+## Phone pass — `/en` at 375 against `iPhone 11 Pro / X - 1` (`853:19401`), 2026-09-21
+
+Every section was read with `get_design_context` on its phone node and rebuilt from
+those values; tablet and desktop classes were moved behind `tablet:` so neither
+changed (page heights 768: 8658 and 1440: 6881, before and after).
+
+| Section           | Figma node   | Figma height | Before | After  |
+| ----------------- | ------------ | ------------ | ------ | ------ |
+| Hero              | `1041:26353` | 978          | 1414   | 979    |
+| Why Choose Us     | `1041:27445` | 888          | 776    | 888    |
+| Get the App       | `1041:27524` | 1286         | 1524   | 1293   |
+| Service Areas     | `1041:27899` | 555          | 755    | 558    |
+| Become a Provider | `1041:29641` | 1650         | 2685   | 1636   |
+| Reviews           | —            | not in frame | 2175   | hidden |
+| Page              | `853:19401`  | 6056         | 10194  | 6046   |
+
+What changed, from the Figma values:
+
+- **Header** `1040:26239`: 359x62 bar, radius 12, 8 px from the sides, logo 76x17,
+  32 px menu button with an 18 px icon.
+- **Hero**: ring 218 px, card 352x305 with a 16 px regular body and a 41 px title gap.
+- **Why Choose Us**: 32 px title on one line, card hugs its content at x 8, character
+  278 px tall standing below the card instead of behind it.
+- **Get the App**: 24 px semibold badge title with a 24 px icon, 20/14 px step text,
+  304 px tile, store badges stacked 24 px apart.
+- **Service Areas**: 32 px title, 24 px medium subtitle, 341x65 search field.
+- **Provider**: 20 px badge, 16 px body, 18/14 px email card, 14 px download line,
+  badges stacked, 313 px pills with 16/14 px text in the phone order, illustration
+  270 px below the pills.
+- **Footer** `1041:29724`: radius 62, primary/500 top border and shadow (two new
+  tokens, `--radius-footer` and `--shadow-footer`), one centred column with 16 px text,
+  overlapping the provider section by 51 px.
+
+Open points are in `docs/figma-gaps.md` → "Phone frame (375)". The Arabic phone page
+uses the same layout (no Arabic phone frame exists in Figma); it was checked for
+overflow and clipping only (375 x 6032, no horizontal overflow).

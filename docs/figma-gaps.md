@@ -80,13 +80,25 @@ an option at the phase where it lands and wait for a yes.
 
 ## Motion
 
-| #   | Gap                                                                                                 | Status                                                                                                                           |
-| --- | --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| M1  | `get_motion_context` returns no keyframes; no durations, easings or delays anywhere                 | **Handled (Phase 6)** — every timing is a proposed default in `packages/ui/src/motion/tokens.ts`, documented in `docs/motion.md` |
-| M2  | Hero orbit ring is drawn but its rotation is not specified (direction, speed, on-scroll or ambient) | **PROPOSED (Phase 6, P1)** — see `docs/motion.md`                                                                                |
-| M3  | `Service Areas` ↔ `Where We Operate` title swap — trigger unspecified                               | **PROPOSED (Phase 6, P3)** — see `docs/motion.md`                                                                                |
-| M4  | `Cursor` / `Click` components imply a guided pointer, purpose unspecified                           | **PROPOSED (Phase 6, P4)** — see `docs/motion.md`                                                                                |
-| M5  | No prototype flows exposed by the MCP; the `Prototype TheMAP` frame is a label only                 | Ask whether prototype links exist elsewhere                                                                                      |
+| #   | Gap                                                                                                                                                                       | Status                                                                                                                                                                                                           |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| M1  | `get_motion_context` returns no keyframes; no durations, easings or delays anywhere                                                                                       | **Reopened 2026-09-21** — the prototype `reactions` do specify triggers, durations and easings (read via `use_figma`, read-only). Audit in `docs/motion.md` → "Prototype audit"; implementation pending approval |
+| M2  | Hero orbit ring is drawn but its rotation is not specified (direction, speed, on-scroll or ambient)                                                                       | **PROPOSED (Phase 6, P1)** — see `docs/motion.md`                                                                                                                                                                |
+| M3  | `Service Areas` ↔ `Where We Operate` title swap — trigger unspecified (answered 2026-09-21: after-delay loop, see motion.md)                                              | **PROPOSED (Phase 6, P3)** — see `docs/motion.md`                                                                                                                                                                |
+| M4  | `Cursor` / `Click` components imply a guided pointer, purpose unspecified (answered 2026-09-21: 0.8 s loops, see motion.md)                                               | **PROPOSED (Phase 6, P4)** — see `docs/motion.md`                                                                                                                                                                |
+| M5  | No prototype flows exposed by the MCP; the `Prototype TheMAP` frame is a label only (answered 2026-09-21: `Flow 4` starts at `853:19390`; reactions read via `use_figma`) | Ask whether prototype links exist elsewhere                                                                                                                                                                      |
+
+## Phone frame (375) — open points from the 2026-09-21 phone pass
+
+| #   | Gap                                                                                                                  | Status                                                                               |
+| --- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| P1  | Header sits at y 41, directly under a mock iOS status bar (`1038:24994`) that a web page does not have               | Header kept 20 px from the top (unchanged); needs a decision                         |
+| P2  | Phone frame has **no Reviews section**                                                                               | Hidden below 768 to match; confirm this is intended and not a missing frame          |
+| P3  | `Screens` tile shows variant 2 on the phone page (different crop), variant 1 on desktop; it auto-cycles in prototype | Tile shows the variant 1 crop scaled to 304 px; the cycle belongs to the motion work |
+| P4  | Hero orbit: phone icons are hand-placed and rotated per icon; the pin is ~105 px wide                                | Desktop's even 36° wheel scaled so the ring is 218 px (exact); pin renders ~95 px    |
+| P5  | Footer watermark is `icon blue 2` at 759 px / 5 % on the phone                                                       | The desktop watermark raster is reused                                               |
+| P6  | Step 1 is followed by an empty 86 px `business-startup 1` slot (`I1041:27796;1038:25424;1038:25401`)                 | Reproduced as spacing (56 px); the slot has no fill — probably a missing image       |
+| P7  | Provider pills: two of five use a 24/16 chip instead of 32/22, and the border is a green gradient                    | All five use 32/22 and the primary/500 border                                        |
 
 ## Data
 

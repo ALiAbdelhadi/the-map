@@ -72,16 +72,18 @@ function LocaleSwitch({ content }: { content: SiteContent }) {
  */
 export function Header({ content }: { content: SiteContent }) {
   return (
-    <div className="absolute inset-x-0 top-5 z-20 flex justify-center px-4 tablet:px-8 desktop:top-22">
+    <div className="absolute inset-x-0 top-5 z-20 flex justify-center px-2 tablet:px-8 desktop:top-22">
       <SiteHeader
         className="max-w-container-desktop"
         homeHref={`/${content.locale}`}
         homeLabel={content.a11y.home}
-        logo={<LogoWordmarkIcon width={178} height={40} className="text-primary-500" />}
+        logo={
+          <LogoWordmarkIcon width={178} height={40} className="h-full w-full text-primary-500" />
+        }
         nav={<NavItems content={content} />}
         languageSwitch={<LocaleSwitch content={content} />}
         drawer={
-          <MobileMenu icon={<MenuIcon />} label={content.a11y.menu}>
+          <MobileMenu icon={<MenuIcon className="h-full w-full" />} label={content.a11y.menu}>
             <NavItems content={content} />
             <LocaleSwitch content={content} />
           </MobileMenu>
@@ -96,10 +98,14 @@ const SOCIAL_ICONS = {
   instagram: InstagramIcon,
 } as const;
 
-/** Footer, Figma `930:20465` — the `icon blue 2` watermark sits behind it. */
+/**
+ * Footer, Figma `930:20465` — the `icon blue 2` watermark sits behind it.
+ * Phone (`1041:29724`): radius 62, a 1 px primary/500 top border with a soft shadow,
+ * 73 px above the column, and it overlaps the provider section by 51 px.
+ */
 export function Footer({ content }: { content: SiteContent }) {
   return (
-    <div className="relative isolate flex w-full justify-center overflow-hidden rounded-t-card bg-bg px-4 py-16 tablet:px-8">
+    <div className="relative isolate -mt-12.75 flex w-full justify-center overflow-hidden rounded-t-footer border-t border-primary-500 bg-bg px-4 pt-18.25 pb-22.75 shadow-footer tablet:mt-0 tablet:rounded-t-card tablet:border-t-0 tablet:px-8 tablet:py-16 tablet:shadow-none">
       <Image
         src="/images/footer-watermark.webp"
         alt=""
@@ -110,7 +116,13 @@ export function Footer({ content }: { content: SiteContent }) {
       />
       <SiteFooter
         className="max-w-container-desktop gap-12"
-        logo={<LogoWordmarkIcon width={310} height={70} className="text-primary-500" />}
+        logo={
+          <LogoWordmarkIcon
+            width={310}
+            height={70}
+            className="h-15.25 w-auto text-primary-500 tablet:h-17.5"
+          />
+        }
         tagline={content.footer.tagline}
         downloadHeading={content.footer.downloadHeading}
         socialHeading={content.footer.socialHeading}

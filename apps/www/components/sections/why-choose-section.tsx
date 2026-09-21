@@ -31,7 +31,7 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
   return (
     <section
       id="why-us"
-      className="relative isolate flex w-full justify-center overflow-hidden px-4 py-24 tablet:px-8 desktop:min-h-256 desktop:items-center desktop:py-0"
+      className="relative isolate flex w-full flex-col items-center overflow-hidden px-2 pt-22.5 pb-9.5 tablet:flex-row tablet:items-stretch tablet:justify-center tablet:px-8 tablet:py-24 desktop:min-h-256 desktop:items-center desktop:py-0"
     >
       <Image
         src="/images/why-choose-maze.webp"
@@ -47,23 +47,15 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
         cropped to the figure's alpha bounds (216x659 of 1408x768). The crop removes
         empty pixels only; no artwork was altered.
       */}
-      <Image
-        src="/images/why-choose-character.webp"
-        alt=""
-        width={216}
-        height={659}
-        sizes="(min-width: 90rem) 20vw, 35vw"
-        className="-z-10 pointer-events-none absolute end-[12%] bottom-[2%] h-[62%] w-auto tablet:h-[86%] rtl:-scale-x-100"
-      />
 
       <div className="flex w-full max-w-container-desktop justify-start">
-        <GlassCard surface="field" className="w-full max-w-152">
+        <GlassCard surface="field" className="w-fit tablet:w-full tablet:max-w-152">
           <div className="flex flex-col gap-8">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 ps-5 py-1 tablet:gap-4 tablet:ps-0 tablet:py-0">
               <span className="flex size-15.5 shrink-0 items-center justify-center rounded-chip bg-secondary-500 p-2 text-bg">
                 <ChooseIcon width={40} height={40} />
               </span>
-              <h2 className="text-40 font-regular text-bg desktop:text-56">
+              <h2 className="text-32 font-regular whitespace-nowrap text-bg tablet:text-40 desktop:text-56">
                 {content.whyChoose.title}
               </h2>
             </div>
@@ -84,6 +76,20 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
           </div>
         </GlassCard>
       </div>
+
+      {/*
+        Phone frame (`1041:27445`): the character stands below the card, in flow,
+        278 px tall, its head 44 px over the card — drawn over it. From the
+        tablet frame up it stands behind the card at the section's end.
+      */}
+      <Image
+        src="/images/why-choose-character.webp"
+        alt=""
+        width={216}
+        height={659}
+        sizes="(min-width: 90rem) 20vw, 35vw"
+        className="pointer-events-none relative -mt-11 h-69.5 w-auto tablet:absolute tablet:end-[12%] tablet:bottom-[2%] tablet:-z-10 tablet:mt-0 tablet:h-[86%] rtl:-scale-x-100"
+      />
     </section>
   );
 }
