@@ -16,6 +16,7 @@ import { ContactUsIcon } from "@themap/ui/icons/contact-us";
 import { FacebookIcon } from "@themap/ui/icons/facebook";
 import { InstagramIcon } from "@themap/ui/icons/instagram";
 import { LanguageToggleEnIcon } from "@themap/ui/icons/language-toggle-en";
+import { LogoWordmarkIcon } from "@themap/ui/icons/logo-wordmark";
 import { MenuIcon } from "@themap/ui/icons/menu";
 
 import type { SiteContent } from "../content/types";
@@ -69,7 +70,7 @@ export function Header({ content }: { content: SiteContent }) {
         className="max-w-container-desktop"
         homeHref="/"
         homeLabel={content.a11y.home}
-        logo={<Image src="/svg/logo-wordmark.svg" alt="" width={178} height={40} priority />}
+        logo={<LogoWordmarkIcon width={178} height={40} className="text-primary-500" />}
         nav={<NavItems content={content} />}
         languageSwitch={<LocaleSwitch content={content} />}
         drawer={
@@ -102,7 +103,7 @@ export function Footer({ content }: { content: SiteContent }) {
       />
       <SiteFooter
         className="max-w-container-desktop gap-12"
-        logo={<Image src="/svg/logo-wordmark.svg" alt="" width={310} height={92} />}
+        logo={<LogoWordmarkIcon width={310} height={70} className="text-primary-500" />}
         tagline={content.footer.tagline}
         downloadHeading={content.footer.downloadHeading}
         socialHeading={content.footer.socialHeading}

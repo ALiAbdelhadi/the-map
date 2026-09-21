@@ -162,3 +162,18 @@ they only appear inside component variants rather than in the Images section.
 | `packages/ui/src/icons/language-toggle-ar.tsx` | languageToogle · Ar | `888:18954`  | as above, Arabic state                                                                                                                                                           |
 
 Raster total is now **692 KB** across 26 WebP files.
+
+## Addendum — corrections made in Phase 5
+
+The first screenshot pass showed three assets were wrong.
+
+| File                                                                                            | Was                                                                                               | Now                                                                                                                               | Node                                                                                                                |
+| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `illustration-{service,needed,medical,employee,emergency,special,food,real-estate,blinkz}.webp` | the grey isometric map scenes from the `Images & Illustrations` section (`903:20959`–`903:20967`) | the hero's own orbit artwork, exported at 3x                                                                                      | `888:20873`, `888:20869`, `888:20884`, `888:20692`, `888:20894`, `888:20908`, `888:20915`, `888:20919`, `891:19648` |
+| `logo-wordmark`                                                                                 | an SVG containing two overlapping copies of the logo (`870:18837`)                                | a single `currentColor` icon component                                                                                            | `1028:21561`                                                                                                        |
+| `why-choose-character.webp`                                                                     | the node export, flattened onto opaque white                                                      | the uploaded source cut-out, cropped to the figure's alpha bounds (216x659 of 1408x768) — empty pixels removed, artwork untouched | `910:19508`                                                                                                         |
+
+`illustration-the-map.webp` was deleted: the hero's default state shows the logo mark
+(`888:20656`, now `logo-mark.svg`), not that scene.
+
+Raster total after the corrections: **26 WebP files, 608 KB.**

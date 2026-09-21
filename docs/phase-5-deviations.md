@@ -4,22 +4,41 @@ The English home page is built from the Figma frame `The map English` (`853:1939
 Everything below is a place where what ships differs from that file, or where the
 file did not answer the question. Nothing here was decided silently.
 
-## Verification status — read this first
+## Verification — screenshots, at last
 
-**No per-breakpoint visual comparison has been made.** There is no browser tooling in
-this session, so I cannot render the page and compare it against the Figma renders.
-What has been verified is structural, not visual:
+Playwright is installed (approved) and `pnpm --filter www shoot <baseUrl> <outDir> [routes]`
+captures the three designed widths against a production build. The script walks the page
+to the bottom before capturing, because lazy-loaded images never fetch for an off-screen
+full-page screenshot — without that, half the page photographs blank and looks broken.
 
-- the production server returns 261,698 characters of server-rendered HTML for `/`
-- all six sections are present by id, in the Figma order, plus `<header>`, `<nav>`,
-  `<footer>` and a skip link
-- all 20 images referenced by the page resolve (spot-checked through `next/image`:
-  `hero-map-scene.webp` served, optimised to 28.7 KB)
-- typecheck, lint and production build pass
+Current run against a production server:
 
-A true comparison needs a headless browser to screenshot 375 / 768 / 1440 and diff
-against the Figma exports. That means adding Playwright as a dev dependency, which is
-outside the fixed stack — it needs approval before I add it.
+| Width | Page size                         | Horizontal overflow |
+| ----- | --------------------------------- | ------------------- |
+| 375   | 375 x 10,209                      | none                |
+| 768   | 768 x 8,846                       | none                |
+| 1440  | 1440 x 6,881 (Figma frame: 6,549) | none                |
+
+Every section was then compared against the Figma renders by eye.
+
+### What the first screenshot pass caught
+
+Four real defects that no amount of HTML checking would have found:
+
+1. **The nine hero orbit icons were the wrong artwork.** Phase 3 exported the `Service`,
+   `Food`, `Medical`… nodes from the `Images & Illustrations` section — grey isometric
+   map scenes. The orbit uses different artwork of the same name inside the hero
+   (`888:20873`, `888:20869`, `888:20884`, `888:20692`, `888:20894`, `888:20908`,
+   `888:20915`, `888:20919`, `891:19648`). All nine were re-exported at 3x.
+2. **The logo rendered twice.** The `logo header` component export contains two
+   overlapping copies. Re-exported from `1028:21561`, which holds one.
+3. **The Why-Choose character covered the section in white.** Figma's node export
+   flattens it onto white; the uploaded source behind the node is a proper cut-out.
+   That source, cropped to the figure's alpha bounds, is what ships now.
+4. **Mobile scrolled sideways** — the 415 px review card is now `max-w`, not fixed.
+
+One apparent defect was **not** real: provider illustration, review portraits and two
+social marks photographed blank. That was the screenshot script, not the page.
 
 ## Measured against Figma (desktop, 1440)
 
@@ -35,8 +54,9 @@ outside the fixed stack — it needs approval before I add it.
 
 ## Deviations
 
-1. **Tablet and mobile are adaptations, not measurements.** The 768 and 375 frames
-   were read as whole-page renders in Phase 0 but their nodes have not been measured.
+1. **Tablet and mobile are adaptations, not measurements.** They now screenshot clean
+   (no overflow, everything renders), but the 768 and 375 frames' nodes have still not
+   been measured.
    Below 1440 the page uses the desktop composition reflowed (single column, fluid
    widths, smaller type at the two sizes Figma shows). Every number there is mine, not
    Figma's, until the frames are measured node by node.
