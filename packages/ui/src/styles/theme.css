@@ -246,6 +246,9 @@
   --container-mobile: 21.5rem; /* 344 = 375 − 2×15.5 */
   --container-tablet: 44rem; /* 704 = 768 − 2×32 */
   --container-desktop: 80.25rem; /* 1284 = 1440 − 2×80 */
+  /* The header floats wider than the content grid — node 888:20482, 1357 wide
+     (no Figma variable; margin ≈41.5 either side, not the grid's 80). */
+  --container-header: 84.8125rem; /* 1357 */
 
   /* ---------------------------------------------------------------------
    * Radii — no Figma variables (gap K2); raw values read per node.

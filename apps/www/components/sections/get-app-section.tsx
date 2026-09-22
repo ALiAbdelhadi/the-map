@@ -26,7 +26,7 @@ export function GetAppSection({ content }: { content: SiteContent }) {
       id="get-the-app"
       className="flex w-full justify-center bg-primary-100 px-1.5 py-17 tablet:px-8 tablet:py-18 desktop:min-h-256 desktop:items-center desktop:py-0"
     >
-      <div className="flex w-full max-w-container-desktop flex-col items-center gap-12 tablet:gap-17 desktop:gap-12">
+      <div className="flex w-full max-w-desktop flex-col items-center gap-12 tablet:gap-17 desktop:gap-12">
         <div className="flex w-full flex-col items-center gap-11.5 desktop:flex-row desktop:items-center desktop:justify-between desktop:gap-71.5">
           <div className="flex w-full max-w-114 flex-col gap-8 px-1.5 tablet:px-0 desktop:gap-18">
             <div className="flex flex-col gap-8">

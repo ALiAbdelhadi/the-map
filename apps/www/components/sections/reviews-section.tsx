@@ -25,7 +25,7 @@ export function ReviewsSection({ content }: { content: SiteContent }) {
       id="reviews"
       className="hidden w-full justify-center bg-bg px-4 py-24 tablet:flex tablet:px-8 tablet:py-22.5 desktop:min-h-256 desktop:items-center desktop:py-0"
     >
-      <div className="flex w-full max-w-container-desktop flex-col items-center gap-12 tablet:gap-15.5 desktop:gap-12">
+      <div className="flex w-full max-w-desktop flex-col items-center gap-12 tablet:gap-15.5 desktop:gap-12">
         <div className="flex w-full flex-col items-center gap-12">
           <TypewriterHeading
             className="text-center text-38 font-semibold tablet:text-62"
