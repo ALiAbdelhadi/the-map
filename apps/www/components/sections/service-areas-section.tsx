@@ -19,7 +19,7 @@ export function ServiceAreasSection({ content }: { content: SiteContent }) {
   return (
     <section
       id="service-areas"
-      className="relative isolate flex w-full justify-center overflow-hidden py-16.5 tablet:px-8 tablet:py-24 desktop:min-h-256 desktop:items-center desktop:py-0"
+      className="relative isolate flex w-full justify-center overflow-hidden py-16.5 tablet:min-h-291.5 tablet:items-center tablet:px-3.5 tablet:py-0 desktop:min-h-256 desktop:items-center desktop:py-0"
     >
       <Image
         src="/images/service-areas-scene.webp"
@@ -39,9 +39,9 @@ export function ServiceAreasSection({ content }: { content: SiteContent }) {
             <ServiceAreasTitle
               title={content.serviceAreas.title}
               titleAlt={content.serviceAreas.titleAlt}
-              className="py-5 text-center text-32 font-bold text-secondary-500 tablet:py-0 tablet:text-56 desktop:text-100"
+              className="py-5 text-center text-32 font-bold text-secondary-500 tablet:py-0 tablet:text-100"
             />
-            <p className="max-w-3xl px-3.5 text-center text-24 font-medium text-bg tablet:px-0 tablet:text-32 tablet:font-semibold desktop:text-48">
+            <p className="max-w-3xl px-3.5 text-center text-24 font-medium text-bg tablet:px-0 tablet:text-48 tablet:font-semibold">
               {content.serviceAreas.subtitle}
             </p>
           </div>

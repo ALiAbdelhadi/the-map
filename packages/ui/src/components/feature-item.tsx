@@ -100,7 +100,7 @@ export function FeatureItem({
       tabIndex={focusable ? 0 : -1}
       onClick={onSelect}
       className={cn(
-        "group relative flex items-center gap-6 rounded-row border-4 border-transparent px-5 py-1 text-24 font-regular text-bg tablet:text-32 desktop:text-40",
+        "group relative flex items-center gap-6 rounded-row px-5 py-1 text-24 font-regular text-bg tablet:text-40",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg",
         className,
       )}
@@ -108,13 +108,13 @@ export function FeatureItem({
       <span
         aria-hidden="true"
         data-hover-fill=""
-        className="pointer-events-none absolute inset-0 -m-1 rounded-[inherit] bg-gradient-to-r from-primary-500 to-white opacity-0"
+        className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-r from-primary-500 to-white opacity-0"
       />
       {selected ? (
         <span
           aria-hidden="true"
           data-selected-ring=""
-          className="pointer-events-none absolute inset-0 -m-1 rounded-[inherit] bg-gradient-to-r from-primary-500 to-white p-1 [mask:linear-gradient(black,black)_content-box_exclude,linear-gradient(black,black)]"
+          className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-r from-primary-500 to-white p-1 [mask:linear-gradient(black,black)_content-box_exclude,linear-gradient(black,black)]"
         />
       ) : null}
       <span data-chip="" className="relative">

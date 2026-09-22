@@ -23,24 +23,24 @@ export function ReviewsSection({ content }: { content: SiteContent }) {
   return (
     <section
       id="reviews"
-      className="hidden w-full justify-center bg-bg px-4 py-24 tablet:flex tablet:px-8 desktop:min-h-256 desktop:items-center desktop:py-0"
+      className="hidden w-full justify-center bg-bg px-4 py-24 tablet:flex tablet:px-8 tablet:py-22.5 desktop:min-h-256 desktop:items-center desktop:py-0"
     >
-      <div className="flex w-full max-w-container-desktop flex-col items-center gap-12">
+      <div className="flex w-full max-w-container-desktop flex-col items-center gap-12 tablet:gap-15.5 desktop:gap-12">
         <div className="flex w-full flex-col items-center gap-12">
           <TypewriterHeading
-            className="text-center text-38 font-semibold desktop:text-62"
+            className="text-center text-38 font-semibold tablet:text-62"
             textClassName="bg-gradient-to-r from-primary-500 to-green-600 bg-clip-text text-transparent"
           >
             {content.reviews.heading}
           </TypewriterHeading>
-          <p className="max-w-307.25 text-center text-32 font-medium text-natural-300 desktop:text-48">
+          <p className="max-w-307.25 text-center text-32 font-medium text-natural-300 tablet:max-w-165.25 desktop:max-w-307.25 desktop:text-48">
             {content.reviews.subheading}
           </p>
         </div>
 
         <ReviewCarousel
           label={content.reviews.heading}
-          className="w-full flex-wrap justify-center gap-8 desktop:flex-nowrap desktop:gap-17"
+          className="w-full justify-center"
           ratingIcon={<StarIcon width={24} height={24} className="text-primary-500" />}
           quoteMark={<ApostropheIcon width={53} height={53} className="text-secondary-200" />}
           reviews={content.reviews.items.map((review) => ({

@@ -24,22 +24,22 @@ export function GetAppSection({ content }: { content: SiteContent }) {
   return (
     <section
       id="get-the-app"
-      className="flex w-full justify-center bg-primary-100 px-1.5 py-17 tablet:px-8 tablet:py-24 desktop:min-h-256 desktop:items-center desktop:py-0"
+      className="flex w-full justify-center bg-primary-100 px-1.5 py-17 tablet:px-8 tablet:py-18 desktop:min-h-256 desktop:items-center desktop:py-0"
     >
-      <div className="flex w-full max-w-container-desktop flex-col items-center gap-12">
-        <div className="flex w-full flex-col items-center gap-11.5 tablet:gap-16 desktop:flex-row desktop:items-center desktop:justify-between desktop:gap-71.5">
-          <div className="flex w-full max-w-114 flex-col gap-8 px-1.5 tablet:gap-18 tablet:px-0">
+      <div className="flex w-full max-w-container-desktop flex-col items-center gap-12 tablet:gap-17 desktop:gap-12">
+        <div className="flex w-full flex-col items-center gap-11.5 desktop:flex-row desktop:items-center desktop:justify-between desktop:gap-71.5">
+          <div className="flex w-full max-w-114 flex-col gap-8 px-1.5 tablet:px-0 desktop:gap-18">
             <div className="flex flex-col gap-8">
               <div className="relative flex items-center justify-center gap-4 self-start rounded-button border-4 border-transparent bg-gradient-to-r from-primary-200/30 to-secondary-600/30 px-6 py-3 shadow-card">
                 <BadgeBorder />
                 <span className="flex size-6 shrink-0 items-center justify-center text-primary-700 tablet:size-12">
                   <AppIcon width={48} height={48} className="h-full w-full" />
                 </span>
-                <h2 className="text-24 font-semibold whitespace-nowrap text-primary-700 tablet:text-38 tablet:font-medium desktop:text-48">
+                <h2 className="text-24 font-semibold whitespace-nowrap text-primary-700 tablet:text-48 desktop:font-medium">
                   {content.getApp.badge}
                 </h2>
               </div>
-              <p className="text-24 font-regular text-primary-950 desktop:text-32">
+              <p className="text-24 font-regular text-primary-950 tablet:text-32">
                 {content.getApp.subtitle}
               </p>
             </div>
@@ -65,7 +65,7 @@ export function GetAppSection({ content }: { content: SiteContent }) {
 
         <div
           dir="ltr"
-          className="flex flex-col items-center justify-center gap-6 tablet:flex-row tablet:flex-wrap tablet:gap-12"
+          className="flex flex-col items-center justify-center gap-6 tablet:flex-row tablet:flex-wrap tablet:gap-17 desktop:gap-12"
         >
           <StoreBadge
             icon={<AppStoreIcon />}

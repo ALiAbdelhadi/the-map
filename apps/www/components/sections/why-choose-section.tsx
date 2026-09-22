@@ -24,6 +24,10 @@ import type { SiteContent } from "../../content/types";
  * (`image 6658`) and the character (`image 6659`) behind a glass card with the title
  * row and five feature rows.
  *
+ * 768 (`1037:26497`): the 608 px card sits 15 px down and 98 px in, at the 1440
+ * type sizes, with the character (392 px) standing under it, its head 33 px over the
+ * card; the section is 1024 tall.
+ *
  * Six variants — the default and one per feature. Choosing a feature:
  * - zooms and pans the maze (each variant places `image 6658` differently);
  * - removes the character;
@@ -65,6 +69,21 @@ const MAZE = {
       nearby: { scale: 1.7162, xPercent: -14.792, yPercent: -31.641 },
       fast: { scale: 2.5401, xPercent: -12.153, yPercent: -80.762 },
       easy: { scale: 2.7247, xPercent: 15.417, yPercent: -54.59 },
+    } satisfies Record<string, Place>,
+  },
+  /*
+   * 768 frame (`1037:26496`, the 1440 composition placed at x −64): the default maze
+   * box is (−303, −10, 1930x1053) in the 768x1024 section — the box itself — and the
+   * feature variants reuse the 1440 rectangles, shifted by the same 64 px.
+   */
+  tablet: {
+    origin: "0% 0%",
+    places: {
+      "all-in-one": { scale: 1.2207, xPercent: -11.347, yPercent: 0.95 },
+      flexible: { scale: 1.7534, xPercent: -37.979, yPercent: 0.95 },
+      nearby: { scale: 1.686, xPercent: -10.155, yPercent: -30.769 },
+      fast: { scale: 2.4953, xPercent: -8.187, yPercent: -78.537 },
+      easy: { scale: 2.6767, xPercent: 12.383, yPercent: -53.086 },
     } satisfies Record<string, Place>,
   },
   phone: {
@@ -128,7 +147,8 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
       const move = reduce ? { duration: 0 } : figmaTween(prototype.whyChoose.click);
       const arrive = reduce ? { duration: 0 } : figmaTween(prototype.whyChoose.tip);
       const phone = !window.matchMedia("(min-width: 48rem)").matches;
-      const maze = phone ? MAZE.phone : MAZE.desktop;
+      const wide = window.matchMedia("(min-width: 90rem)").matches;
+      const maze = phone ? MAZE.phone : wide ? MAZE.desktop : MAZE.tablet;
       const place = selected ? maze.places[selected as FeatureId] : null;
       gsap.set("[data-maze]", { transformOrigin: maze.origin });
       gsap.to("[data-maze]", {
@@ -167,7 +187,7 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
     <section
       ref={ref}
       id="why-us"
-      className="relative isolate flex w-full flex-col items-center overflow-hidden px-2 pt-22.5 pb-9.5 tablet:flex-row tablet:items-stretch tablet:justify-center tablet:px-8 tablet:py-24 desktop:min-h-256 desktop:items-center desktop:py-0"
+      className="relative isolate flex w-full flex-col items-center overflow-hidden px-2 pt-22.5 pb-9.5 tablet:min-h-256 tablet:px-0 tablet:pt-3.75 tablet:pb-4 desktop:flex-row desktop:items-center desktop:justify-center desktop:px-8 desktop:py-0"
     >
       {/*
         Phone: the maze box is Figma's (−445, 0, 1930x1053) — 514.667 % of the
@@ -176,7 +196,7 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
       <div
         data-maze=""
         aria-hidden="true"
-        className="-z-20 absolute top-0 -start-[118.667%] aspect-[1930/1053] w-[514.667%] tablet:inset-0 tablet:aspect-auto tablet:w-auto"
+        className="-z-20 absolute top-0 -start-[118.667%] aspect-[1930/1053] w-[514.667%] tablet:-start-[39.453%] tablet:-top-[0.977%] tablet:w-[251.302%] desktop:inset-0 desktop:aspect-auto desktop:w-auto"
       >
         <Image
           src="/images/why-choose-maze.webp"
@@ -187,15 +207,15 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
         />
       </div>
 
-      <div className="flex w-full max-w-container-desktop justify-start">
+      <div className="flex w-full max-w-container-desktop justify-start tablet:ps-24.5 desktop:ps-0">
         <div data-why-card="" className="relative flex flex-col gap-15.5">
           <GlassCard surface="field" className="w-fit tablet:w-152">
             <div className="flex flex-col gap-8">
-              <div className="flex items-center gap-2 ps-5 py-1 tablet:gap-4 tablet:ps-0 tablet:py-0">
+              <div className="flex items-center gap-2 ps-5 py-1 tablet:gap-6">
                 <span className="flex size-15.5 shrink-0 items-center justify-center rounded-chip bg-secondary-500 p-2 text-bg">
                   <ChooseIcon width={40} height={40} />
                 </span>
-                <h2 className="text-32 font-regular whitespace-nowrap text-bg tablet:text-40 desktop:text-56">
+                <h2 className="text-32 font-regular whitespace-nowrap text-bg tablet:text-56">
                   {title}
                 </h2>
               </div>
@@ -274,7 +294,7 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
         width={216}
         height={659}
         sizes="(min-width: 90rem) 20vw, 35vw"
-        className={`pointer-events-none relative -mt-11 h-69.5 w-auto tablet:absolute tablet:end-[12%] tablet:bottom-[2%] tablet:-z-10 tablet:mt-0 tablet:h-[86%] rtl:-scale-x-100 ${selected ? "max-tablet:hidden" : ""}`}
+        className={`pointer-events-none relative -mt-11 h-69.5 w-auto tablet:-mt-8.25 tablet:h-98 desktop:absolute desktop:end-[12%] desktop:bottom-[2%] desktop:-z-10 desktop:mt-0 desktop:h-[86%] rtl:-scale-x-100 ${selected ? "max-desktop:hidden" : ""}`}
       />
     </section>
   );

@@ -72,7 +72,7 @@ function LocaleSwitch({ content }: { content: SiteContent }) {
  */
 export function Header({ content }: { content: SiteContent }) {
   return (
-    <div className="absolute inset-x-0 top-5 z-20 flex justify-center px-2 tablet:px-8 desktop:top-22">
+    <div className="absolute inset-x-0 top-5 z-20 flex justify-center px-2 tablet:top-8.25 tablet:px-7.5 desktop:top-22 desktop:px-8">
       <SiteHeader
         className="max-w-container-desktop"
         homeHref={`/${content.locale}`}
@@ -102,10 +102,11 @@ const SOCIAL_ICONS = {
  * Footer, Figma `930:20465` — the `icon blue 2` watermark sits behind it.
  * Phone (`1041:29724`): radius 62, a 1 px primary/500 top border with a soft shadow,
  * 73 px above the column, and it overlaps the provider section by 51 px.
+ * Tablet (`1037:32742`): 824 tall, the column 74 px down, a 408x92 logo.
  */
 export function Footer({ content }: { content: SiteContent }) {
   return (
-    <div className="relative isolate -mt-12.75 flex w-full justify-center overflow-hidden rounded-t-footer border-t border-primary-500 bg-bg px-4 pt-18.25 pb-22.75 shadow-footer tablet:mt-0 tablet:rounded-t-card tablet:border-t-0 tablet:px-8 tablet:py-16 tablet:shadow-none">
+    <div className="relative isolate -mt-12.75 flex w-full justify-center overflow-hidden rounded-t-footer border-t border-primary-500 bg-bg px-4 pt-18.25 pb-22.75 shadow-footer tablet:mt-0 tablet:rounded-t-card tablet:border-t-0 tablet:px-8 tablet:pt-18.5 tablet:pb-43.25 tablet:shadow-none desktop:py-16">
       <Image
         src="/images/footer-watermark.webp"
         alt=""
@@ -120,7 +121,7 @@ export function Footer({ content }: { content: SiteContent }) {
           <LogoWordmarkIcon
             width={310}
             height={70}
-            className="h-15.25 w-auto text-primary-500 tablet:h-17.5"
+            className="h-15.25 w-auto text-primary-500 tablet:h-23 desktop:h-17.5"
           />
         }
         tagline={content.footer.tagline}

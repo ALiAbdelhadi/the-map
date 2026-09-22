@@ -57,8 +57,8 @@ social marks photographed blank. That was the screenshot script, not the page.
 
 ## Deviations
 
-1. **Tablet is still an adaptation, not a measurement. The phone was measured on
-   2026-09-21** (see "Phone pass" below). They now screenshot clean
+1. **Phone and tablet were both measured against their frames** — phone on
+   2026-09-21, tablet on 2026-09-22 (see "Phone pass" and "Tablet pass" below). They now screenshot clean
    (no overflow, everything renders), but the 768 and 375 frames' nodes have still not
    been measured.
    Below 1440 the page uses the desktop composition reflowed (single column, fluid
@@ -153,3 +153,42 @@ What changed, from the Figma values:
 Open points are in `docs/figma-gaps.md` → "Phone frame (375)". The Arabic phone page
 uses the same layout (no Arabic phone frame exists in Figma); it was checked for
 overflow and clipping only (375 x 6032, no horizontal overflow).
+
+## Tablet pass — `/en` at 768 against `iPad mini 5 - 1` (`853:19396`), 2026-09-22
+
+Every section was read with `get_design_context` / `get_metadata` on its tablet node;
+tablet values sit behind `tablet:` and the 1440 values moved to `desktop:` where the
+two differ, so neither the phone nor the 1440 layout changed.
+
+| Section           | Figma node   | Figma height | Before | After |
+| ----------------- | ------------ | ------------ | ------ | ----- |
+| Hero              | `1037:29681` | 1439         | 1563   | 1438  |
+| Why Choose Us     | `1037:26497` | 1024         | 767    | 1024  |
+| Get the App       | `1037:29894` | 1561         | 1639   | 1568  |
+| Service Areas     | `1037:30011` | 1166         | 704    | 1166  |
+| Become a Provider | `1037:30184` | 1419         | 2223   | 1432  |
+| Reviews           | `1037:32343` | 702          | 1172   | 702   |
+| Page              | `853:19396`  | 8159         | 8754   | 8159  |
+
+What changed, from the Figma values:
+
+- **Header** `1037:23582`: 709x88, radius 12, 29 px from the sides and 33 px down,
+  32 px menu button.
+- **Hero**: the 1440 orbit (669.6 px) 120 px down, then the 544x471 card 32 px below.
+- **Why Choose Us**: the 1440 type sizes (56 px title, 40 px rows), the 608 px card
+  15 px down and 98 px in, the character (392 px) under it, the maze framed as in the
+  frame; rows lost a hidden 4 px border, so they are Figma's 72 px everywhere.
+- **Get the App**: 48 px semibold badge, 32 px subtitle, 46/32 px gaps, badges in a
+  row 68 px apart; step text stays on one line.
+- **Service Areas**: 100 px title, 48 px subtitle, section 1166 tall.
+- **Provider**: 32 px badge, 24 px body, email card hugs its content, 24 px download
+  line, and the five pills scattered around the 510 px illustration at Figma's
+  positions (two with the 16 px padding Figma gives them).
+- **Reviews**: 62 px heading, one row (315 px open card, 88 px portraits, 20 px
+  gap), 14 px quote with the quote mark beside it.
+- **Footer**: 408x92 logo, the column 74 px down, 824 tall.
+
+The Reviews row was rebuilt at the same time (owner request): one element per card,
+only widths animate, photos re-crop instead of stretching, and the text fades in once
+the card has room. The three missing reviews (Menna, Mahmoud, Nourhan) and the Arabic
+reviewer names were read from Figma (`1015:20920`, `1030:24297`) and added.
