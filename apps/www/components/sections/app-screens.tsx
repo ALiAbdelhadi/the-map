@@ -56,6 +56,8 @@ export function AppScreens({ label }: { label: string }) {
   // positions in one smooth pass; leaving brings them back.
   const [playing, setPlaying] = useState(false);
   const first = useRef(true);
+  // A mouse plays the pass by hovering, so its clicks must not toggle it off.
+  const pointer = useRef("mouse");
 
   useGSAP(
     () => {
@@ -90,8 +92,11 @@ export function AppScreens({ label }: { label: string }) {
       onPointerLeave={(event) => {
         if (event.pointerType === "mouse") setPlaying(false);
       }}
+      onPointerDown={(event) => {
+        pointer.current = event.pointerType;
+      }}
       onClick={() => {
-        setPlaying((value) => !value);
+        if (pointer.current !== "mouse") setPlaying((value) => !value);
       }}
       aria-label={label}
       dir="ltr"
