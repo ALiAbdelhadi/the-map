@@ -4,7 +4,8 @@ import { type ReactNode, useRef, useState } from "react";
 
 import { cn } from "../lib/cn";
 import { figmaTween } from "../motion/figma-easing";
-import { Flip, gsap, useGSAP } from "../motion/gsap";
+import { gsap, MOTION_OK, useGSAP } from "../motion/gsap";
+import { measureSizes, morphSizes, type Sizes } from "../motion/size-morph";
 import { prototype } from "../motion/tokens";
 import { StepItem } from "./step-item";
 
@@ -14,9 +15,12 @@ import { StepItem } from "./step-item";
  * Figma `Get the App section` `963:20033` — variants `1`, `2`, `3`: exactly one
  * step is expanded at a time, column gap 29.
  *
- * Motion: a click opens that step — the pills resize and the others slide (a Flip,
- * 0.5 s strong ease-in-out) and the rocket slides in under it. Nothing advances by
- * itself (approved 2026-09-22).
+ * Motion, rebuilt 2026-09-22: a click opens that step. The real sizes animate —
+ * the opening pill widens (uncovering its text), the closing one narrows, and each
+ * step's height eases between 100 and 156 so the steps below glide rather than jump
+ * (0.5 s strong ease-in-out; no scaling, so text never squashes). The new text
+ * settles in as the pill finishes, then the rocket flies in under its corner.
+ * Nothing advances by itself.
  */
 export type AppStepperStep = {
   title: string;
@@ -39,41 +43,57 @@ export type AppStepperProps = {
 export function AppStepper({ steps, defaultStep = 1, label, rocket, className }: AppStepperProps) {
   const [openStep, setOpenStep] = useState(defaultStep);
   const ref = useRef<HTMLDivElement>(null);
-  const layout = useRef<Flip.FlipState | null>(null);
+  const before = useRef<{ sizes: Sizes; from: number } | null>(null);
 
   const open = (step: number) => {
-    if (step === openStep) return;
-    if (ref.current) layout.current = Flip.getState(ref.current.querySelectorAll("[data-flip-id]"));
+    if (step === openStep || !ref.current) return;
+    before.current = {
+      sizes: measureSizes(ref.current.querySelectorAll("[data-step], [data-step-button]")),
+      from: openStep,
+    };
     setOpenStep(step);
   };
 
   useGSAP(
     () => {
-      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const saved = layout.current;
-      layout.current = null;
-      if (reduce || !saved) return;
-      Flip.from(saved, {
-        targets: ref.current?.querySelectorAll("[data-flip-id]") ?? [],
-        ...figmaTween(prototype.stepper.click),
-      });
-      // The opened step's text settles in as the pill finishes growing.
+      const root = ref.current;
+      const saved = before.current;
+      before.current = null;
+      if (!root || !saved || !window.matchMedia(MOTION_OK).matches) return;
+
+      const move = figmaTween(prototype.stepper.click);
+      morphSizes(saved.sizes, move);
+
+      const step = (n: number) => root.querySelectorAll("[data-step]")[n - 1];
+      const opened = step(openStep);
+      const closed = step(saved.from);
+      // The closing step's text and rocket leave at once, before its pill narrows.
       gsap.fromTo(
-        "[data-step-open]",
-        { opacity: 0, y: 6 },
-        { opacity: 1, y: 0, ...figmaTween(prototype.hover.border), delay: 0.2 },
+        closed?.querySelector("[data-step-panel]") ?? [],
+        { autoAlpha: 1 },
+        { autoAlpha: 0, duration: 0.12, ease: "none" },
+      );
+      gsap.fromTo(
+        closed?.querySelector("[data-rocket]") ?? [],
+        { autoAlpha: 1 },
+        { autoAlpha: 0, duration: 0.15, ease: "none" },
+      );
+      gsap.fromTo(
+        opened?.querySelector("[data-step-panel]") ?? [],
+        { autoAlpha: 0, x: -8 },
+        { autoAlpha: 1, x: 0, ...figmaTween(prototype.hover.border), delay: move.duration * 0.4 },
       );
       const flip = document.documentElement.dir === "rtl" ? -1 : 1;
       gsap.fromTo(
-        "[data-rocket]",
-        { x: -24 * flip, y: 16, scale: 0.9, opacity: 0 },
+        opened?.querySelector("[data-rocket]") ?? [],
+        { autoAlpha: 0, x: -20 * flip, y: 20, rotate: -12 * flip },
         {
+          autoAlpha: 1,
           x: 0,
           y: 0,
-          scale: 1,
-          opacity: 1,
-          delay: prototype.stepper.rocket.delay,
+          rotate: 0,
           ...figmaTween(prototype.stepper.rocket),
+          delay: move.duration * 0.8,
         },
       );
     },

@@ -18,8 +18,8 @@ import { prototype } from "../motion/tokens";
  * Escape closes, focus moves into the panel on open and back to the toggle on
  * close, and focus is kept inside the panel while it is open.
  *
- * Motion: Figma opens and closes it with a 0.3 s ease-in-out Smart Animate, the
- * panel growing out of the toggle (`1038:26925`).
+ * Motion: the panel opens out of the toggle — from 95 % and 6 px up, fading in
+ * (0.25 s ease-out) — and closes the same way; it never grows from nothing.
  */
 export type MobileMenuProps = {
   /** 24x24 menu glyph. */
@@ -45,7 +45,8 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
     }
     gsap.to(panel, {
       opacity: 0,
-      scale: 0.2,
+      scale: 0.95,
+      y: -6,
       ...figmaTween(prototype.menu),
       onComplete: () => {
         setOpen(false);
@@ -61,10 +62,11 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
         panel,
         {
           opacity: 0,
-          scale: 0.2,
+          scale: 0.95,
+          y: -6,
           transformOrigin: document.dir === "rtl" ? "top left" : "top right",
         },
-        { opacity: 1, scale: 1, ...figmaTween(prototype.menu) },
+        { opacity: 1, scale: 1, y: 0, ...figmaTween(prototype.menu) },
       );
     },
     { dependencies: [open] },

@@ -6,6 +6,7 @@ import { cn } from "../lib/cn";
 import { figmaTween } from "../motion/figma-easing";
 import { gsap, MOTION_OK, useGSAP } from "../motion/gsap";
 import { prototype } from "../motion/tokens";
+import { measureSizes, morphSizes, type Sizes } from "../motion/size-morph";
 import { ReviewCard } from "./review-card";
 
 /**
@@ -40,16 +41,6 @@ export type ReviewCarouselProps = {
   className?: string;
 };
 
-type Widths = Map<Element, number>;
-
-function measure(root: HTMLElement): Widths {
-  const widths: Widths = new Map();
-  root.querySelectorAll("[data-review], [data-review-photo]").forEach((el) => {
-    widths.set(el, el.getBoundingClientRect().width);
-  });
-  return widths;
-}
-
 export function ReviewCarousel({
   reviews,
   ratingIcon,
@@ -59,11 +50,14 @@ export function ReviewCarousel({
 }: ReviewCarouselProps) {
   const [expandedId, setExpandedId] = useState(reviews[0]?.id ?? "");
   const ref = useRef<HTMLUListElement>(null);
-  const before = useRef<{ widths: Widths; from: string } | null>(null);
+  const before = useRef<{ sizes: Sizes; from: string } | null>(null);
 
   const expand = (id: string) => {
     if (id === expandedId || !ref.current) return;
-    before.current = { widths: measure(ref.current), from: expandedId };
+    before.current = {
+      sizes: measureSizes(ref.current.querySelectorAll("[data-review], [data-review-photo]")),
+      from: expandedId,
+    };
     setExpandedId(id);
   };
 
@@ -75,12 +69,7 @@ export function ReviewCarousel({
       if (!root || !saved || !window.matchMedia(MOTION_OK).matches) return;
 
       const move = figmaTween(prototype.reviews.click);
-      const after = measure(root);
-      for (const [el, width] of after) {
-        const start = saved.widths.get(el);
-        if (start === undefined || start === width) continue;
-        gsap.fromTo(el, { width: start }, { width, ...move, clearProps: "width" });
-      }
+      morphSizes(saved.sizes, move, ["width"]);
 
       const oldText = root.querySelector(`[data-review='${saved.from}'] [data-review-text]`);
       const newText = root.querySelector(`[data-review='${expandedId}'] [data-review-text]`);
