@@ -12,6 +12,28 @@ transition, duration, easing). Those are only readable through the Plugin API
 `packages/ui/src/motion/tokens.ts` were proposals made before this was known, and most of
 them differ from the prototype.
 
+## Direction change — approved by the owner, 2026-09-22
+
+The site no longer plays the Figma prototype's loops. Owner's brief: nothing animates
+by itself; every change answers a click or a hover (or plays once as a section
+scrolls into view); motion must be smooth; icons must stay in proportion; every
+section must hold up at 375, 768 and 1440. Motion philosophy: `emil-design-eng`.
+
+| Component                                | Now                                                                                                                                                                                                                                                           |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hero                                     | click only; the ring re-arranges over 0.7 s (strong ease-in-out) to Figma's per-variant places; the chosen service is 300 px just above its marker (Figma: ~560 px); the card copy rises in after it. Phone orbit is 312 px wide so no item leaves the screen |
+| Why Choose Us                            | click only; maze zoom and card move 0.8 s; the feature pill rises in 0.2 s later; clicking the selected row goes back. Hover fades the row fill in 0.25 s (mouse only, never on the selected row). Below 1440 the pill sits under the card                    |
+| Stepper                                  | click only; Flip 0.5 s; the opened text and the rocket settle in after                                                                                                                                                                                        |
+| Reviews                                  | click only; Flip 0.5 s; the review text fades in once the card has room                                                                                                                                                                                       |
+| App screens tile                         | scrolls through the five positions in one 2.4 s pass while hovered (or after a tap), glides back on leave                                                                                                                                                     |
+| Typewriter                               | types once, 45 ms per character, when the heading comes into view; the line keeps its final width so nothing jumps; the caret fades out at the end                                                                                                            |
+| Service Areas title                      | swaps to "Where We Operate" while hovered (roll, 0.4 s) and back                                                                                                                                                                                              |
+| Gradient strokes (badge, provider pills) | change on hover only (0.3 s)                                                                                                                                                                                                                                  |
+| Provider (1440)                          | build-up plays once in view (staggered, shorter distances); `Click here` opens the full section, which stays; the hand leans in on hover instead of pulsing                                                                                                   |
+| Easing                                   | `UI_OUT` cubic-bezier(0.23, 1, 0.32, 1) and `UI_IN_OUT` cubic-bezier(0.77, 0, 0.175, 1) — no spring overshoot                                                                                                                                                 |
+
+Everything below this section records the Figma prototype and the earlier port of it.
+
 ## Implemented — the Figma prototype, 2026-09-21
 
 Every timing now comes from the prototype reactions and lives in

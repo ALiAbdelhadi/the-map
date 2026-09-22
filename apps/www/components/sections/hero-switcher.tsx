@@ -7,7 +7,6 @@ import { GlassCard } from "@themap/ui/components/glass-card";
 import { figmaTween } from "@themap/ui/motion/figma-easing";
 import { gsap, useGSAP } from "@themap/ui/motion/gsap";
 import { prototype } from "@themap/ui/motion/tokens";
-import { useAfterDelay } from "@themap/ui/motion/use-after-delay";
 
 import type { SiteContent } from "../../content/types";
 import { ITEM_START, ORBIT, RING_START } from "./hero-orbit-data";
@@ -29,9 +28,13 @@ import { ITEM_START, ORBIT, RING_START } from "./hero-orbit-data";
  * GSAP tweens each item's CSS variables from one variant's values to the next's.
  * Rotations take the short way round.
  *
- * Phone (`1041:26353`, 375 frame): the ring is 218 px, so the orbit box is drawn
- * 388 px wide (218 / 0.56149) and may overflow the 359 px column, as it does in
- * Figma. The box starts 142 px down so the ring centre lands at y 387; the card is
+ * Only a click changes the state (no auto-advance, approved 2026-09-22); the move
+ * takes 0.7 s on a strong ease-in-out, and the card copy follows with a short rise.
+ *
+ * Phone (`1041:26353`, 375 frame): Figma's ring is 218 px, but the items reach past
+ * the orbit frame on both sides, so at that size the outermost ones were cut off by
+ * the screen edge. The orbit box is 312 px wide instead (ring ≈ 175 px), which keeps
+ * every item on screen (approved 2026-09-22). The box starts 142 px down so the ring centre lands at y 387; the card is
  * 352x305 (content centred, as Figma clips it), 75 px below, with a 16 px regular body and a 41 px title gap.
  * 1440 frame: the orbit frame sits at (689, 256) and reaches the bottom of the
  * 1024 px section; the card is 544x471 at (81, 405), 148 px above the bottom.
@@ -40,6 +43,9 @@ import { ITEM_START, ORBIT, RING_START } from "./hero-orbit-data";
  */
 
 /** Figma pixels of the 669.642 px orbit frame, as container-query units. */
+/** Width of the chosen service on top, in Figma pixels of the orbit frame. */
+const FEATURED_WIDTH = 300;
+
 const AT = {
   left: "left-[calc(var(--cx)*100cqw/669.642)]",
   top: "top-[calc(var(--cy)*100cqw/669.642)]",
@@ -56,7 +62,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
   const firstRun = useRef(true);
   // The rotation each element is at now, unwrapped, so every turn takes the short way.
   const turned = useRef<Record<string, number>>({});
-  // Only a visitor's own choice is announced; the auto-advance is not.
+  // Announce the card once the visitor has chosen something.
   const [announce, setAnnounce] = useState(false);
 
   // Slot 0 is the logo ("The Map"); slots 1–9 are the services in ring order.
@@ -69,7 +75,6 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
       const animate = !firstRun.current && !reduce;
       firstRun.current = false;
 
-      // Figma: every hero transition is Smart Animate, 0.3 s ease-out.
       const tween = animate ? figmaTween(prototype.hero.click) : { duration: 0 };
 
       const state = ORBIT[selected];
@@ -84,7 +89,14 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
       const [rx, ry, rr] = state.ring;
       gsap.to("[data-orbit-ring]", { "--cx": rx, "--cy": ry, "--r": turn("ring", rr), ...tween });
 
-      for (const [id, [cx, cy, width, rotation, dx, dy, dot]] of Object.entries(state.items)) {
+      for (const [id, [fx, fy, fw, rotation, dx, dy, dot]] of Object.entries(state.items)) {
+        // The chosen service is shown at 300 px, centred just above its marker, rather
+        // than Figma's ~560 px — approved 2026-09-22 so it stays in proportion with the
+        // ring (and clear of the header on the phone). The logo keeps Figma's size.
+        const featured = dot > 18 && id !== "the-map";
+        const width = featured ? FEATURED_WIDTH : fw;
+        const cx = featured ? dx : fx;
+        const cy = featured ? dy - 16 - (FEATURED_WIDTH * 65) / 120 / 2 - 8 : fy;
         gsap.to(`[data-orbit-art='${id}']`, {
           "--cx": cx,
           "--cy": cy,
@@ -99,29 +111,22 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
         gsap.to(el, { autoAlpha: Number(el.dataset.scene) === selected ? 1 : 0, ...tween });
       });
       if (animate) {
-        gsap.from("[data-hero-copy]", { autoAlpha: 0, ...tween });
+        gsap.fromTo(
+          "[data-hero-copy]",
+          { autoAlpha: 0, y: 8 },
+          { autoAlpha: 1, y: 0, ...figmaTween(prototype.hero.copy), delay: 0.15 },
+        );
       }
     },
     { scope, dependencies: [selected] },
   );
-
-  // Figma: each variant advances to the next service in ring order after 0.8 s,
-  // and Blinkz returns to The Map.
-  useAfterDelay(scope, {
-    key: selected,
-    wait: prototype.hero.auto.duration + prototype.hero.auto.delay,
-    onFire: () => {
-      setAnnounce(false);
-      setSelected((index) => (index + 1) % slots.length);
-    },
-  });
 
   const shown = (index: number) => (index === selected ? "" : "invisible opacity-0");
 
   return (
     <div
       ref={scope}
-      className="flex w-full items-center justify-center px-2 pt-35.5 pb-3 tablet:px-8 tablet:py-24 desktop:min-h-256 desktop:py-0"
+      className="flex w-full items-center justify-center px-2 pt-47.5 pb-3 tablet:px-8 tablet:py-24 desktop:min-h-256 desktop:py-0"
     >
       {/* Background scenes — Figma exports them already composited, so no extra opacity. */}
       <div aria-hidden="true" className="absolute inset-0 -z-10">
@@ -147,7 +152,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
         <div
           role="group"
           aria-label={hero.ringLabel}
-          className="@container relative aspect-[669.642/767.626] w-97 shrink-0 tablet:w-full tablet:max-w-167.25"
+          className="@container relative aspect-[669.642/767.626] w-78 shrink-0 tablet:w-full tablet:max-w-167.25"
         >
           {/* `Ellipse 1593` (888:20654), 375.8 px. */}
           <Image

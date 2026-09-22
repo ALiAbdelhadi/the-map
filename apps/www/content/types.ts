@@ -58,8 +58,6 @@ export type SiteContent = {
   };
   reviews: {
     heading: string;
-    /** The typewriter's states, each exactly as a Figma variant spells it. */
-    headingSteps: string[];
     subheading: string;
     items: { id: string; name: string; rating: string; quote: string; photo: string }[];
   };

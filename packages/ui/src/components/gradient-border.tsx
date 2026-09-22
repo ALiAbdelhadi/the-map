@@ -5,7 +5,6 @@ import { useRef, useState } from "react";
 import { cn } from "../lib/cn";
 import { type FigmaTransition, figmaTween } from "../motion/figma-easing";
 import { gsap, useGSAP } from "../motion/gsap";
-import { useAfterDelay } from "../motion/use-after-delay";
 
 /**
  * A gradient stroke drawn over its parent's border area.
@@ -18,20 +17,18 @@ import { useAfterDelay } from "../motion/use-after-delay";
  * variables that GSAP tweens. The parent needs `relative` and its own radius; the
  * overlay inherits the radius.
  *
- * `states` are the variants' stops, left to right, as (position 0–1, colour token).
- * - `loop`: state 0 → 1 → 0 … each after its step's delay (Figma "After delay").
- * - `hover`: state 0 at rest, state 1 while the parent is hovered or has focus.
+ * `states` are the variants' stops, left to right, as (position 0–1, colour token):
+ * state 0 at rest, state 1 while the parent is hovered or has focus. (Figma loops
+ * some of these; the site only answers hover — approved 2026-09-22.)
  */
 export type GradientStop = [position: number, color: string];
 export type GradientState = [GradientStop, GradientStop] | null;
 
-type Step = { delay: number } & FigmaTransition;
-
 export type GradientBorderProps = {
   states: [GradientState, GradientState];
-  mode: "loop" | "hover";
-  /** loop: [0 → 1, 1 → 0]; hover: [in, out]. */
-  steps: [Step, Step] | [FigmaTransition, FigmaTransition];
+  mode: "hover";
+  /** [in, out]. */
+  steps: [FigmaTransition, FigmaTransition];
   /** Border width class, e.g. `p-1` for Figma's 4 px stroke. */
   width: string;
   className?: string;
@@ -55,7 +52,7 @@ function vars(state: GradientState) {
   };
 }
 
-export function GradientBorder({ states, mode, steps, width, className }: GradientBorderProps) {
+export function GradientBorder({ states, steps, width, className }: GradientBorderProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const [state, setState] = useState<0 | 1>(0);
   const first = useRef(true);
@@ -86,7 +83,7 @@ export function GradientBorder({ states, mode, steps, width, className }: Gradie
   useGSAP(
     () => {
       const parent = ref.current?.parentElement;
-      if (mode !== "hover" || !parent) return;
+      if (!parent) return;
       const on = () => {
         setState(1);
       };
@@ -106,19 +103,6 @@ export function GradientBorder({ states, mode, steps, width, className }: Gradie
     },
     { scope: ref },
   );
-
-  // Figma starts a state's timer once the state has arrived: wait for the transition
-  // that brought it in, then the delay on the way out.
-  const incoming = steps[state === 0 ? 1 : 0];
-  const outgoing = steps[state === 0 ? 0 : 1];
-  useAfterDelay(ref, {
-    key: state,
-    enabled: mode === "loop",
-    wait: incoming.duration + ("delay" in outgoing ? outgoing.delay : 0),
-    onFire: () => {
-      setState((value) => (value === 0 ? 1 : 0));
-    },
-  });
 
   return (
     <span

@@ -14,7 +14,6 @@ import { NearbyIcon } from "@themap/ui/icons/nearby";
 import { figmaTween } from "@themap/ui/motion/figma-easing";
 import { gsap, useGSAP } from "@themap/ui/motion/gsap";
 import { prototype } from "@themap/ui/motion/tokens";
-import { useAfterDelay } from "@themap/ui/motion/use-after-delay";
 
 import type { SiteContent } from "../../content/types";
 
@@ -30,12 +29,13 @@ import type { SiteContent } from "../../content/types";
  * - removes the character;
  * - outlines the row and shows the feature beside the card — a pill with the
  *   feature's chip, label and description, reached by a hand-drawn arrow on the
- *   1440 frame; on the phone the pill sits 62 px under the card, without the arrow.
+ *   1440 frame; below 1440 (phone and tablet) the pill sits 62 px under the card,
+ *   without the arrow — the tablet frame is too narrow to hold it beside the card.
  *
- * Motion (prototype reactions): default → All-in-One → Flexible → Nearby → Fast →
- * Easy → default, each after 0.8 s with a 1.022 s `GENTLE` spring (Easy → default:
- * 0.744 s `QUICK`); a click on a row goes there with 0.3 s ease-out, and a click on
- * the selected row returns to the default instantly.
+ * Motion: only a click changes the state (the prototype's auto-advance is dropped,
+ * approved 2026-09-22). Clicking a row zooms the maze and moves the card over 0.8 s
+ * on a strong ease-in-out; the feature pill rises in just after. Clicking the
+ * selected row goes back to the default the same way. Hover only restyles the row.
  */
 
 const ICONS = {
@@ -108,14 +108,11 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
   const features = content.whyChoose.features;
   const ref = useRef<HTMLElement>(null);
   const [selected, setSelected] = useState<string | null>(null);
-  // How the current state arrived: its transition, and whether it was instant.
-  const [arrival, setArrival] = useState<"auto" | "back" | "click" | "instant">("instant");
   const first = useRef(true);
   const height = useRef(0);
 
-  const go = (next: string | null, how: "auto" | "back" | "click" | "instant") => {
+  const go = (next: string | null) => {
     height.current = ref.current?.offsetHeight ?? 0;
-    setArrival(how);
     setSelected(next);
   };
 
@@ -128,58 +125,41 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
         return;
       }
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const timing =
-        reduce || arrival === "instant"
-          ? { duration: 0 }
-          : figmaTween(
-              arrival === "auto"
-                ? prototype.whyChoose.auto
-                : arrival === "back"
-                  ? prototype.whyChoose.back
-                  : prototype.whyChoose.click,
-            );
+      const move = reduce ? { duration: 0 } : figmaTween(prototype.whyChoose.click);
+      const arrive = reduce ? { duration: 0 } : figmaTween(prototype.whyChoose.tip);
       const phone = !window.matchMedia("(min-width: 48rem)").matches;
       const maze = phone ? MAZE.phone : MAZE.desktop;
       const place = selected ? maze.places[selected as FeatureId] : null;
       gsap.set("[data-maze]", { transformOrigin: maze.origin });
-      gsap.to("[data-maze]", { ...(place ?? { scale: 1, xPercent: 0, yPercent: 0 }), ...timing });
+      gsap.to("[data-maze]", {
+        ...(place ?? { scale: 1, xPercent: 0, yPercent: 0 }),
+        ...move,
+        overwrite: "auto",
+      });
 
       const shift = selected
         ? (phone ? CARD_SHIFT.phone : CARD_SHIFT.desktop)[selected as FeatureId]
         : [0, 0];
       const flip = document.documentElement.dir === "rtl" ? -1 : 1;
-      gsap.to("[data-why-card]", { x: shift[0] * flip, y: shift[1], ...timing });
+      gsap.to("[data-why-card]", { x: shift[0] * flip, y: shift[1], ...move, overwrite: "auto" });
 
-      gsap.to("[data-character]", { autoAlpha: selected ? 0 : 1, ...timing });
-      gsap.fromTo("[data-why-tip]:not([hidden])", { autoAlpha: 0 }, { autoAlpha: 1, ...timing });
-      gsap.fromTo("[data-selected-ring]", { opacity: 0 }, { opacity: 1, ...timing });
+      gsap.to("[data-character]", { autoAlpha: selected ? 0 : 1, ...arrive, overwrite: "auto" });
+      // The feature pill arrives after the card has started moving; the arrow draws with it.
+      gsap.fromTo(
+        "[data-why-tip]:not([hidden])",
+        { autoAlpha: 0, y: 12 },
+        { autoAlpha: 1, y: 0, ...arrive, delay: reduce ? 0 : 0.2 },
+      );
+      gsap.fromTo("[data-selected-ring]", { opacity: 0 }, { opacity: 1, ...arrive });
 
-      // The phone frame grows from 888 to 1024 while a feature is shown.
-      if (phone && height.current) {
-        gsap.fromTo(section, { height: height.current }, { height: "auto", ...timing });
+      // Below 1440 the pill sits under the card, so the section grows to fit it.
+      const stacked = !window.matchMedia("(min-width: 90rem)").matches;
+      if (stacked && height.current) {
+        gsap.fromTo(section, { height: height.current }, { height: "auto", ...move });
       }
     },
     { scope: ref, dependencies: [selected] },
   );
-
-  const index = selected ? features.findIndex((feature) => feature.id === selected) : -1;
-  const last = index === features.length - 1;
-  const arrived =
-    arrival === "instant"
-      ? 0
-      : arrival === "auto"
-        ? prototype.whyChoose.auto.duration
-        : arrival === "back"
-          ? prototype.whyChoose.back.duration
-          : prototype.whyChoose.click.duration;
-  useAfterDelay(ref, {
-    key: selected,
-    wait: arrived + prototype.whyChoose.auto.delay,
-    onFire: () => {
-      if (last) go(null, "back");
-      else go(features[index + 1]?.id ?? null, "auto");
-    },
-  });
 
   const title = content.whyChoose.title;
 
@@ -224,8 +204,7 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
                 label={title}
                 selectedId={selected}
                 onSelect={(id) => {
-                  if (id === selected) go(null, "instant");
-                  else go(id, "click");
+                  go(id === selected ? null : id);
                 }}
                 features={features.map((feature) => {
                   const Icon = ICONS[feature.id as FeatureId];
@@ -245,12 +224,12 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
                 aria-labelledby={`feature-${feature.id}`}
                 data-why-tip=""
                 hidden={selected !== feature.id}
-                className="tablet:absolute tablet:start-full tablet:top-1/2 tablet:h-133.75 tablet:w-182.5 tablet:-translate-y-1/2"
+                className="desktop:absolute desktop:start-full desktop:top-1/2 desktop:h-133.75 desktop:w-182.5 desktop:-translate-y-1/2"
               >
                 {/* `arrow` (914:19995): 336.767 px, turned 13.22°, 130 px down. */}
                 <span
                   aria-hidden="true"
-                  className="absolute start-0 top-32.5 hidden size-101.25 items-center justify-center tablet:flex rtl:-scale-x-100"
+                  className="absolute start-0 top-32.5 hidden size-101.25 items-center justify-center desktop:flex rtl:-scale-x-100"
                 >
                   <Image
                     src="/svg/why-choose-arrow.svg"
@@ -262,17 +241,17 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
                   />
                 </span>
                 {/* Pill 914:19999 — phone 1038:25223. */}
-                <div className="flex items-center rounded-pill bg-surface-glass-strong px-7.5 py-3 text-bg tablet:absolute tablet:start-32.25 tablet:top-0 tablet:px-17 tablet:py-6">
-                  <div className="flex flex-col gap-0 tablet:w-116.25 tablet:gap-3">
-                    <div className="flex h-16.5 items-center gap-6 pe-5 py-1 tablet:h-auto">
+                <div className="flex items-center rounded-pill bg-surface-glass-strong px-7.5 py-3 text-bg tablet:px-10 tablet:py-5 desktop:absolute desktop:start-32.25 desktop:top-0 desktop:px-17 desktop:py-6">
+                  <div className="flex flex-col gap-0 desktop:w-116.25 desktop:gap-3">
+                    <div className="flex h-16.5 items-center gap-6 pe-5 py-1 desktop:h-auto">
                       <span className="flex size-15.5 shrink-0 items-center justify-center rounded-chip bg-primary-400 p-2">
                         <Icon width={40} height={40} />
                       </span>
-                      <span className="text-24 font-regular whitespace-nowrap tablet:text-40">
+                      <span className="text-24 font-regular whitespace-nowrap tablet:text-32 desktop:text-40">
                         {feature.label}
                       </span>
                     </div>
-                    <p className="text-16 font-regular whitespace-nowrap tablet:text-32">
+                    <p className="text-16 font-regular whitespace-nowrap tablet:text-24 desktop:text-32">
                       {feature.description}
                     </p>
                   </div>

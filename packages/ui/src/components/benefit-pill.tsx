@@ -30,12 +30,13 @@ export function BenefitPill({ title, description, icon, className }: BenefitPill
       )}
     >
       {/*
-        Figma `Gradient Service provider` stroke: 2 px primary/500 → green/600, which
-        flips end for end every 0.8 s (`995:20700`, 0.3 s ease-in-out). It is drawn
+        Figma `Gradient Service provider` stroke: 2 px primary/500 → green/600. On
+        hover it flips end for end (`995:20700`'s second variant) and back on leave —
+        no longer on a loop (approved 2026-09-22). It is drawn
         inside the padding (+2 px) because the pill clips its content.
       */}
       <GradientBorder
-        mode="loop"
+        mode="hover"
         width="p-0.5"
         states={[
           [
@@ -47,7 +48,7 @@ export function BenefitPill({ title, description, icon, className }: BenefitPill
             [1, "var(--color-primary-500)"],
           ],
         ]}
-        steps={[prototype.provider.pill, prototype.provider.pill]}
+        steps={[prototype.hover.border, prototype.hover.border]}
       />
       <div className="flex flex-col items-start gap-2.25">
         <div className="flex w-full items-center gap-3 rounded-row pe-5 py-1">

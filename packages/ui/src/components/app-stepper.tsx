@@ -6,7 +6,6 @@ import { cn } from "../lib/cn";
 import { figmaTween } from "../motion/figma-easing";
 import { Flip, gsap, useGSAP } from "../motion/gsap";
 import { prototype } from "../motion/tokens";
-import { useAfterDelay } from "../motion/use-after-delay";
 import { StepItem } from "./step-item";
 
 /**
@@ -15,9 +14,9 @@ import { StepItem } from "./step-item";
  * Figma `Get the App section` `963:20033` — variants `1`, `2`, `3`: exactly one
  * step is expanded at a time, column gap 29.
  *
- * Motion: 1 → 2 → 3 each after 0.8 s with a 1.022 s `GENTLE` spring, 3 → 1 after
- * 0.4 s with a 0.248 s `QUICK` spring; a click opens that step with `GENTLE`. Smart
- * Animate resizes the pills and slides the others, which is a Flip here.
+ * Motion: a click opens that step — the pills resize and the others slide (a Flip,
+ * 0.5 s strong ease-in-out) and the rocket slides in under it. Nothing advances by
+ * itself (approved 2026-09-22).
  */
 export type AppStepperStep = {
   title: string;
@@ -40,18 +39,11 @@ export type AppStepperProps = {
 export function AppStepper({ steps, defaultStep = 1, label, rocket, className }: AppStepperProps) {
   const [openStep, setOpenStep] = useState(defaultStep);
   const ref = useRef<HTMLDivElement>(null);
-  // How long the current step took to arrive — Figma starts the timer after it.
-  const [arrival, setArrival] = useState(0);
-  const layout = useRef<{ state: Flip.FlipState; back: boolean } | null>(null);
+  const layout = useRef<Flip.FlipState | null>(null);
 
-  const open = (step: number, back = false) => {
-    if (ref.current) {
-      layout.current = {
-        state: Flip.getState(ref.current.querySelectorAll("[data-flip-id]")),
-        back,
-      };
-    }
-    setArrival(back ? prototype.stepper.back.duration : prototype.stepper.auto.duration);
+  const open = (step: number) => {
+    if (step === openStep) return;
+    if (ref.current) layout.current = Flip.getState(ref.current.querySelectorAll("[data-flip-id]"));
     setOpenStep(step);
   };
 
@@ -60,20 +52,25 @@ export function AppStepper({ steps, defaultStep = 1, label, rocket, className }:
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const saved = layout.current;
       layout.current = null;
-      if (reduce) return;
-      if (saved) {
-        Flip.from(saved.state, {
-          targets: ref.current?.querySelectorAll("[data-flip-id]") ?? [],
-          ...figmaTween(saved.back ? prototype.stepper.back : prototype.stepper.auto),
-        });
-      }
+      if (reduce || !saved) return;
+      Flip.from(saved, {
+        targets: ref.current?.querySelectorAll("[data-flip-id]") ?? [],
+        ...figmaTween(prototype.stepper.click),
+      });
+      // The opened step's text settles in as the pill finishes growing.
+      gsap.fromTo(
+        "[data-step-open]",
+        { opacity: 0, y: 6 },
+        { opacity: 1, y: 0, ...figmaTween(prototype.hover.border), delay: 0.2 },
+      );
       const flip = document.documentElement.dir === "rtl" ? -1 : 1;
       gsap.fromTo(
         "[data-rocket]",
-        { x: -57 * flip, y: 43, opacity: 0 },
+        { x: -24 * flip, y: 16, scale: 0.9, opacity: 0 },
         {
           x: 0,
           y: 0,
+          scale: 1,
           opacity: 1,
           delay: prototype.stepper.rocket.delay,
           ...figmaTween(prototype.stepper.rocket),
@@ -82,16 +79,6 @@ export function AppStepper({ steps, defaultStep = 1, label, rocket, className }:
     },
     { scope: ref, dependencies: [openStep] },
   );
-
-  const last = openStep === steps.length;
-  useAfterDelay(ref, {
-    key: openStep,
-    wait: arrival + (last ? prototype.stepper.back.delay : prototype.stepper.auto.delay),
-    onFire: () => {
-      if (last) open(1, true);
-      else open(openStep + 1);
-    },
-  });
 
   return (
     <div

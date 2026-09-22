@@ -4,9 +4,8 @@ import { type ReactNode, useRef, useState } from "react";
 
 import { cn } from "../lib/cn";
 import { figmaTween } from "../motion/figma-easing";
-import { Flip, useGSAP } from "../motion/gsap";
+import { Flip, gsap, useGSAP } from "../motion/gsap";
 import { prototype } from "../motion/tokens";
-import { useAfterDelay } from "../motion/use-after-delay";
 import { ReviewCard } from "./review-card";
 
 /**
@@ -15,10 +14,9 @@ import { ReviewCard } from "./review-card";
  * Figma `Real Reviews` `1015:20920`: four variants, one per reviewer. Exactly
  * one card is expanded; the other three stay as 210x307 portraits. Row gap 68.
  *
- * Motion: each variant hands on to the next reviewer after 0.8 s (Nourhan back to
- * Ahmed), and a click on a portrait jumps there — both a 0.3 s ease-in-out Smart
- * Animate, in which the cards keep their order and slide to their new widths.
- * That is a Flip from the old layout to the new one.
+ * Motion: a click on a portrait expands it — the cards keep their order and slide
+ * to their new widths (a Flip, 0.5 s strong ease-in-out), and the review text fades
+ * in once the card has room. Nothing changes by itself (approved 2026-09-22).
  */
 export type Review = {
   id: string;
@@ -50,6 +48,7 @@ export function ReviewCarousel({
   const layout = useRef<Flip.FlipState | null>(null);
 
   const expand = (id: string) => {
+    if (id === expandedId) return;
     if (ref.current) layout.current = Flip.getState(ref.current.querySelectorAll("[data-flip-id]"));
     setExpandedId(id);
   };
@@ -61,22 +60,16 @@ export function ReviewCarousel({
       if (!state || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       Flip.from(state, {
         targets: ref.current?.querySelectorAll("[data-flip-id]") ?? [],
-        fade: true,
         ...figmaTween(prototype.reviews.click),
       });
+      gsap.fromTo(
+        "[data-review-expanded] > div:last-child",
+        { opacity: 0, y: 8 },
+        { opacity: 1, y: 0, ...figmaTween(prototype.hover.border), delay: 0.25 },
+      );
     },
     { scope: ref, dependencies: [expandedId] },
   );
-
-  useAfterDelay(ref, {
-    key: expandedId,
-    wait: prototype.reviews.auto.duration + prototype.reviews.auto.delay,
-    onFire: () => {
-      const index = reviews.findIndex((review) => review.id === expandedId);
-      const next = reviews[(index + 1) % reviews.length];
-      if (next) expand(next.id);
-    },
-  });
 
   return (
     <ul
