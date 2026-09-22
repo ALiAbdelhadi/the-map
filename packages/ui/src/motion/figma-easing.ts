@@ -30,6 +30,13 @@ const SPRINGS = {
 } satisfies Record<string, Spring>;
 
 const BEZIERS = {
+  /*
+   * Site easings, approved 2026-09-22 (Figma's springs overshoot and its CSS-keyword
+   * curves are weak): a strong ease-out for things arriving or answering a click,
+   * and a strong ease-in-out for things moving across the screen.
+   */
+  UI_OUT: "0.23,1,0.32,1",
+  UI_IN_OUT: "0.77,0,0.175,1",
   EASE_OUT: "0,0,0.58,1",
   EASE_IN_AND_OUT: "0.42,0,0.58,1",
   EASE_IN_AND_OUT_BACK: "0.7,-0.4,0.4,1.4",

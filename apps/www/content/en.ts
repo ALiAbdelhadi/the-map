@@ -183,20 +183,6 @@ export const en: SiteContent = {
   },
   reviews: {
     heading: "Trust Built on Real Reviews",
-    /** The 11 typewriter variants, Figma `1028:23286`. */
-    headingSteps: [
-      "Trust Built on R",
-      "Trust Built on Re",
-      "Trust Built on Rea",
-      "Trust Built on Real",
-      "Trust Built on Real R",
-      "Trust Built on Real Re",
-      "Trust Built on Real Rev",
-      "Trust Built on Real Revi",
-      "Trust Built on Real Revie",
-      "Trust Built on Real Review",
-      "Trust Built on Real Reviews",
-    ],
     subheading:
       "Genuine user experiences that reflect our service quality and help you decide with confidence.",
     items: [

@@ -115,6 +115,17 @@ an option at the phase where it lands and wait for a yes.
 | H1  | The phone hero variants (`1038:26404`) hug their content, so their frames have no common origin, and their featured item stays 120 px wide | The 1440 geometry, scaled to the 218 px ring, is used on the phone — the featured item is larger than in the phone frames |
 | H2  | Smart Animate interpolates positions in straight lines, so dots and items cut across the ring mid-transition                               | Reproduced as Figma animates it                                                                                           |
 
+## Approved departures from Figma (owner, 2026-09-22)
+
+| #   | Departure                                                                                                                                       | Why                                                      |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| D1  | No auto-advancing states anywhere (hero, Why Choose Us, stepper, reviews, screens, typewriter, Service Areas title, gradient strokes, provider) | Owner: motion must answer the visitor, not run by itself |
+| D2  | Site easings replace Figma's springs and keyword curves                                                                                         | Smoother, no overshoot                                   |
+| D3  | Hero chosen service 300 px instead of ~560 px                                                                                                   | In proportion with the ring                              |
+| D4  | Phone hero orbit 312 px instead of Figma's 218 px ring box (388 px)                                                                             | Figma's outer items left the screen                      |
+| D5  | Why Choose Us pill under the card below 1440 (Figma tablet frame puts it off-screen)                                                            | Responsive                                               |
+| D6  | Provider full section stays after `Click here` (Figma folds it away after 0.8 s)                                                                | Owner brief; resolves M7                                 |
+
 ## Data
 
 | #   | Gap                                                         | Status                            |

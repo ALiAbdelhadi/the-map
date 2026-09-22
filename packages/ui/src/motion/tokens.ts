@@ -1,84 +1,39 @@
 /**
- * Motion values — every one read from the Figma prototype.
+ * Motion values.
  *
- * Each entry is a component set's prototype reactions (read with the Plugin API,
- * read-only): `delay` is the "After delay" trigger in seconds, the transitions are
- * Smart Animate with Figma's stored duration and easing type. See docs/motion.md →
- * "Prototype audit" for the source of each value, and figma-easing.ts for how the
- * easing types become curves.
+ * 2026-09-22 — approved change of direction: nothing on the page animates by itself
+ * any more. Every change answers a click, a hover or the section scrolling into view,
+ * once. Figma's prototype loops ("After delay") are dropped, and its springs and
+ * keyword curves are replaced by two strong curves (see figma-easing.ts `UI_OUT`,
+ * `UI_IN_OUT`). Durations follow the brief: micro-interactions ≤ 0.3 s, on-screen
+ * moves 0.5–0.9 s. The Figma prototype values are kept in docs/motion.md.
  */
 import type { FigmaTransition } from "./figma-easing";
 
-type Step = { delay: number } & FigmaTransition;
+const out = (duration: number) => ({ ease: "UI_OUT", duration }) satisfies FigmaTransition;
+const move = (duration: number) => ({ ease: "UI_IN_OUT", duration }) satisfies FigmaTransition;
 
 export const prototype = {
-  /** Hero section `898:20007`: every variant advances after 0.8 s; clicks jump there. */
-  hero: {
-    auto: { delay: 0.8, ease: "EASE_OUT", duration: 0.3 } satisfies Step,
-    click: { ease: "EASE_OUT", duration: 0.3 } satisfies FigmaTransition,
-  },
-  /**
-   * Why Choose Us `914:20605`: default → All-in-One → … → Easy → default.
-   * Clicking a row: 0.3 s ease-out; clicking the selected row returns instantly.
-   */
-  whyChoose: {
-    auto: { delay: 0.8, ease: "GENTLE", duration: 1.022 } satisfies Step,
-    /** Easy → default. */
-    back: { delay: 0.8, ease: "QUICK", duration: 0.744 } satisfies Step,
-    click: { ease: "EASE_OUT", duration: 0.3 } satisfies FigmaTransition,
-  },
-  /** Screens `936:20018`: five scroll positions, looping. */
-  screens: { delay: 0.8, ease: "SLOW", duration: 1.25 } satisfies Step,
-  /** Get the App Now badge `936:20234`: the gradient border swaps and swaps back. */
-  badge: {
-    out: { delay: 0.8, ease: "EASE_IN_AND_OUT", duration: 0.3 } satisfies Step,
-    back: { delay: 0.8, ease: "EASE_IN_AND_OUT_BACK", duration: 0.3 } satisfies Step,
-  },
-  /** Get the App section `963:20033`: 1 → 2 → 3 after 0.8 s, 3 → 1 after 0.4 s. */
-  stepper: {
-    auto: { delay: 0.8, ease: "GENTLE", duration: 1.022 } satisfies Step,
-    back: { delay: 0.4, ease: "QUICK", duration: 0.248 } satisfies Step,
-    click: { ease: "GENTLE", duration: 1.022 } satisfies FigmaTransition,
-    /** Choose Your Store `950:20377`: Action → 3D, the rocket slides in. */
-    rocket: { delay: 0.2, ease: "SLOW", duration: 0.417 } satisfies Step,
-  },
-  /**
-   * Service Areas title `974:20059`: "Service Areas" holds 0.8 s, hands over to
-   * "Where We Operate" through two off-stage variants, and back.
-   */
-  serviceAreas: {
-    hold: { delay: 0.8, ease: "GENTLE", duration: 1.022 } satisfies Step,
-    enter: { delay: 0.1, ease: "GENTLE", duration: 0.128 } satisfies Step,
-  },
-  /** Search by location `984:20302`: hover and focus borders; `Cursor` `982:20292` blinks. */
-  search: {
-    hover: { ease: "GENTLE", duration: 1.022 } satisfies FigmaTransition,
-    caret: { delay: 0.8, ease: "GENTLE", duration: 1.022 } satisfies Step,
-  },
-  /** Contact us `998:20842` — the provider sequence. */
-  provider: {
-    step: { delay: 0.8, ease: "EASE_IN_AND_OUT", duration: 0.3 } satisfies Step,
-    /** Click here → the full section. */
-    click: { ease: "EASE_IN_AND_OUT", duration: 0.3 } satisfies FigmaTransition,
-    /** Service provider Cart `995:20700`: the gradient border flips back and forth. */
-    pill: { delay: 0.8, ease: "EASE_IN_AND_OUT", duration: 0.3 } satisfies Step,
-    /** Click `997:21182`: the hand icon grows and shrinks. */
-    hand: { delay: 0.8, ease: "EASE_OUT", duration: 0.3 } satisfies Step,
-  },
-  /** Real Reviews `1015:20920`: the expanded card moves on every 0.8 s. */
-  reviews: {
-    auto: { delay: 0.8, ease: "EASE_IN_AND_OUT", duration: 0.3 } satisfies Step,
-    click: { ease: "EASE_IN_AND_OUT", duration: 0.3 } satisfies FigmaTransition,
-  },
-  /** Trust Built on Real Reviews `1028:23286`: 11 variants, one step each, looping. */
-  typewriter: { delay: 0.8, ease: "EASE_IN_AND_OUT", duration: 0.3 } satisfies Step,
-  /** Hover transitions. */
-  hover: {
-    /** Store badge `942:20435`. */
-    storeBadge: { ease: "SLOW", duration: 1.25 } satisfies FigmaTransition,
-    /** Email card `998:20792`, Click here `996:20962`. */
-    card: { ease: "EASE_OUT", duration: 0.3 } satisfies FigmaTransition,
-  },
-  /** menu `1038:26925`: the phone menu opens and closes. */
-  menu: { ease: "EASE_IN_AND_OUT", duration: 0.3 } satisfies FigmaTransition,
+  /** Hero: the ring re-arranges around the chosen service. */
+  hero: { click: move(0.7), copy: out(0.45) },
+  /** Why Choose Us: maze zoom and card move; the feature pill arrives. */
+  whyChoose: { click: move(0.8), tip: out(0.35) },
+  /** App screens tile: the columns scroll while hovered. */
+  screens: { hover: move(2.4), back: out(0.6) },
+  /** Stepper: pills resize; the rocket slides in. */
+  stepper: { click: move(0.5), rocket: { ...out(0.5), delay: 0.15 } },
+  /** Service Areas title: swaps while hovered. */
+  serviceAreas: { swap: out(0.4) },
+  /** Search field: stroke on hover/focus; the cursor blinks only while focused and empty. */
+  search: { hover: out(0.25), caret: { ...move(0.5), delay: 0.5 } },
+  /** Provider (1440): build-up once in view, then the full section on click. */
+  provider: { step: { ...out(0.5), stagger: 0.12 }, click: move(0.6) },
+  /** Reviews: cards resize to the chosen one. */
+  reviews: { click: move(0.5) },
+  /** Typewriter: one character at a time, once, when the heading comes into view. */
+  typewriter: { perChar: 0.045, caret: out(0.3) },
+  /** Hover changes. */
+  hover: { storeBadge: out(0.25), card: out(0.25), border: out(0.3), lift: out(0.2) },
+  /** Phone menu. */
+  menu: out(0.25),
 } as const;

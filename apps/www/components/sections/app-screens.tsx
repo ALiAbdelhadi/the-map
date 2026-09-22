@@ -4,17 +4,17 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 
 import { figmaTween } from "@themap/ui/motion/figma-easing";
-import { gsap, useGSAP } from "@themap/ui/motion/gsap";
+import { gsap, MOTION_OK, useGSAP } from "@themap/ui/motion/gsap";
 import { prototype } from "@themap/ui/motion/tokens";
-import { useAfterDelay } from "@themap/ui/motion/use-after-delay";
 
 /**
  * The phone-mockup tile — Figma `Screens` (`936:20018`).
  *
  * Two 200 px columns of app screenshots inside a 565 px tile. The set has five
- * variants that differ only in where the two columns sit; each advances after 0.8 s
- * with a 1.25 s `SLOW` spring, and variant 5 returns to 1, so the columns scroll past
- * one another. Positions are container-query units of the 565 px tile
+ * variants that differ only in where the two columns sit. Figma cycles them on a
+ * loop; approved 2026-09-22, the columns scroll from variant 1's place to variant 5's
+ * in one 2.4 s pass while the tile is hovered (or after a tap), and glide back when
+ * it is left. Positions are container-query units of the 565 px tile
  * (px / 565 × 100), per variant: column one (x, y), column two (x, y).
  */
 const POSITIONS = [
@@ -52,7 +52,9 @@ const COLUMNS = [
 
 export function AppScreens({ label }: { label: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [variant, setVariant] = useState(0);
+  // While hovered (or after a tap), the columns scroll through Figma's five
+  // positions in one smooth pass; leaving brings them back.
+  const [playing, setPlaying] = useState(false);
   const first = useRef(true);
 
   useGSAP(
@@ -61,27 +63,36 @@ export function AppScreens({ label }: { label: string }) {
         first.current = false;
         return;
       }
-      const place = POSITIONS[variant];
-      if (!place) return;
-      const tween = figmaTween(prototype.screens);
-      gsap.to("[data-column='0']", { "--x": place[0], "--y": place[1], ...tween });
-      gsap.to("[data-column='1']", { "--x": place[2], "--y": place[3], ...tween });
+      const reduce = !window.matchMedia(MOTION_OK).matches;
+      const [one, two] = ["[data-column='0']", "[data-column='1']"];
+      if (!playing) {
+        const start = POSITIONS[0];
+        const back = reduce ? { duration: 0 } : figmaTween(prototype.screens.back);
+        gsap.to(one, { "--x": start[0], "--y": start[1], ...back, overwrite: true });
+        gsap.to(two, { "--x": start[2], "--y": start[3], ...back, overwrite: true });
+        return;
+      }
+      const end = POSITIONS[4];
+      const pass = reduce ? { duration: 0 } : figmaTween(prototype.screens.hover);
+      gsap.to(one, { "--x": end[0], "--y": end[1], ...pass, overwrite: true });
+      gsap.to(two, { "--x": end[2], "--y": end[3], ...pass, overwrite: true });
     },
-    { scope: ref, dependencies: [variant] },
+    { scope: ref, dependencies: [playing] },
   );
-
-  useAfterDelay(ref, {
-    key: variant,
-    wait: prototype.screens.duration + prototype.screens.delay,
-    onFire: () => {
-      setVariant((current) => (current + 1) % POSITIONS.length);
-    },
-  });
 
   return (
     <div
       ref={ref}
       role="img"
+      onPointerEnter={(event) => {
+        if (event.pointerType === "mouse") setPlaying(true);
+      }}
+      onPointerLeave={(event) => {
+        if (event.pointerType === "mouse") setPlaying(false);
+      }}
+      onClick={() => {
+        setPlaying((value) => !value);
+      }}
       aria-label={label}
       dir="ltr"
       className="@container relative aspect-square w-76 shrink-0 overflow-hidden rounded-tile bg-primary-700 tablet:w-full tablet:max-w-141.25"

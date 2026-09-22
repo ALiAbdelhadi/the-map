@@ -3,13 +3,14 @@ import { prototype } from "@themap/ui/motion/tokens";
 
 /**
  * The `Get the App Now` badge's stroke (`936:20234`, also inside the provider
- * section): a 4 px primary/500 → white gradient that, every 0.8 s, moves to white at
- * 14.9 % → primary/500 at 67.3 % and back.
+ * section): a 4 px primary/500 → white gradient. On hover it moves to white at
+ * 14.9 % → primary/500 at 67.3 % (Figma's second variant) and back on leave — it no
+ * longer loops by itself (approved 2026-09-22).
  */
 export function BadgeBorder() {
   return (
     <GradientBorder
-      mode="loop"
+      mode="hover"
       width="-m-1 p-1"
       states={[
         [
@@ -21,7 +22,7 @@ export function BadgeBorder() {
           [0.673, "var(--color-primary-500)"],
         ],
       ]}
-      steps={[prototype.badge.out, prototype.badge.back]}
+      steps={[prototype.hover.border, prototype.hover.border]}
     />
   );
 }
