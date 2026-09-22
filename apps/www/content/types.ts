@@ -20,7 +20,6 @@ export type SiteContent = {
       lead: string;
       body: string;
       image: string;
-      imageLarge: string;
       background: string;
     }[];
     /** Accessible name for the button that returns to the default "The Map" state. */

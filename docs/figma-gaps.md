@@ -108,6 +108,13 @@ an option at the phase where it lands and wait for a yes.
 | M7  | The provider's full state returns to the illustration 0.8 s after `Click here`, hiding the copy and links                                                                                                                                                                                                                                                  | Built as Figma has it, but held while the pointer or focus is in the section; confirm this is intended |
 | M8  | QUICK spring on Why Choose Easy → default overshoots below scale 1, briefly showing the section background at the edges                                                                                                                                                                                                                                    | Reproduced as Figma animates it                                                                        |
 
+## Hero orbit (2026-09-22)
+
+| #   | Gap                                                                                                                                        | Status                                                                                                                    |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| H1  | The phone hero variants (`1038:26404`) hug their content, so their frames have no common origin, and their featured item stays 120 px wide | The 1440 geometry, scaled to the 218 px ring, is used on the phone — the featured item is larger than in the phone frames |
+| H2  | Smart Animate interpolates positions in straight lines, so dots and items cut across the ring mid-transition                               | Reproduced as Figma animates it                                                                                           |
+
 ## Data
 
 | #   | Gap                                                         | Status                            |
