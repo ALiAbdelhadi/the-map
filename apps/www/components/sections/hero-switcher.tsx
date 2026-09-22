@@ -10,6 +10,7 @@ import { prototype } from "@themap/ui/motion/tokens";
 import { useAfterDelay } from "@themap/ui/motion/use-after-delay";
 
 import type { SiteContent } from "../../content/types";
+import { ITEM_START, ORBIT, RING_START } from "./hero-orbit-data";
 
 /**
  * Hero service switcher.
@@ -19,55 +20,42 @@ import type { SiteContent } from "../../content/types";
  * reaches the top, where it is shown large; the logo drops back into the ring; the
  * card copy and the background scene change.
  *
- * Figma places each variant's icons by hand and the spacing is irregular, so the
- * ring here is ten even slots (36° apart, in the default variant's clockwise order)
- * at the radius the default variant uses. Every geometry value below is from the
- * default variant `898:20006`, in container-query units of its 669.642 px orbit box.
+ * Every variant places every item by hand, and Smart Animate moves each one — the
+ * same layer in both variants — straight to its place in the next: the chosen
+ * service grows from 120 px on the ring to ~560 px at the top, the others travel
+ * round, the ring itself shifts and turns (−0.6°, −26.2°, −51.3° …), and each item's
+ * dot slides along it (18 px, or the 32 px dark marker under the item on top).
+ * `hero-orbit-data.ts` holds those places per variant, exactly as Figma has them;
+ * GSAP tweens each item's CSS variables from one variant's values to the next's.
+ * Rotations take the short way round.
  *
  * Phone (`1041:26353`, 375 frame): the ring is 218 px, so the orbit box is drawn
  * 388 px wide (218 / 0.56149) and may overflow the 359 px column, as it does in
  * Figma. The box starts 142 px down so the ring centre lands at y 387; the card is
  * 352x305 (content centred, as Figma clips it), 75 px below, with a 16 px regular body and a 41 px title gap.
+ * 1440 frame: the orbit frame sits at (689, 256) and reaches the bottom of the
+ * 1024 px section; the card is 544x471 at (81, 405), 148 px above the bottom.
+ * The phone variants (`1038:26404`) hug their content, so their frames have no common
+ * origin; the 1440 geometry, scaled, is used there.
  */
 
-/*
- * Geometry from `898:20006`, as container-query units of the 669.642 px orbit box
- * (px / 669.642 × 100). Class strings are written out in full so Tailwind finds them.
- *
- * - wheel: ring centre (331, 423.8), icon radius 260 → box at (71, 163.8), 520 wide
- * - ring `Ellipse 1593` (888:20654): 376
- * - slot: service icon 74 × 74, logo 62 × 74, pushed out by the 260 radius
- * - featured item: centred on the default variant's logo position (331, 134),
- *   300 wide for a service, 165 for the logo
- */
-const WHEEL = "left-[10.603cqw] top-[24.461cqw] size-[77.653cqw]";
-const RING = "size-[56.149cqw]";
-const FEATURED = "left-[49.429cqw] top-[20.011cqw]";
-
-/** One transform per slot, 36° apart clockwise from the top. */
-const SLOT_POSITION = [
-  "[transform:translate(-50%,-50%)_rotate(0deg)_translateY(-38.827cqw)_rotate(0deg)]",
-  "[transform:translate(-50%,-50%)_rotate(36deg)_translateY(-38.827cqw)_rotate(-36deg)]",
-  "[transform:translate(-50%,-50%)_rotate(72deg)_translateY(-38.827cqw)_rotate(-72deg)]",
-  "[transform:translate(-50%,-50%)_rotate(108deg)_translateY(-38.827cqw)_rotate(-108deg)]",
-  "[transform:translate(-50%,-50%)_rotate(144deg)_translateY(-38.827cqw)_rotate(-144deg)]",
-  "[transform:translate(-50%,-50%)_rotate(180deg)_translateY(-38.827cqw)_rotate(-180deg)]",
-  "[transform:translate(-50%,-50%)_rotate(216deg)_translateY(-38.827cqw)_rotate(-216deg)]",
-  "[transform:translate(-50%,-50%)_rotate(252deg)_translateY(-38.827cqw)_rotate(-252deg)]",
-  "[transform:translate(-50%,-50%)_rotate(288deg)_translateY(-38.827cqw)_rotate(-288deg)]",
-  "[transform:translate(-50%,-50%)_rotate(324deg)_translateY(-38.827cqw)_rotate(-324deg)]",
-];
-const STEP = 36;
+/** Figma pixels of the 669.642 px orbit frame, as container-query units. */
+const AT = {
+  left: "left-[calc(var(--cx)*100cqw/669.642)]",
+  top: "top-[calc(var(--cy)*100cqw/669.642)]",
+  width: "w-[calc(var(--w)*100cqw/669.642)]",
+  size: "size-[calc(var(--s)*100cqw/669.642)]",
+  rotate: "rotate-[calc(var(--r)*1deg)]",
+} as const;
 
 type Hero = SiteContent["hero"];
 
 export function HeroSwitcher({ hero }: { hero: Hero }) {
   const [selected, setSelected] = useState(0);
   const scope = useRef<HTMLDivElement>(null);
-  const wheel = useRef<HTMLDivElement>(null);
-  const angle = useRef(0);
   const firstRun = useRef(true);
-  const previous = useRef(0);
+  // The rotation each element is at now, unwrapped, so every turn takes the short way.
+  const turned = useRef<Record<string, number>>({});
   // Only a visitor's own choice is announced; the auto-advance is not.
   const [announce, setAnnounce] = useState(false);
 
@@ -84,98 +72,28 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
       // Figma: every hero transition is Smart Animate, 0.3 s ease-out.
       const tween = animate ? figmaTween(prototype.hero.click) : { duration: 0 };
 
-      // Turn the short way round to bring the selected slot to the top.
-      const target = -selected * STEP;
-      const delta = ((((target - angle.current) % 360) + 540) % 360) - 180;
-      const from = gsap.getProperty(wheel.current, "rotation") as number;
-      angle.current += delta;
+      const state = ORBIT[selected];
+      if (!state) return;
+      const turn = (key: string, rotation: number) => {
+        const now = turned.current[key] ?? rotation;
+        const next = now + (((((rotation - now) % 360) + 540) % 360) - 180);
+        turned.current[key] = next;
+        return next;
+      };
 
-      const previousIndex = previous.current;
-      previous.current = selected;
-      const q = (selector: string) => scope.current?.querySelector<HTMLElement>(selector) ?? null;
-      const inSlot = q(`[data-slot='${String(selected)}']`);
-      const inFeatured = q(`[data-featured='${String(selected)}']`);
-      const outSlot = q(`[data-slot='${String(previousIndex)}']`);
-      const outFeatured = q(`[data-featured='${String(previousIndex)}']`);
-      const flying = [inSlot, inFeatured, outSlot, outFeatured].filter(Boolean);
-      gsap.killTweensOf(flying);
+      const [rx, ry, rr] = state.ring;
+      gsap.to("[data-orbit-ring]", { "--cx": rx, "--cy": ry, "--r": turn("ring", rr), ...tween });
 
-      if (
-        !animate ||
-        previousIndex === selected ||
-        !inSlot ||
-        !inFeatured ||
-        !outSlot ||
-        !outFeatured
-      ) {
-        gsap.set(wheel.current, { rotation: angle.current });
-        gsap.utils.toArray<HTMLElement>("[data-slot]").forEach((el) => {
-          gsap.set(el, { autoAlpha: Number(el.dataset.slot) === selected ? 0 : 1 });
+      for (const [id, [cx, cy, width, rotation, dx, dy, dot]] of Object.entries(state.items)) {
+        gsap.to(`[data-orbit-art='${id}']`, {
+          "--cx": cx,
+          "--cy": cy,
+          "--w": width,
+          "--r": turn(id, rotation),
+          ...tween,
         });
-        gsap.utils.toArray<HTMLElement>("[data-featured]").forEach((el) => {
-          gsap.set(el, {
-            autoAlpha: Number(el.dataset.featured) === selected ? 1 : 0,
-            x: 0,
-            y: 0,
-            scale: 1,
-            rotation: 0,
-          });
-        });
-      } else {
-        /*
-         * Figma Smart Animate matches layers by name, so the chosen service is the same
-         * layer in both variants: it flies from its place on the ring to the top and
-         * grows (120 → ~560 px wide), while the item that was on top flies back down
-         * into its place on the ring and shrinks. Here each item has a ring copy (the
-         * slot) and a large copy (featured); the large copy is flown between the two
-         * places and the slot takes over where the ring copy should be seen.
-         */
-        const upright = (angle: number) => (((angle % 360) + 540) % 360) - 180;
-        const centre = (el: HTMLElement) => {
-          const box = el.getBoundingClientRect();
-          return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
-        };
-        const place = (slot: HTMLElement, featured: HTMLElement, rotation: number) => {
-          const a = centre(slot);
-          const b = centre(featured);
-          return {
-            x: a.x - b.x,
-            y: a.y - b.y,
-            scale: slot.offsetWidth / featured.offsetWidth,
-            rotation: upright(rotation),
-          };
-        };
-
-        gsap.set([inFeatured, outFeatured], { x: 0, y: 0, scale: 1, rotation: 0 });
-        // Where the incoming item is now, on the ring as it stands.
-        const start = place(inSlot, inFeatured, from);
-        // Where the outgoing item will be, on the ring once it has turned.
-        gsap.set(wheel.current, { rotation: angle.current });
-        const end = place(outSlot, outFeatured, angle.current);
-        gsap.set(wheel.current, { rotation: from });
-
-        gsap.to(wheel.current, { rotation: angle.current, ...tween });
-
-        gsap.set(inSlot, { autoAlpha: 0 });
-        gsap.fromTo(
-          inFeatured,
-          { ...start, autoAlpha: 1 },
-          { x: 0, y: 0, scale: 1, rotation: 0, ...tween },
-        );
-
-        gsap.set(outSlot, { autoAlpha: 0 });
-        gsap.fromTo(
-          outFeatured,
-          { x: 0, y: 0, scale: 1, rotation: 0, autoAlpha: 1 },
-          {
-            ...end,
-            ...tween,
-            onComplete: () => {
-              gsap.set(outSlot, { autoAlpha: 1 });
-              gsap.set(outFeatured, { autoAlpha: 0, x: 0, y: 0, scale: 1, rotation: 0 });
-            },
-          },
-        );
+        gsap.to(`[data-orbit-dot='${id}']`, { "--cx": dx, "--cy": dy, "--s": dot, ...tween });
+        gsap.to(`[data-orbit-dot='${id}'] > span`, { opacity: dot > 18 ? 1 : 0, ...tween });
       }
       gsap.utils.toArray<HTMLElement>("[data-scene]").forEach((el) => {
         gsap.to(el, { autoAlpha: Number(el.dataset.scene) === selected ? 1 : 0, ...tween });
@@ -198,7 +116,6 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
     },
   });
 
-  const hidden = (index: number) => (index === selected ? "invisible opacity-0" : "");
   const shown = (index: number) => (index === selected ? "" : "invisible opacity-0");
 
   return (
@@ -226,77 +143,72 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
         ))}
       </div>
 
-      <div className="flex w-full max-w-container-desktop flex-col items-center gap-18.75 tablet:gap-16 tablet:pt-16 desktop:flex-row-reverse desktop:justify-center desktop:pt-0">
+      <div className="flex w-full max-w-container-desktop flex-col items-center gap-18.75 tablet:gap-16 tablet:pt-16 desktop:flex-row-reverse desktop:items-end desktop:justify-center desktop:self-stretch desktop:pt-0">
         <div
           role="group"
           aria-label={hero.ringLabel}
           className="@container relative aspect-[669.642/767.626] w-97 shrink-0 tablet:w-full tablet:max-w-167.25"
         >
-          {/* `Ellipse 1593` (888:20654) */}
-          <div ref={wheel} className={`absolute ${WHEEL}`}>
-            <Image
-              src="/svg/orbit-ring.svg"
-              alt=""
-              width={376}
-              height={376}
-              unoptimized
-              className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${RING}`}
-            />
+          {/* `Ellipse 1593` (888:20654), 375.8 px. */}
+          <Image
+            data-orbit-ring=""
+            src="/svg/orbit-ring.svg"
+            alt=""
+            width={376}
+            height={376}
+            unoptimized
+            className={`absolute size-[56.12cqw] -translate-x-1/2 -translate-y-1/2 ${AT.left} ${AT.top} ${AT.rotate} ${RING_START}`}
+          />
 
-            {slots.map((slot, index) => {
-              const isHome = index === 0;
-              const service = isHome ? null : hero.services[index - 1];
-              return (
-                <button
-                  key={slot.id}
-                  type="button"
-                  data-slot={index}
-                  aria-label={service ? service.title : hero.homeLabel}
-                  aria-pressed={selected === index}
-                  onClick={() => {
-                    setAnnounce(true);
-                    setSelected(index);
-                  }}
-                  className={`absolute top-1/2 left-1/2 flex h-[11.051cqw] items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bg ${isHome ? "w-[9.259cqw]" : "w-[11.051cqw]"} ${SLOT_POSITION[index]} ${hidden(index)}`}
-                >
-                  <Image
-                    src={service ? service.image : "/svg/logo-mark.svg"}
-                    alt=""
-                    width={service ? 360 : 165}
-                    height={service ? 260 : 196}
-                    unoptimized={!service}
-                    className="h-auto w-full"
-                  />
-                </button>
-              );
-            })}
-          </div>
+          {/* Each item's dot on the ring: 18 px primary/200, or the 32 px Secondary/500 marker. */}
+          {slots.map((slot) => (
+            <span
+              key={slot.id}
+              data-orbit-dot={slot.id}
+              aria-hidden="true"
+              className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-200 ${AT.left} ${AT.top} ${AT.size} ${ITEM_START[slot.id]?.dot ?? ""}`}
+            >
+              <span
+                className={`absolute inset-0 rounded-full bg-secondary-500 ${slot.id === "the-map" ? "" : "opacity-0"}`}
+              />
+            </span>
+          ))}
 
-          {/* Featured item at the top — the logo by default, otherwise the service, large. */}
           {slots.map((slot, index) => {
             const service = index === 0 ? null : hero.services[index - 1];
             return (
-              <div
+              <button
                 key={slot.id}
-                data-featured={index}
-                aria-hidden="true"
-                className={`pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 ${FEATURED} ${service ? "w-[44.8cqw]" : "w-[24.64cqw]"} ${shown(index)}`}
+                type="button"
+                data-orbit-art={slot.id}
+                aria-label={service ? service.title : hero.homeLabel}
+                aria-pressed={selected === index}
+                onClick={() => {
+                  setAnnounce(true);
+                  setSelected(index);
+                }}
+                className={`absolute flex -translate-x-1/2 -translate-y-1/2 items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bg ${service ? "aspect-[120/65]" : "aspect-[162/194.6]"} ${AT.left} ${AT.top} ${AT.width} ${AT.rotate} ${ITEM_START[slot.id]?.art ?? ""}`}
               >
+                {/*
+                  The service artwork is Figma's own image fill: the full 1408x768 source
+                  with its transparent margins, filling the 120x65 frame — so it sits and
+                  scales inside the frame exactly as in Figma.
+                */}
                 <Image
-                  src={service ? service.imageLarge : "/svg/logo-mark.svg"}
+                  src={service ? service.image : "/svg/logo-mark.svg"}
                   alt=""
-                  width={service ? 760 : 165}
-                  height={service ? 550 : 196}
+                  width={service ? 1200 : 165}
+                  height={service ? 655 : 196}
                   unoptimized={!service}
-                  sizes="(min-width: 90rem) 300px, 45vw"
-                  className="h-auto w-full"
+                  sizes="(min-width: 90rem) 620px, 90vw"
+                  className="h-full w-full object-cover"
                 />
-              </div>
+              </button>
             );
           })}
         </div>
 
-        <GlassCard className="flex h-76.25 w-full max-w-88 shrink-0 flex-col justify-center tablet:block tablet:h-auto tablet:max-w-136">
+        <GlassCard className="flex h-76.25 w-full max-w-88 shrink-0 flex-col justify-center tablet:block tablet:h-auto tablet:max-w-136 desktop:mb-37">
           <div
             data-hero-copy=""
             aria-live={announce ? "polite" : "off"}

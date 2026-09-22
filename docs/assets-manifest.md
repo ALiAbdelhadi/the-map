@@ -198,3 +198,23 @@ Exported from the Figma nodes named, for the prototype motion.
 | `public/images/step-rocket.webp`                   | `business-startup 1` in `950:20404` | rocket under the open step               |
 | `public/svg/click-hand.svg`                        | `Click` `997:21181`                 | hand in the provider `Click here` button |
 | `public/svg/connector-43.svg` … `connector-47.svg` | `Vector 43`–`47` in `998:20840`     | provider stage connectors                |
+
+## Hero orbit images (2026-09-22)
+
+The hero items are drawn from Figma's own image fills — the full 1408x768 sources with
+their transparent margins (`FILL`, identity transform, in the 120x65 frames of
+`898:20007`), so each sits and scales in its frame exactly as in Figma. Saved 1200x655
+WebP. They replace the tightly cropped `illustration-*-lg.webp`, which rendered the
+artwork too large.
+
+| File                     | Figma image fill in `898:20004` |
+| ------------------------ | ------------------------------- |
+| `orbit-service.webp`     | Service                         |
+| `orbit-needed.webp`      | needed                          |
+| `orbit-medical.webp`     | medical                         |
+| `orbit-employee.webp`    | employee                        |
+| `orbit-emergency.webp`   | Emergency                       |
+| `orbit-special.webp`     | special                         |
+| `orbit-food.webp`        | Food                            |
+| `orbit-real-estate.webp` | Real estate                     |
+| `orbit-blinkz.webp`      | Blinkz                          |
