@@ -67,6 +67,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
   const wheel = useRef<HTMLDivElement>(null);
   const angle = useRef(0);
   const firstRun = useRef(true);
+  const previous = useRef(0);
   // Only a visitor's own choice is announced; the auto-advance is not.
   const [announce, setAnnounce] = useState(false);
 
@@ -86,15 +87,96 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
       // Turn the short way round to bring the selected slot to the top.
       const target = -selected * STEP;
       const delta = ((((target - angle.current) % 360) + 540) % 360) - 180;
+      const from = gsap.getProperty(wheel.current, "rotation") as number;
       angle.current += delta;
-      gsap.to(wheel.current, { rotation: angle.current, ...tween });
 
-      gsap.utils.toArray<HTMLElement>("[data-slot]").forEach((el) => {
-        gsap.to(el, { autoAlpha: Number(el.dataset.slot) === selected ? 0 : 1, ...tween });
-      });
-      gsap.utils.toArray<HTMLElement>("[data-featured]").forEach((el) => {
-        gsap.to(el, { autoAlpha: Number(el.dataset.featured) === selected ? 1 : 0, ...tween });
-      });
+      const previousIndex = previous.current;
+      previous.current = selected;
+      const q = (selector: string) => scope.current?.querySelector<HTMLElement>(selector) ?? null;
+      const inSlot = q(`[data-slot='${String(selected)}']`);
+      const inFeatured = q(`[data-featured='${String(selected)}']`);
+      const outSlot = q(`[data-slot='${String(previousIndex)}']`);
+      const outFeatured = q(`[data-featured='${String(previousIndex)}']`);
+      const flying = [inSlot, inFeatured, outSlot, outFeatured].filter(Boolean);
+      gsap.killTweensOf(flying);
+
+      if (
+        !animate ||
+        previousIndex === selected ||
+        !inSlot ||
+        !inFeatured ||
+        !outSlot ||
+        !outFeatured
+      ) {
+        gsap.set(wheel.current, { rotation: angle.current });
+        gsap.utils.toArray<HTMLElement>("[data-slot]").forEach((el) => {
+          gsap.set(el, { autoAlpha: Number(el.dataset.slot) === selected ? 0 : 1 });
+        });
+        gsap.utils.toArray<HTMLElement>("[data-featured]").forEach((el) => {
+          gsap.set(el, {
+            autoAlpha: Number(el.dataset.featured) === selected ? 1 : 0,
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotation: 0,
+          });
+        });
+      } else {
+        /*
+         * Figma Smart Animate matches layers by name, so the chosen service is the same
+         * layer in both variants: it flies from its place on the ring to the top and
+         * grows (120 → ~560 px wide), while the item that was on top flies back down
+         * into its place on the ring and shrinks. Here each item has a ring copy (the
+         * slot) and a large copy (featured); the large copy is flown between the two
+         * places and the slot takes over where the ring copy should be seen.
+         */
+        const upright = (angle: number) => (((angle % 360) + 540) % 360) - 180;
+        const centre = (el: HTMLElement) => {
+          const box = el.getBoundingClientRect();
+          return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
+        };
+        const place = (slot: HTMLElement, featured: HTMLElement, rotation: number) => {
+          const a = centre(slot);
+          const b = centre(featured);
+          return {
+            x: a.x - b.x,
+            y: a.y - b.y,
+            scale: slot.offsetWidth / featured.offsetWidth,
+            rotation: upright(rotation),
+          };
+        };
+
+        gsap.set([inFeatured, outFeatured], { x: 0, y: 0, scale: 1, rotation: 0 });
+        // Where the incoming item is now, on the ring as it stands.
+        const start = place(inSlot, inFeatured, from);
+        // Where the outgoing item will be, on the ring once it has turned.
+        gsap.set(wheel.current, { rotation: angle.current });
+        const end = place(outSlot, outFeatured, angle.current);
+        gsap.set(wheel.current, { rotation: from });
+
+        gsap.to(wheel.current, { rotation: angle.current, ...tween });
+
+        gsap.set(inSlot, { autoAlpha: 0 });
+        gsap.fromTo(
+          inFeatured,
+          { ...start, autoAlpha: 1 },
+          { x: 0, y: 0, scale: 1, rotation: 0, ...tween },
+        );
+
+        gsap.set(outSlot, { autoAlpha: 0 });
+        gsap.fromTo(
+          outFeatured,
+          { x: 0, y: 0, scale: 1, rotation: 0, autoAlpha: 1 },
+          {
+            ...end,
+            ...tween,
+            onComplete: () => {
+              gsap.set(outSlot, { autoAlpha: 1 });
+              gsap.set(outFeatured, { autoAlpha: 0, x: 0, y: 0, scale: 1, rotation: 0 });
+            },
+          },
+        );
+      }
       gsap.utils.toArray<HTMLElement>("[data-scene]").forEach((el) => {
         gsap.to(el, { autoAlpha: Number(el.dataset.scene) === selected ? 1 : 0, ...tween });
       });
