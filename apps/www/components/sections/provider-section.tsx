@@ -55,11 +55,27 @@ const PHONE_ORDER: Record<string, string> = {
   "ready-clients": "order-5 tablet:order-none",
 };
 
+/*
+ * The 768 frame (`1037:32101`) scatters the pills around the illustration in a
+ * 706x637 box: Full Flexibility (343, 118), Ready Clients (0, 174), Increase Your
+ * Income (340, 238, turned 1.1°), Wider Reach (4, 287), Simple & Organized System
+ * (438, 353, turned 1.1°); the illustration is 510 wide at (67, 279).
+ */
+const TABLET_PLACE: Record<string, string> = {
+  "full-flexibility": "tablet:absolute tablet:start-85.75 tablet:top-29.5 desktop:static",
+  "ready-clients": "tablet:absolute tablet:start-0 tablet:top-43.5 desktop:static",
+  income:
+    "tablet:absolute tablet:start-85 tablet:top-59.5 tablet:rotate-[1.1deg] desktop:static desktop:rotate-0",
+  "wider-reach": "tablet:absolute tablet:start-1 tablet:top-71.75 desktop:static",
+  simple:
+    "tablet:absolute tablet:start-109.5 tablet:top-88.25 tablet:rotate-[1.1deg] desktop:static desktop:rotate-0",
+};
+
 export function ProviderSection({ content }: { content: SiteContent }) {
   return (
     <section
       id="become-a-provider"
-      className="flex w-full justify-center bg-primary-50 px-4 py-21.25 tablet:px-8 tablet:py-24 desktop:min-h-256 desktop:items-center desktop:py-0"
+      className="flex w-full justify-center bg-primary-50 px-4 py-21.25 tablet:px-7.5 tablet:py-23.75 desktop:min-h-256 desktop:items-center desktop:py-0"
     >
       <ProviderShowcase
         clickHere={content.provider.clickHere}
@@ -93,18 +109,18 @@ export function ProviderSection({ content }: { content: SiteContent }) {
                 <span className="flex size-6 items-center justify-center text-primary-700 tablet:size-12">
                   <AppIcon width={48} height={48} className="h-full w-full" />
                 </span>
-                <h2 className="text-20 font-semibold whitespace-nowrap text-primary-700 tablet:text-48 tablet:whitespace-normal">
+                <h2 className="text-20 font-semibold whitespace-nowrap text-primary-700 tablet:text-32 desktop:text-48 desktop:whitespace-normal">
                   {content.provider.badge}
                 </h2>
               </div>
-              <p className="max-w-186.75 text-16 font-regular text-primary-950 tablet:text-22">
+              <p className="max-w-186.75 text-16 font-regular text-primary-950 tablet:max-w-129.5 tablet:text-24 desktop:max-w-186.75 desktop:text-22">
                 {content.provider.body}
               </p>
             </div>
 
-            <div className="flex flex-col items-center gap-16 desktop:flex-row desktop:items-center">
+            <div className="flex flex-col items-center gap-16 tablet:gap-0 desktop:flex-row desktop:items-center desktop:gap-16">
               <div className="flex w-full flex-col gap-15.5 desktop:max-w-1/2">
-                <div className="relative flex flex-col gap-6 rounded-search bg-surface-field p-6">
+                <div className="relative flex flex-col gap-6 rounded-search bg-surface-field p-6 tablet:self-start desktop:self-auto">
                   <GradientBorder
                     mode="hover"
                     width="p-0.5"
@@ -136,8 +152,8 @@ export function ProviderSection({ content }: { content: SiteContent }) {
                   </a>
                 </div>
 
-                <div className="flex flex-col items-center gap-6.5">
-                  <h3 className="text-14 font-semibold text-primary-950 tablet:text-30">
+                <div className="flex flex-col items-center gap-6.5 tablet:self-start desktop:self-auto">
+                  <h3 className="text-14 font-semibold text-primary-950 tablet:text-24 desktop:text-30">
                     {content.provider.downloadHeading}
                   </h3>
                   <div
@@ -160,24 +176,28 @@ export function ProviderSection({ content }: { content: SiteContent }) {
                 </div>
               </div>
 
-              <div className="flex w-full flex-col items-center gap-0 tablet:gap-6 desktop:max-w-1/2">
+              <div className="flex w-full flex-col items-center gap-0 tablet:relative tablet:-mt-18.25 tablet:block tablet:h-159.25 tablet:w-176.5 desktop:static desktop:mt-0 desktop:flex desktop:h-auto desktop:w-full desktop:max-w-1/2 desktop:gap-6">
                 <Image
                   src="/svg/illustration-provider-phone.svg"
                   alt={content.provider.illustrationAlt}
                   width={626}
                   height={471}
-                  className="order-2 -mt-4 h-auto w-full max-w-67.5 tablet:order-none tablet:mt-0 tablet:max-w-156.5"
+                  className="order-2 -mt-4 h-auto w-full max-w-67.5 tablet:absolute tablet:start-16.75 tablet:top-69.75 tablet:mt-0 tablet:w-127.5 tablet:max-w-none desktop:static desktop:order-none desktop:w-full desktop:max-w-156.5"
                 />
-                <ul className="order-1 flex list-none flex-col gap-3.5 tablet:order-none tablet:gap-4">
+                <ul className="order-1 flex list-none flex-col gap-3.5 tablet:absolute tablet:inset-0 tablet:block desktop:static desktop:order-none desktop:flex desktop:gap-4">
                   {content.provider.benefits.map((benefit) => {
                     const Icon = ICONS[benefit.id as keyof typeof ICONS];
                     return (
-                      <li key={benefit.id} className={PHONE_ORDER[benefit.id]}>
+                      <li
+                        key={benefit.id}
+                        className={`${PHONE_ORDER[benefit.id] ?? ""} ${TABLET_PLACE[benefit.id] ?? ""}`}
+                      >
                         <BenefitPill
                           title={benefit.title}
                           description={benefit.description}
                           icon={<Icon />}
-                          className="h-25.75 w-78.25 tablet:h-auto tablet:w-auto"
+                          compact={benefit.id === "income" || benefit.id === "simple"}
+                          className="h-25.75 w-78.25 tablet:h-auto tablet:w-max desktop:w-auto"
                         />
                       </li>
                     );

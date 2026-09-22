@@ -73,7 +73,7 @@ export function StepItem({
             className={
               compactDescription
                 ? "text-14 font-regular"
-                : "text-14 font-regular whitespace-nowrap tablet:text-16 tablet:whitespace-normal"
+                : "text-14 font-regular whitespace-nowrap tablet:text-16"
             }
           >
             {description}

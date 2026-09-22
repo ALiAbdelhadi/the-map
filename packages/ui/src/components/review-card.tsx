@@ -3,16 +3,23 @@ import type { ReactNode } from "react";
 import { cn } from "../lib/cn";
 
 /**
- * A single review.
+ * A single review — one element for both states, so it can grow and shrink
+ * smoothly instead of being swapped for another element.
  *
- * Figma `Real Reviews` `1015:20919` (variants `1015:20916`–`1015:20919`).
- * - expanded: 415 wide, primary/50 fill, 1 px primary/300 border, radius 17,
- *   pe 24, Reviews shadow; 107x307 photo with a 1 px primary/500 border and the
- *   Click-here shadow; name 24 px primary/400, rating 16 px Natural/600,
- *   body 24 px primary/950, quote mark 53 px.
- * - collapsed: 210x307 photo card, white fill, 1 px primary/300 border, radius 17.
+ * Figma `Real Reviews` (`1015:20920`; tablet `1037:27514`):
+ * - expanded: 415 wide (tablet 315), primary/50 fill, 1 px primary/300 border,
+ *   radius 17, Reviews shadow; the photo is a 107 px column (tablet 113) with a 1 px
+ *   primary/500 border and the Click-here shadow; beside it, 14 px away, the name
+ *   (24 px primary/400), the rating (16 px Natural/600), the quote (24 px, tablet
+ *   14 px, primary/950) and the 53 px quote mark.
+ * - collapsed: the photo alone, 210 wide (tablet 88), 307 tall (tablet 211).
+ *
+ * The widths live in classes; the carousel animates between them. The text column
+ * has a fixed width, so it never re-wraps while the card grows — it fades in once
+ * the card has room.
  */
 export type ReviewCardProps = {
+  id: string;
   name: string;
   /** Rating as written in Figma, e.g. "5/5". */
   rating: string;
@@ -24,13 +31,12 @@ export type ReviewCardProps = {
   /** 53x53 decorative quote mark. */
   quoteMark?: ReactNode;
   expanded: boolean;
-  onExpand?: () => void;
-  /** Shared by both states so a Flip can animate one into the other. */
-  flipId?: string;
+  onExpand: () => void;
   className?: string;
 };
 
 export function ReviewCard({
+  id,
   name,
   rating,
   quote,
@@ -39,57 +45,63 @@ export function ReviewCard({
   quoteMark,
   expanded,
   onExpand,
-  flipId,
   className,
 }: ReviewCardProps) {
-  if (!expanded) {
-    return (
+  return (
+    <div
+      data-review={id}
+      className={cn(
+        "relative h-52.75 shrink-0 overflow-hidden rounded-review border border-primary-300 desktop:h-76.75",
+        // One fill in both states, so a closing card never flashes white behind its photo.
+        "bg-primary-50",
+        expanded ? "w-78.75 shadow-review desktop:w-103.75" : "w-22 shadow-click desktop:w-52.5",
+        className,
+      )}
+    >
       <button
         type="button"
-        data-flip-id={flipId}
-        onClick={onExpand}
+        data-review-photo=""
         aria-label={name}
-        aria-expanded={false}
+        aria-expanded={expanded}
+        onClick={onExpand}
         className={cn(
-          "h-76.75 w-full max-w-52.5 shrink-0 overflow-hidden rounded-review border border-primary-300 bg-white shadow-click",
-          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500",
-          className,
+          "absolute inset-y-0 start-0 overflow-hidden rounded-review",
+          "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-500",
+          expanded
+            ? "w-28.25 cursor-default border border-primary-500 bg-white shadow-click desktop:w-26.75"
+            : "w-full cursor-pointer",
         )}
       >
         {photo}
       </button>
-    );
-  }
 
-  return (
-    <figure
-      data-review-expanded=""
-      data-flip-id={flipId}
-      className={cn(
-        "flex w-full max-w-103.75 shrink-0 items-center gap-3.5 overflow-hidden rounded-review border border-primary-300 bg-primary-50 pe-6 shadow-review",
-        className,
-      )}
-    >
-      <div className="h-76.75 w-26.75 shrink-0 overflow-hidden rounded-review border border-primary-500 bg-white shadow-click">
-        {photo}
-      </div>
-      <div className="flex min-w-0 flex-1 flex-col gap-3 py-4">
-        <figcaption className="flex flex-col gap-3.75">
+      <figure
+        data-review-text=""
+        aria-hidden={!expanded}
+        className={cn(
+          "absolute inset-y-0 start-31.75 flex w-32.75 flex-col justify-center gap-3 desktop:start-30.25 desktop:w-67.5",
+          expanded ? "" : "invisible opacity-0",
+        )}
+      >
+        <figcaption className="flex flex-col gap-2 desktop:gap-3.75">
           <span className="text-center text-24 font-regular text-primary-400">{name}</span>
           <span className="flex items-center gap-2">
             <span className="flex size-6 shrink-0 items-center justify-center">{ratingIcon}</span>
             <span className="text-16 font-regular text-natural-600">{rating}</span>
           </span>
         </figcaption>
-        <blockquote className="text-center text-24 font-regular text-primary-950">
+        <blockquote className="text-center text-14 font-regular text-primary-950 desktop:text-24">
           {quote}
         </blockquote>
         {quoteMark ? (
-          <span aria-hidden="true" className="flex size-13.25 self-end">
+          <span
+            aria-hidden="true"
+            className="absolute -end-11.25 bottom-0 flex size-13.25 desktop:static desktop:self-end"
+          >
             {quoteMark}
           </span>
         ) : null}
-      </div>
-    </figure>
+      </figure>
+    </div>
   );
 }

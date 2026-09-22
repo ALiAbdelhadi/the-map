@@ -126,7 +126,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
   return (
     <div
       ref={scope}
-      className="flex w-full items-center justify-center px-2 pt-47.5 pb-3 tablet:px-8 tablet:py-24 desktop:min-h-256 desktop:py-0"
+      className="flex w-full items-center justify-center px-2 pt-47.5 pb-3 tablet:px-8 tablet:pt-30 tablet:pb-12 desktop:min-h-256 desktop:py-0"
     >
       {/* Background scenes — Figma exports them already composited, so no extra opacity. */}
       <div aria-hidden="true" className="absolute inset-0 -z-10">
@@ -148,7 +148,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
         ))}
       </div>
 
-      <div className="flex w-full max-w-container-desktop flex-col items-center gap-18.75 tablet:gap-16 tablet:pt-16 desktop:flex-row-reverse desktop:items-end desktop:justify-center desktop:self-stretch desktop:pt-0">
+      <div className="flex w-full max-w-container-desktop flex-col items-center gap-18.75 tablet:gap-8 desktop:flex-row-reverse desktop:gap-16 desktop:items-end desktop:justify-center desktop:self-stretch desktop:pt-0">
         <div
           role="group"
           aria-label={hero.ringLabel}
@@ -213,7 +213,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
           })}
         </div>
 
-        <GlassCard className="flex h-76.25 w-full max-w-88 shrink-0 flex-col justify-center tablet:block tablet:h-auto tablet:max-w-136 desktop:mb-37">
+        <GlassCard className="flex h-76.25 w-full max-w-88 shrink-0 flex-col justify-center tablet:h-117.75 tablet:max-w-136 desktop:mb-37">
           <div
             data-hero-copy=""
             aria-live={announce ? "polite" : "off"}

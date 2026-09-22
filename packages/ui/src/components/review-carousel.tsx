@@ -4,19 +4,23 @@ import { type ReactNode, useRef, useState } from "react";
 
 import { cn } from "../lib/cn";
 import { figmaTween } from "../motion/figma-easing";
-import { Flip, gsap, useGSAP } from "../motion/gsap";
+import { gsap, MOTION_OK, useGSAP } from "../motion/gsap";
 import { prototype } from "../motion/tokens";
 import { ReviewCard } from "./review-card";
 
 /**
  * Reviews row.
  *
- * Figma `Real Reviews` `1015:20920`: four variants, one per reviewer. Exactly
- * one card is expanded; the other three stay as 210x307 portraits. Row gap 68.
+ * Figma `Real Reviews` `1015:20920` (tablet `1037:27514`): four cards, one per
+ * reviewer, exactly one expanded; row gap 68 (tablet 20).
  *
- * Motion: a click on a portrait expands it — the cards keep their order and slide
- * to their new widths (a Flip, 0.5 s strong ease-in-out), and the review text fades
- * in once the card has room. Nothing changes by itself (approved 2026-09-22).
+ * Motion, rebuilt 2026-09-22: a click on a portrait expands it. Each card is a single
+ * element in both states, so only widths move — the card and its photo column slide
+ * from their old widths to their new ones (0.5 s strong ease-in-out), the photos
+ * re-crop with object-cover instead of stretching, the old review text fades out
+ * at once and the new one fades in once its card has room. Widths are measured
+ * before and after the change and handed back to the classes when the move ends,
+ * so the layout stays responsive.
  */
 export type Review = {
   id: string;
@@ -36,6 +40,16 @@ export type ReviewCarouselProps = {
   className?: string;
 };
 
+type Widths = Map<Element, number>;
+
+function measure(root: HTMLElement): Widths {
+  const widths: Widths = new Map();
+  root.querySelectorAll("[data-review], [data-review-photo]").forEach((el) => {
+    widths.set(el, el.getBoundingClientRect().width);
+  });
+  return widths;
+}
+
 export function ReviewCarousel({
   reviews,
   ratingIcon,
@@ -45,27 +59,36 @@ export function ReviewCarousel({
 }: ReviewCarouselProps) {
   const [expandedId, setExpandedId] = useState(reviews[0]?.id ?? "");
   const ref = useRef<HTMLUListElement>(null);
-  const layout = useRef<Flip.FlipState | null>(null);
+  const before = useRef<{ widths: Widths; from: string } | null>(null);
 
   const expand = (id: string) => {
-    if (id === expandedId) return;
-    if (ref.current) layout.current = Flip.getState(ref.current.querySelectorAll("[data-flip-id]"));
+    if (id === expandedId || !ref.current) return;
+    before.current = { widths: measure(ref.current), from: expandedId };
     setExpandedId(id);
   };
 
   useGSAP(
     () => {
-      const state = layout.current;
-      layout.current = null;
-      if (!state || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      Flip.from(state, {
-        targets: ref.current?.querySelectorAll("[data-flip-id]") ?? [],
-        ...figmaTween(prototype.reviews.click),
-      });
+      const root = ref.current;
+      const saved = before.current;
+      before.current = null;
+      if (!root || !saved || !window.matchMedia(MOTION_OK).matches) return;
+
+      const move = figmaTween(prototype.reviews.click);
+      const after = measure(root);
+      for (const [el, width] of after) {
+        const start = saved.widths.get(el);
+        if (start === undefined || start === width) continue;
+        gsap.fromTo(el, { width: start }, { width, ...move, clearProps: "width" });
+      }
+
+      const oldText = root.querySelector(`[data-review='${saved.from}'] [data-review-text]`);
+      const newText = root.querySelector(`[data-review='${expandedId}'] [data-review-text]`);
+      gsap.fromTo(oldText, { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.15, ease: "none" });
       gsap.fromTo(
-        "[data-review-expanded] > div:last-child",
-        { opacity: 0, y: 8 },
-        { opacity: 1, y: 0, ...figmaTween(prototype.hover.border), delay: 0.25 },
+        newText,
+        { autoAlpha: 0, x: 12 },
+        { autoAlpha: 1, x: 0, ...figmaTween(prototype.hover.border), delay: move.duration * 0.55 },
       );
     },
     { scope: ref, dependencies: [expandedId] },
@@ -75,12 +98,12 @@ export function ReviewCarousel({
     <ul
       ref={ref}
       aria-label={label}
-      className={cn("flex list-none items-center gap-17", className)}
+      className={cn("flex list-none items-center gap-5 desktop:gap-17", className)}
     >
       {reviews.map((review) => (
         <li key={review.id} className="contents">
           <ReviewCard
-            flipId={review.id}
+            id={review.id}
             name={review.name}
             rating={review.rating}
             quote={review.quote}
