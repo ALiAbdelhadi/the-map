@@ -192,3 +192,43 @@ The Reviews row was rebuilt at the same time (owner request): one element per ca
 only widths animate, photos re-crop instead of stretching, and the text fades in once
 the card has room. The three missing reviews (Menna, Mahmoud, Nourhan) and the Arabic
 reviewer names were read from Figma (`1015:20920`, `1030:24297`) and added.
+
+## Desktop pass — `/en` at 1440 against `The map English` (`853:19390`), 2026-09-22
+
+The 1440 build had never been measured node by node before — only spot-checked by
+eye during Phase 5. Doing it the same way as the tablet pass found one real,
+site-wide bug and two smaller ones, all now fixed.
+
+| Section | Figma node  | Figma height | Before | After |
+| ------- | ----------- | ------------ | ------ | ----- |
+| Page    | `853:19390` | 6549         | 6491   | 6552  |
+
+What changed:
+
+- **Every `max-w-container-*` class was dead.** `theme.css` defines the tokens as
+  `--container-mobile` / `--container-tablet` / `--container-desktop`, but Tailwind
+  v4 generates `max-w-mobile` / `max-w-tablet` / `max-w-desktop` from a
+  `--container-*` namespace — not `max-w-container-*`. The class was never a real
+  utility, so every section, and the header, rendered with `max-width: none` and
+  simply filled its flex parent. This had gone unnoticed since Phase 4 because most
+  sections' own content already has its own max-widths; the header was the visible
+  case (1376 px wide instead of Figma's 1357). Renamed all eight call sites
+  (`site-chrome.tsx` and six section files) to the real utility names.
+- **Header container.** Figma's header instance is 1357 wide, centred with a ~41.5 px
+  margin — narrower than the 1284 px content grid the sections share. Registered
+  that as its own token, `--container-header` (node `888:20482`, no Figma variable),
+  and pointed the header at `max-w-header` instead of `max-w-desktop`. It now
+  measures 1357×88 at x 42/y 88 — Figma is x 41/y 88.373.
+- **Footer.** The desktop logo was `h-17.5` (70 px); Figma's desktop logo (node
+  `1023:21105`) is the same 92 px height as the tablet one. Changed to `h-23` to
+  match. The desktop padding (`py-16`, 64/64) was a guess, never checked against
+  Figma; the real content frame (`1023:20803`) sits 74 px down and 93 px up from the
+  section edge, so it is now `pt-18.5 pb-23.25`. Together these close the footer's
+  58 px shortfall against Figma's 405 px section height (now 408, 3 px off).
+
+Everything else measured within 1–2 px of its Figma node once the container fix
+landed (header, hero card, service areas heading/search/button, the reviews row,
+the provider stage) — the standardised 1284 px grid sits 10–25 px narrower than a
+few individual Figma frames (1307, 1249, 899) that were never drawn to the same
+grid; that gap already existed by design (`figma-inventory.md` §"Layout") and is
+unchanged by this pass.

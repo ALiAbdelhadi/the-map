@@ -148,7 +148,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
         ))}
       </div>
 
-      <div className="flex w-full max-w-container-desktop flex-col items-center gap-18.75 tablet:gap-8 desktop:flex-row-reverse desktop:gap-16 desktop:items-end desktop:justify-center desktop:self-stretch desktop:pt-0">
+      <div className="flex w-full max-w-desktop flex-col items-center gap-18.75 tablet:gap-8 desktop:flex-row-reverse desktop:gap-16 desktop:items-end desktop:justify-center desktop:self-stretch desktop:pt-0">
         <div
           role="group"
           aria-label={hero.ringLabel}

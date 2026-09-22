@@ -207,7 +207,7 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
         />
       </div>
 
-      <div className="flex w-full max-w-container-desktop justify-start tablet:ps-24.5 desktop:ps-0">
+      <div className="flex w-full max-w-desktop justify-start tablet:ps-24.5 desktop:ps-0">
         <div data-why-card="" className="relative flex flex-col gap-15.5">
           <GlassCard surface="field" className="w-fit tablet:w-152">
             <div className="flex flex-col gap-8">

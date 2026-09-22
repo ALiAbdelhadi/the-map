@@ -74,7 +74,7 @@ export function Header({ content }: { content: SiteContent }) {
   return (
     <div className="absolute inset-x-0 top-5 z-20 flex justify-center px-2 tablet:top-8.25 tablet:px-7.5 desktop:top-22 desktop:px-8">
       <SiteHeader
-        className="max-w-container-desktop"
+        className="max-w-header"
         homeHref={`/${content.locale}`}
         homeLabel={content.a11y.home}
         logo={
@@ -106,7 +106,7 @@ const SOCIAL_ICONS = {
  */
 export function Footer({ content }: { content: SiteContent }) {
   return (
-    <div className="relative isolate -mt-12.75 flex w-full justify-center overflow-hidden rounded-t-footer border-t border-primary-500 bg-bg px-4 pt-18.25 pb-22.75 shadow-footer tablet:mt-0 tablet:rounded-t-card tablet:border-t-0 tablet:px-8 tablet:pt-18.5 tablet:pb-43.25 tablet:shadow-none desktop:py-16">
+    <div className="relative isolate -mt-12.75 flex w-full justify-center overflow-hidden rounded-t-footer border-t border-primary-500 bg-bg px-4 pt-18.25 pb-22.75 shadow-footer tablet:mt-0 tablet:rounded-t-card tablet:border-t-0 tablet:px-8 tablet:pt-18.5 tablet:pb-43.25 tablet:shadow-none desktop:pt-18.5 desktop:pb-23.25">
       <Image
         src="/images/footer-watermark.webp"
         alt=""
@@ -116,12 +116,12 @@ export function Footer({ content }: { content: SiteContent }) {
         className="-z-10 absolute inset-0 h-full w-full object-cover"
       />
       <SiteFooter
-        className="max-w-container-desktop gap-12"
+        className="max-w-desktop gap-12"
         logo={
           <LogoWordmarkIcon
             width={310}
             height={70}
-            className="h-15.25 w-auto text-primary-500 tablet:h-23 desktop:h-17.5"
+            className="h-15.25 w-auto text-primary-500 tablet:h-23 desktop:h-23"
           />
         }
         tagline={content.footer.tagline}

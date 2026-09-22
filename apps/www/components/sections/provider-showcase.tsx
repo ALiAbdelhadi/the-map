@@ -185,7 +185,7 @@ export function ProviderShowcase({
   );
 
   return (
-    <div ref={ref} className="relative grid w-full max-w-container-desktop">
+    <div ref={ref} className="relative grid w-full max-w-desktop">
       <div
         data-provider-full=""
         // While the stage shows, the full section is laid out out of flow so it

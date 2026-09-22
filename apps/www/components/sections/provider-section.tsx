@@ -102,7 +102,7 @@ export function ProviderSection({ content }: { content: SiteContent }) {
           };
         })}
         full={
-          <div className="flex w-full max-w-container-desktop flex-col gap-8">
+          <div className="flex w-full max-w-desktop flex-col gap-8">
             <div className="flex flex-col items-start gap-6">
               <div className="relative flex w-full items-center justify-center gap-4 rounded-button border-4 border-transparent bg-secondary-500/10 px-6 py-3 shadow-card tablet:w-auto">
                 <BadgeBorder />
