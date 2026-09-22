@@ -75,7 +75,7 @@ export function ProviderSection({ content }: { content: SiteContent }) {
   return (
     <section
       id="become-a-provider"
-      className="flex w-full justify-center bg-primary-50 px-4 py-21.25 tablet:px-7.5 tablet:py-23.75 desktop:min-h-256 desktop:items-center desktop:py-0"
+      className="flex w-full justify-center overflow-x-clip bg-primary-50 px-4 py-21.25 tablet:px-7.5 tablet:py-23.75 desktop:min-h-256 desktop:items-center desktop:py-0"
     >
       <ProviderShowcase
         clickHere={content.provider.clickHere}
