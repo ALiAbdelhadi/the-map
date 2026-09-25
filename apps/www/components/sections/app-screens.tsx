@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 import { figmaTween } from "@themap/ui/motion/figma-easing";
-import { gsap, MOTION_OK, useGSAP } from "@themap/ui/motion/gsap";
+import { gsap, MOTION_OK, ScrollTrigger, useGSAP } from "@themap/ui/motion/gsap";
 import { prototype } from "@themap/ui/motion/tokens";
 
 /**
@@ -12,9 +12,8 @@ import { prototype } from "@themap/ui/motion/tokens";
  *
  * Two 200 px columns of app screenshots inside a 565 px tile. The set has five
  * variants that differ only in where the two columns sit. Figma cycles them on a
- * loop; approved 2026-09-22, the columns scroll from variant 1's place to variant 5's
- * in one 2.4 s pass while the tile is hovered (or after a tap), and glide back when
- * it is left. Positions are container-query units of the 565 px tile
+ * loop; the columns instead scroll from variant 1's place to variant 5's in one
+ * smooth pass, once, when the tile first scrolls into view (no hover, no replay). Positions are container-query units of the 565 px tile
  * (px / 565 × 100), per variant: column one (x, y), column two (x, y).
  *
  * Phones (< tablet) — owner-approved deviation, 2026-09-25: at Figma's proportions a
@@ -74,56 +73,46 @@ const COLUMNS = [
 
 export function AppScreens({ label }: { label: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  // While hovered (or after a tap), the columns scroll through Figma's five
-  // positions in one smooth pass; leaving brings them back.
-  const [playing, setPlaying] = useState(false);
-  const first = useRef(true);
-  // A mouse plays the pass by hovering, so its clicks must not toggle it off.
-  const pointer = useRef("mouse");
+  // The pass plays once, when the tile first scrolls into view, and stays put.
+  const played = useRef(false);
 
   useGSAP(
     () => {
-      if (first.current) {
-        first.current = false;
-        return;
-      }
-      const reduce = !window.matchMedia(MOTION_OK).matches;
-      const [one, two] = ["[data-column='0']", "[data-column='1']"];
-      const positions = window.matchMedia(TABLET).matches ? POSITIONS : PHONE_POSITIONS;
-      if (!playing) {
-        const start = positions[0];
-        const back = reduce ? { duration: 0 } : figmaTween(prototype.screens.back);
-        // Once home, hand the place back to the classes, so a later resize across
-        // the tablet breakpoint picks up that layout's starting place.
-        const home = { ...back, overwrite: true, clearProps: "--x,--y" } as const;
-        gsap.to(one, { "--x": start[0], "--y": start[1], ...home });
-        gsap.to(two, { "--x": start[2], "--y": start[3], ...home });
-        return;
-      }
-      const end = positions[4];
-      const pass = reduce ? { duration: 0 } : figmaTween(prototype.screens.hover);
-      gsap.to(one, { "--x": end[0], "--y": end[1], ...pass, overwrite: true });
-      gsap.to(two, { "--x": end[2], "--y": end[3], ...pass, overwrite: true });
+      const mm = gsap.matchMedia();
+      const setup = (positions: typeof POSITIONS | typeof PHONE_POSITIONS, reduce: boolean) => {
+        const end = positions[4];
+        const [one, two] = ["[data-column='0']", "[data-column='1']"] as [string, string];
+        const to = (instant = false) => {
+          const pass = instant ? { duration: 0 } : figmaTween(prototype.screens.pass);
+          gsap.to(one, { "--x": end[0], "--y": end[1], ...pass });
+          gsap.to(two, { "--x": end[2], "--y": end[3], ...pass });
+        };
+        // Reduced motion, or a resize after the pass: go straight to the end place.
+        if (reduce || played.current) return to(true);
+        ScrollTrigger.create({
+          trigger: ref.current,
+          start: "top 65%",
+          once: true,
+          onEnter: () => {
+            played.current = true;
+            to();
+          },
+        });
+      };
+      mm.add(`${TABLET} and ${MOTION_OK}`, () => setup(POSITIONS, false));
+      mm.add(`(max-width: 47.999rem) and ${MOTION_OK}`, () => setup(PHONE_POSITIONS, false));
+      mm.add(`${TABLET} and (prefers-reduced-motion: reduce)`, () => setup(POSITIONS, true));
+      mm.add(`(max-width: 47.999rem) and (prefers-reduced-motion: reduce)`, () =>
+        setup(PHONE_POSITIONS, true),
+      );
     },
-    { scope: ref, dependencies: [playing] },
+    { scope: ref },
   );
 
   return (
     <div
       ref={ref}
       role="img"
-      onPointerEnter={(event) => {
-        if (event.pointerType === "mouse") setPlaying(true);
-      }}
-      onPointerLeave={(event) => {
-        if (event.pointerType === "mouse") setPlaying(false);
-      }}
-      onPointerDown={(event) => {
-        pointer.current = event.pointerType;
-      }}
-      onClick={() => {
-        if (pointer.current !== "mouse") setPlaying((value) => !value);
-      }}
       aria-label={label}
       dir="ltr"
       className="@container relative aspect-4/5 w-[calc(100%-var(--spacing)*3)] max-w-114 shrink-0 overflow-hidden rounded-tile bg-primary-700 tablet:aspect-square tablet:w-full tablet:max-w-141.25"
