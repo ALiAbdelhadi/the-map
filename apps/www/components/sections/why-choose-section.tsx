@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { GlassCard } from "@themap/ui/components/glass-card";
 import { WhyChooseList } from "@themap/ui/components/why-choose-list";
@@ -21,15 +21,15 @@ import type { SiteContent } from "../../content/types";
  * Why Choose Us.
  *
  * Figma `914:20605` (1440x1024) and the phone set `1038:25190` (375 wide): the maze
- * (`image 6658`) and the character (`image 6659`) behind a glass card with the title
- * row and five feature rows.
+ * (`image 6676`, 2026-09-25) and the character (`image 6665`) behind a glass card
+ * with the title row and five feature rows.
  *
  * 768 (`1037:26497`): the 608 px card sits 15 px down and 98 px in, at the 1440
- * type sizes, with the character (392 px) standing under it, its head 33 px over the
+ * type sizes, with the character (426 px) standing under it, its head 65 px over the
  * card; the section is 1024 tall.
  *
  * Six variants — the default and one per feature. Choosing a feature:
- * - zooms and pans the maze (each variant places `image 6658` differently);
+ * - zooms and pans the maze (each variant places the maze image differently);
  * - removes the character;
  * - outlines the row and shows the feature beside the card — a pill with the
  *   feature's chip, label and description, reached by a hand-drawn arrow on the
@@ -53,50 +53,84 @@ const ICONS = {
 type Place = { scale: number; xPercent: number; yPercent: number };
 
 /*
- * Where each variant puts the maze, as a transform of the default placement.
- * 1440 frame: the default `image 6658` is (−222, −10, 1896x1034), which the cover-
- * fitted maze matches; the transform origin is that image's top-left corner in the
- * 1440x1024 section and the shift is in % of the section.
- * 375 frame: the default is (−445, 0, 1930x1053), which the phone maze box is; the
- * shift is in % of that box.
+ * Where each variant puts the maze, as a transform of the default placement. The
+ * `[data-maze]` box IS the default image rectangle, so the origin is its top-left
+ * corner, the scale is (variant width / default width) and the shift is in % of the
+ * box. Rectangles are the `image 6676`–`6692` nodes (2026-09-25 images, one source).
+ * 1440 (`914:20600`–`914:20603`): default (−222, −93, 1721x1224);
+ *   All-in-One (−458, 0, 2175), Flexible (−972, 0, 3427), Nearby (−1711, −57, 5133),
+ *   Fast (−1451, −276, 3981), Easy (−1854, −534, 5481).
+ * 768 (`1037:26497`, the 1440 composition placed at x −64): default
+ *   (−303, −131, 1826x1300); the feature variants reuse the 1440 rectangles shifted
+ *   by the same 64 px.
+ * 375 (`1038:25191`–`1038:25300`): default (−445, 0, 1487x1058); All-in-One
+ *   (−458, −146, 1896), Flexible (−972, −308, 2352), Nearby (−1273, −334, 3163),
+ *   Fast (−1740, −200, 4293), Easy (0, 0, 4293).
+ * The Arabic 1440 default (`1028:22136`) sits the maze slightly smaller; the feature
+ * variants reuse the English transforms.
  */
 const MAZE = {
   desktop: {
-    origin: "-15.417% -0.977%",
     places: {
-      "all-in-one": { scale: 1.2426, xPercent: -16.389, yPercent: 0.977 },
-      flexible: { scale: 1.7848, xPercent: -52.083, yPercent: 0.977 },
-      nearby: { scale: 1.7162, xPercent: -14.792, yPercent: -31.641 },
-      fast: { scale: 2.5401, xPercent: -12.153, yPercent: -80.762 },
-      easy: { scale: 2.7247, xPercent: 15.417, yPercent: -54.59 },
+      "all-in-one": { scale: 1.2638, xPercent: -13.713, yPercent: 7.598 },
+      flexible: { scale: 1.9913, xPercent: -43.579, yPercent: 7.598 },
+      nearby: { scale: 2.9826, xPercent: -86.519, yPercent: 2.941 },
+      fast: { scale: 2.3132, xPercent: -71.412, yPercent: -14.951 },
+      easy: { scale: 3.1848, xPercent: -94.829, yPercent: -36.029 },
     } satisfies Record<string, Place>,
   },
-  /*
-   * 768 frame (`1037:26496`, the 1440 composition placed at x −64): the default maze
-   * box is (−303, −10, 1930x1053) in the 768x1024 section — the box itself — and the
-   * feature variants reuse the 1440 rectangles, shifted by the same 64 px.
-   */
   tablet: {
-    origin: "0% 0%",
     places: {
-      "all-in-one": { scale: 1.2207, xPercent: -11.347, yPercent: 0.95 },
-      flexible: { scale: 1.7534, xPercent: -37.979, yPercent: 0.95 },
-      nearby: { scale: 1.686, xPercent: -10.155, yPercent: -30.769 },
-      fast: { scale: 2.4953, xPercent: -8.187, yPercent: -78.537 },
-      easy: { scale: 2.6767, xPercent: 12.383, yPercent: -53.086 },
+      "all-in-one": { scale: 1.1911, xPercent: -11.993, yPercent: 10.077 },
+      flexible: { scale: 1.8768, xPercent: -40.142, yPercent: 10.077 },
+      nearby: { scale: 2.8111, xPercent: -80.613, yPercent: 5.692 },
+      fast: { scale: 2.1802, xPercent: -66.375, yPercent: -11.154 },
+      easy: { scale: 3.0016, xPercent: -88.445, yPercent: -31 },
     } satisfies Record<string, Place>,
   },
   phone: {
-    origin: "0% 0%",
     places: {
-      "all-in-one": { scale: 1.2207, xPercent: -0.674, yPercent: 0 },
-      flexible: { scale: 1.7534, xPercent: -27.306, yPercent: 0 },
-      nearby: { scale: 1.686, xPercent: 0.518, yPercent: -31.719 },
-      fast: { scale: 2.4953, xPercent: 2.487, yPercent: -79.487 },
-      easy: { scale: 2.6767, xPercent: 23.057, yPercent: -54.036 },
+      "all-in-one": { scale: 1.2751, xPercent: -0.874, yPercent: -13.8 },
+      flexible: { scale: 1.5817, xPercent: -35.44, yPercent: -29.112 },
+      nearby: { scale: 2.1271, xPercent: -55.683, yPercent: -31.569 },
+      fast: { scale: 2.887, xPercent: -87.088, yPercent: -18.904 },
+      easy: { scale: 2.887, xPercent: 29.926, yPercent: 0 },
     } satisfies Record<string, Place>,
   },
 } as const;
+
+/**
+ * Where the maze goes for a selection, kept covering the section.
+ *
+ * The Figma rectangles are drawn for the 375, 768 and 1440 frames. At other widths
+ * (and in the Arabic 1440 frame, whose default box is smaller) the same transform
+ * could leave a band of the section uncovered, so the result is scaled up just
+ * enough to cover and its edges are pulled back inside the section. At the design
+ * widths the Figma rectangles already cover, so they pass through unchanged.
+ */
+function mazePlace(section: HTMLElement, box: HTMLElement, selected: string | null): Place {
+  const phone = !window.matchMedia("(min-width: 48rem)").matches;
+  const wide = window.matchMedia("(min-width: 90rem)").matches;
+  const maze = phone ? MAZE.phone : wide ? MAZE.desktop : MAZE.tablet;
+  const place: Place = selected
+    ? maze.places[selected as FeatureId]
+    : { scale: 1, xPercent: 0, yPercent: 0 };
+
+  // The section's natural height — a running height tween is set inline.
+  const inline = section.style.height;
+  section.style.height = "";
+  const H = section.clientHeight;
+  section.style.height = inline;
+  const W = section.clientWidth;
+  const { offsetLeft: x, offsetTop: y, offsetWidth: w, offsetHeight: h } = box;
+  if (!w || !h) return place;
+
+  const scale = Math.max(place.scale, W / w, H / h);
+  const clamp = (v: number, min: number) => Math.min(0, Math.max(min, v));
+  const left = clamp(x + (place.xPercent / 100) * w, W - scale * w);
+  const top = clamp(y + (place.yPercent / 100) * h, H - scale * h);
+  return { scale, xPercent: ((left - x) / w) * 100, yPercent: ((top - y) / h) * 100 };
+}
 
 /*
  * How far the card moves from its default place in each variant (px).
@@ -130,6 +164,21 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
   const first = useRef(true);
   const height = useRef(0);
 
+  const current = useRef<string | null>(null);
+
+  // A resize changes the section's shape (and maybe the breakpoint): re-fit the maze.
+  useEffect(() => {
+    const fit = () => {
+      const section = ref.current;
+      const box = section?.querySelector<HTMLElement>("[data-maze]");
+      if (section && box) gsap.set(box, mazePlace(section, box, current.current));
+    };
+    window.addEventListener("resize", fit);
+    return () => {
+      window.removeEventListener("resize", fit);
+    };
+  }, []);
+
   const go = (next: string | null) => {
     height.current = ref.current?.offsetHeight ?? 0;
     setSelected(next);
@@ -138,24 +187,20 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
   useGSAP(
     () => {
       const section = ref.current;
-      if (!section) return;
+      const box = section?.querySelector<HTMLElement>("[data-maze]");
+      if (!section || !box) return;
+      current.current = selected;
+      gsap.set(box, { transformOrigin: "0% 0%" });
       if (first.current) {
         first.current = false;
+        gsap.set(box, mazePlace(section, box, null));
         return;
       }
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const move = reduce ? { duration: 0 } : figmaTween(prototype.whyChoose.click);
       const arrive = reduce ? { duration: 0 } : figmaTween(prototype.whyChoose.tip);
       const phone = !window.matchMedia("(min-width: 48rem)").matches;
-      const wide = window.matchMedia("(min-width: 90rem)").matches;
-      const maze = phone ? MAZE.phone : wide ? MAZE.desktop : MAZE.tablet;
-      const place = selected ? maze.places[selected as FeatureId] : null;
-      gsap.set("[data-maze]", { transformOrigin: maze.origin });
-      gsap.to("[data-maze]", {
-        ...(place ?? { scale: 1, xPercent: 0, yPercent: 0 }),
-        ...move,
-        overwrite: "auto",
-      });
+      gsap.to(box, { ...mazePlace(section, box, selected), ...move, overwrite: "auto" });
 
       const shift = selected
         ? (phone ? CARD_SHIFT.phone : CARD_SHIFT.desktop)[selected as FeatureId]
@@ -184,25 +229,30 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
   const title = content.whyChoose.title;
 
   return (
+    // The phone feature variants (`1038:25208`–`1038:25300`) are 1024 tall: the card
+    // moves down (a transform, outside layout) and the pill sits under it.
     <section
       ref={ref}
       id="why-us"
-      className="relative isolate flex w-full flex-col items-center overflow-hidden px-2 pt-22.5 pb-9.5 tablet:min-h-256 tablet:px-0 tablet:pt-3.75 tablet:pb-4 desktop:flex-row desktop:items-center desktop:justify-center desktop:px-8 desktop:py-0"
+      className={`relative isolate flex w-full flex-col items-center overflow-hidden px-2 pt-22.5 pb-7.25 tablet:min-h-256 tablet:px-0 tablet:pt-3.75 tablet:pb-4 desktop:flex-row desktop:items-center desktop:justify-center desktop:px-8 desktop:py-0 ${selected ? "min-h-256" : ""}`}
     >
       {/*
-        Phone: the maze box is Figma's (−445, 0, 1930x1053) — 514.667 % of the
-        375 frame. From the tablet frame up it cover-fits the section.
+        The maze box is the default `image 6676` rectangle at each frame, in % of the
+        section: 375 `1171:9057` (−445, 0, 1487 wide); 768 `1171:9038` (−303, −131,
+        1826x1300); 1440 `1171:9019` (−222, −93, 1721x1224), Arabic `1170:8755`
+        (−222, −79, 1681x1196). The maze is not mirrored in the Arabic 1440 frame, so
+        the desktop box is placed from the physical left.
       */}
       <div
         data-maze=""
         aria-hidden="true"
-        className="-z-20 absolute top-0 -start-[118.667%] aspect-[1930/1053] w-[514.667%] tablet:-start-[39.453%] tablet:-top-[0.977%] tablet:w-[251.302%] desktop:inset-0 desktop:aspect-auto desktop:w-auto"
+        className="-z-20 absolute top-0 -start-[118.667%] aspect-[1487/1058] w-[396.533%] tablet:-start-[39.453%] tablet:-top-[12.793%] tablet:w-[237.76%] desktop:start-auto desktop:-left-[15.417%] desktop:-top-[9.082%] desktop:aspect-auto desktop:h-[119.531%] desktop:w-[119.514%] desktop:rtl:-top-[7.715%] desktop:rtl:h-[116.797%] desktop:rtl:w-[116.736%]"
       >
         <Image
-          src="/images/why-choose-maze.webp"
+          src="/images/why-choose-maze-v2.webp"
           alt=""
           fill
-          sizes="(min-width: 48rem) 100vw, 515vw"
+          sizes="(min-width: 90rem) 120vw, (min-width: 48rem) 238vw, 397vw"
           className="object-cover"
         />
       </div>
@@ -287,18 +337,24 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
       </div>
 
       {/*
-        Phone frame (`1041:27445`): the character stands below the card, in flow,
-        278 px tall, its head 44 px over the card. From the tablet frame up it stands
-        behind the card at the section's end. It is not in any feature variant.
+        The character (`image 6665` 1440 `1170:8726`, 768 `1170:8751`, 375
+        `1170:8746`) is one uploaded cut-out; the file is cropped to the figure, so
+        the box below is the figure itself, not Figma's padded image box.
+        375: in flow under the card, 309 px tall, its head 66 px over the card and its
+        centre 83 px right of the column's centre. 768: 426 px tall, 65 px over the
+        card, centre 29.5 px right of centre. 1440: behind the card at the section's
+        end, 1003 px tall, 122 px in from the end, 1 px past the bottom. The Arabic
+        1440 frame (`1170:8730`) mirrors it and draws it smaller: 914 px tall, 139 px
+        in, 25 px up. It is not in any feature variant.
       */}
       <Image
         data-character=""
-        src="/images/why-choose-character.webp"
+        src="/images/why-choose-character-v2.webp"
         alt=""
-        width={216}
-        height={659}
-        sizes="(min-width: 90rem) 20vw, 35vw"
-        className={`pointer-events-none relative -mt-11 h-69.5 w-auto tablet:-mt-8.25 tablet:h-98 desktop:absolute desktop:end-[12%] desktop:bottom-[2%] desktop:-z-10 desktop:mt-0 desktop:h-[86%] rtl:-scale-x-100 ${selected ? "max-desktop:hidden" : ""}`}
+        width={435}
+        height={1134}
+        sizes="(min-width: 90rem) 27vw, (min-width: 48rem) 22vw, 32vw"
+        className={`pointer-events-none relative -mt-16.5 ms-41.5 h-77.25 w-auto tablet:-mt-16.25 tablet:ms-14.75 tablet:h-106.5 desktop:absolute desktop:-bottom-[0.13%] desktop:end-[8.48%] desktop:-z-10 desktop:ms-0 desktop:mt-0 desktop:h-[97.97%] desktop:rtl:bottom-[2.45%] desktop:rtl:end-[9.67%] desktop:rtl:h-[89.21%] rtl:-scale-x-100 ${selected ? "max-desktop:hidden" : ""}`}
       />
     </section>
   );

@@ -101,8 +101,8 @@ const IMAGES = [
   { file: "illustration-special.webp", width: 644, height: 351, bytes: 4984 },
   { file: "illustration-the-map.webp", width: 458, height: 250, bytes: 2774 },
   { file: "service-areas-scene.webp", width: 2880, height: 2048, bytes: 85858 },
-  { file: "why-choose-character.webp", width: 2880, height: 2384, bytes: 41020 },
-  { file: "why-choose-maze.webp", width: 2880, height: 2048, bytes: 192854 },
+  { file: "why-choose-character-v2.webp", width: 435, height: 1134, bytes: 160684 },
+  { file: "why-choose-maze-v2.webp", width: 1487, height: 1058, bytes: 171560 },
 ];
 
 const TOTAL_IMAGE_BYTES = 656590;
