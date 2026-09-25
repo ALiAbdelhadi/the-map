@@ -232,3 +232,43 @@ the provider stage) — the standardised 1284 px grid sits 10–25 px narrower t
 few individual Figma frames (1307, 1249, 899) that were never drawn to the same
 grid; that gap already existed by design (`figma-inventory.md` §"Layout") and is
 unchanged by this pass.
+
+## Hero orbit as a rigid dial — owner-approved, 2026-09-25
+
+The owner, on a phone: the unselected icons were tiny, every click moved things
+differently, and nothing said what had been chosen. Changes in
+`apps/www/components/sections/hero-switcher.tsx`:
+
+- **Rigid rotation instead of Figma's per-variant placements.** Figma places every item
+  by hand in each of the ten variants, so between two variants each item moved and
+  tilted by a different amount. Items now sit in ten slots 36° apart round one fixed
+  centre (331, 423.8), dots on radius 175.5 and artwork on radius 265.7 — the means of
+  Figma's default variant (`ORBIT[0]`). Choosing an item turns the whole set by one
+  angle until it is at 12 o'clock. The dark 32 px marker is fixed at 12 o'clock. The
+  other nine variants in `hero-orbit-data.ts` are no longer used for placement.
+- **Upright items.** Figma tilts each item differently in every variant, so no single
+  tilt is its own; the items stay upright so they read at every slot and do not spin
+  during a turn. At 1440 the default state therefore differs from Figma in the tilts.
+- **Bigger unselected items.** The Figma image fills are 1408x768 with wide transparent
+  margins (the artwork is 42–64 % of the width). Each unselected item is now a 150x100
+  box (was 120x65) with the image drawn at 156.7 % of the box width, so the artwork
+  fills the box, which is also the tap target. 150 is the widest box that keeps
+  neighbours apart: the slots at 144° and 180° are 156.2 apart horizontally. On screen:
+  70x47 px at 375, 68x45 px at 320, 150x100 px at 768 and 1440. The logo in the ring is
+  83x100 (Figma: 62 wide).
+- **The chosen service is lifted.** It shows the same 300 px of artwork, but sits
+  56 frame px higher than before (box bottom 8 px above its neighbours' tops) so it no
+  longer overlaps the items beside it.
+- **New element: the chosen title inside the ring.** It shows `hero.title` ("The Map")
+  by default and the chosen service's title after that. It is bold, `text-bg`, 20 px on
+  phones and 38 px from tablet up, and cross-fades and rises in on change. It is
+  `aria-hidden`; the card's `aria-live` announcement is unchanged. Figma has no such
+  element.
+- **Affordance.** `cursor-pointer`; hover (mouse only) and keyboard focus scale an item
+  to 1.08 and brighten it to 112 %; a press dips it to 0.96 (GSAP, 0.2 s). The chosen
+  item gets no hover lift. The buttons keep `aria-pressed` and the service title (or
+  "Back to The Map") as their accessible name.
+- **Phone orbit box.** It is now `w-full max-w-78` instead of a fixed `w-78`, so at
+  320 it shrinks to 304 px and no longer overflows the 8 px gutters.
+- `/ar` uses the same geometry and turn direction as `/en`, as before. The Arabic
+  Figma set is identical.
