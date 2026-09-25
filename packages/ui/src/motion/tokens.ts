@@ -18,8 +18,8 @@ export const prototype = {
   hero: { click: move(0.7), copy: out(0.45) },
   /** Why Choose Us: maze zoom and card move; the feature pill arrives. */
   whyChoose: { click: move(0.8), tip: out(0.35) },
-  /** App screens tile: the columns scroll while hovered. */
-  screens: { hover: move(2.4), back: out(0.6) },
+  /** App screens tile: the columns scroll once, when the tile comes into view. */
+  screens: { pass: move(2.2) },
   /** Stepper: pills resize; the rocket slides in. */
   stepper: { click: move(0.5), rocket: { ...out(0.5), delay: 0.15 } },
   /** Service Areas title: swaps while hovered. */
