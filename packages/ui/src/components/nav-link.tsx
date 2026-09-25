@@ -3,6 +3,7 @@
 import { type ReactNode, useEffect, useState } from "react";
 
 import { cn } from "../lib/cn";
+import { onHashLinkClick, SECTION_SCROLL_EVENT } from "../motion/scroll-to";
 
 /**
  * Header / drawer navigation item.
@@ -15,7 +16,9 @@ import { cn } from "../lib/cn";
  *
  * The current item follows the page: an in-page link (`#id`) is "choose" while its
  * section crosses the middle of the viewport, and is announced with
- * `aria-current="location"`.
+ * `aria-current="location"`. While a click glides the page to a section
+ * (motion/scroll-to.ts) the target is "choose" from the start, instead of the mark
+ * running through every section the page passes on the way.
  */
 export type NavLinkProps = {
   href: string;
@@ -52,13 +55,32 @@ function useSectionInView(href: string) {
   return inView;
 }
 
+/** The id a smooth scroll is heading for, or null when none is running. */
+function useScrollTarget() {
+  const [target, setTarget] = useState<string | null>(null);
+
+  useEffect(() => {
+    function onScroll(event: Event) {
+      setTarget((event as CustomEvent<string | null>).detail);
+    }
+    window.addEventListener(SECTION_SCROLL_EVENT, onScroll);
+    return () => {
+      window.removeEventListener(SECTION_SCROLL_EVENT, onScroll);
+    };
+  }, []);
+
+  return target;
+}
+
 export function NavLink({ href, children, icon, current, className }: NavLinkProps) {
   const inView = useSectionInView(href);
-  const isCurrent = current ?? inView;
+  const target = useScrollTarget();
+  const isCurrent = current ?? (target === null ? inView : href === `#${target}`);
 
   return (
     <a
       href={href}
+      onClick={href.startsWith("#") ? onHashLinkClick : undefined}
       aria-current={isCurrent ? "location" : undefined}
       className={cn(
         "inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-nav px-4 py-1 text-24 font-regular text-bg",

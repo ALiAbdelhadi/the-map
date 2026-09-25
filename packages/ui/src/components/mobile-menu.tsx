@@ -157,9 +157,14 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
         ref={panelRef}
         id={panelId}
         hidden={!open}
-        onClick={(event) => {
+        onClickCapture={(event) => {
           // Following a link closes the drawer at once — the page is about to move.
-          if ((event.target as HTMLElement).closest("a")) setOpen(false);
+          // Capture phase: this runs before the link's own handler starts the smooth
+          // scroll (motion/scroll-to.ts), and the scroll lock is released here, not in
+          // the effect cleanup after the re-render, or the locked page could not move.
+          if (!(event.target as HTMLElement).closest("a")) return;
+          document.documentElement.classList.remove("overflow-hidden");
+          setOpen(false);
         }}
         className="absolute end-0 top-16 rtl:end-auto rtl:start-0 z-10 flex flex-col items-start gap-2 overflow-hidden rounded-button bg-surface-header p-5 shadow-glass-edge backdrop-blur-glass"
       >

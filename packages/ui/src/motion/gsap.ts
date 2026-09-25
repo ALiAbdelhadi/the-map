@@ -11,12 +11,13 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import { Flip } from "gsap/Flip";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 
-gsap.registerPlugin(useGSAP, CustomEase, Flip, ScrollTrigger, SplitText);
+gsap.registerPlugin(useGSAP, CustomEase, Flip, ScrollToPlugin, ScrollTrigger, SplitText);
 
-export { Flip, gsap, ScrollTrigger, SplitText, useGSAP };
+export { Flip, gsap, ScrollToPlugin, ScrollTrigger, SplitText, useGSAP };
 
 /** Animate only when the user has not asked for reduced motion. */
 export const MOTION_OK = "(prefers-reduced-motion: no-preference)";
