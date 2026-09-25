@@ -1,7 +1,8 @@
-import type { SVGProps } from "react";
+import { useId, type SVGProps } from "react";
 
 /** all-in-one — Figma icon, recoloured to currentColor. */
 export function AllInOneIcon(props: SVGProps<SVGSVGElement>) {
+  const clipId = useId();
   return (
     <svg
       width="76"
@@ -11,7 +12,7 @@ export function AllInOneIcon(props: SVGProps<SVGSVGElement>) {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <g id="All-in-One" clipPath="url(#clip0_22_2)">
+      <g id="All-in-One" clipPath={`url(#${clipId})`}>
         <g id="Icon_2">
           <path
             id="23"
@@ -21,7 +22,7 @@ export function AllInOneIcon(props: SVGProps<SVGSVGElement>) {
         </g>
       </g>
       <defs>
-        <clipPath id="clip0_22_2">
+        <clipPath id={clipId}>
           <rect width="76" height="76" fill="white" />
         </clipPath>
       </defs>

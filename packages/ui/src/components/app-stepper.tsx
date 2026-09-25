@@ -103,7 +103,7 @@ export function AppStepper({ steps, defaultStep = 1, label, rocket, className }:
   return (
     <div
       ref={ref}
-      className={cn("flex w-full flex-col gap-7.25", className)}
+      className={cn("@container flex w-full flex-col gap-7.25", className)}
       role="group"
       aria-label={label}
     >

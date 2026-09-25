@@ -17,7 +17,9 @@ import { BadgeBorder } from "./badge-border";
  * on the right and Arabic mirrors it to the left. The badge (`936:20234`) has a 4 px
  * primary/500 border, radius 12, `shadow`, a 48 px icon and a 48 px medium title in
  * primary/700; the subtitle is 32 px primary/950 and the stepper sits 72 px below.
- * The two store badges are centred under the row (`942:20453`).
+ * The two store badges are centred under the row (`942:20453`). Figma's row is
+ * 1307 px; in the 1284 px container the text column keeps its full 456 px (so the
+ * subtitle stays on two lines) and the gap gives up the 23 px instead.
  */
 
 export function GetAppSection({ content }: { content: SiteContent }) {
@@ -27,10 +29,10 @@ export function GetAppSection({ content }: { content: SiteContent }) {
       className="flex w-full justify-center bg-primary-100 px-1.5 py-17 tablet:px-8 tablet:py-18 desktop:min-h-256 desktop:items-center desktop:py-0"
     >
       <div className="flex w-full max-w-desktop flex-col items-center gap-12 tablet:gap-17 desktop:gap-12">
-        <div className="flex w-full flex-col items-center gap-11.5 desktop:flex-row desktop:items-center desktop:justify-between desktop:gap-71.5">
-          <div className="flex w-full max-w-114 flex-col gap-8 px-1.5 tablet:px-0 desktop:gap-18">
+        <div className="flex w-full flex-col items-center gap-11.5 desktop:flex-row desktop:items-center desktop:justify-between desktop:gap-0">
+          <div className="flex w-full max-w-114 flex-col gap-8 px-1.5 tablet:px-0 desktop:shrink-0 desktop:gap-18">
             <div className="flex flex-col gap-8">
-              <div className="relative flex items-center justify-center gap-4 self-start rounded-button border-4 border-transparent bg-gradient-to-r from-primary-200/30 to-secondary-600/30 px-6 py-3 shadow-card">
+              <div className="relative flex items-center justify-center gap-4 self-start rounded-button bg-gradient-to-r from-primary-200/30 to-secondary-600/30 px-6 py-3 shadow-card">
                 <BadgeBorder />
                 <span className="flex size-6 shrink-0 items-center justify-center text-primary-700 tablet:size-12">
                   <AppIcon width={48} height={48} className="h-full w-full" />

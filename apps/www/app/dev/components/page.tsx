@@ -37,15 +37,6 @@ import { assertDevPage } from "../dev-only";
 
 import { WhyChooseDemo } from "./why-choose-demo";
 
-/**
- * Dev-only component sheet.
- *
- * Renders every Phase 4 component in every state Figma defines. Copy shown here
- * is lifted from the Figma nodes named in each component's doc comment; where a
- * variant's copy has not been read out of Figma yet it is left empty rather than
- * invented, and Phase 5 fills it in.
- */
-
 function Section({
   title,
   note,
@@ -239,6 +230,7 @@ export default function ComponentsPage() {
           <SiteHeader
             homeHref="/"
             homeLabel="The Map — home"
+            mainNavLabel="Main"
             logo={<Image src="/svg/logo-wordmark.svg" alt="" width={178} height={40} />}
             nav={NAV.map((item) => (
               <NavLink key={item.label} href={item.href} icon={item.icon} current={item.current}>
@@ -325,7 +317,7 @@ export default function ComponentsPage() {
 
       <Section
         title="Why Choose Us list"
-        note="914:20605 — select a row to outline it; the section shows the description."
+        note="914:20605 — select a row to reveal its description."
       >
         <div className="rounded-card bg-secondary-500 p-6">
           <WhyChooseDemo features={FEATURES} />

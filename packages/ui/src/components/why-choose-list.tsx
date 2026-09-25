@@ -12,7 +12,8 @@ import { FeatureItem } from "./feature-item";
  * feature, where the selected row is outlined and that feature's description is
  * shown beside the card. The rows are a tab list; the page renders the matching
  * panels (`feature-<id>-panel`) and owns the selection, because the whole section
- * changes with it.
+ * changes with it. The list hugs its widest row (`911:19659`, 282 px on the 1440
+ * frame), so the hover fill and the selected outline end there, not at the card.
  */
 export type WhyChooseFeature = {
   id: string;
@@ -41,7 +42,7 @@ export function WhyChooseList({
       role="tablist"
       aria-label={label}
       aria-orientation="vertical"
-      className={cn("flex flex-col gap-6", className)}
+      className={cn("flex w-fit max-w-full flex-col gap-6", className)}
     >
       {features.map((feature, index) => (
         <FeatureItem

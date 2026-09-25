@@ -72,6 +72,6 @@ export type SiteContent = {
   };
   social: { id: "facebook" | "instagram" | "x" | "linkedin"; label: string; href: string }[];
   language: { english: string; arabic: string; switchLabel: string };
-  a11y: { skipToContent: string; home: string; menu: string };
+  a11y: { skipToContent: string; home: string; menu: string; mainNav: string };
   children?: ReactNode;
 };

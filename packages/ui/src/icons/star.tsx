@@ -1,7 +1,8 @@
-import type { SVGProps } from "react";
+import { useId, type SVGProps } from "react";
 
 /** star — Figma icon, recoloured to currentColor. */
 export function StarIcon(props: SVGProps<SVGSVGElement>) {
+  const clipId = useId();
   return (
     <svg
       width="24"
@@ -11,7 +12,7 @@ export function StarIcon(props: SVGProps<SVGSVGElement>) {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <g id="Star" clipPath="url(#clip0_22_2)">
+      <g id="Star" clipPath={`url(#${clipId})`}>
         <g id="Group">
           <path
             id="Vector"
@@ -58,7 +59,7 @@ export function StarIcon(props: SVGProps<SVGSVGElement>) {
         </g>
       </g>
       <defs>
-        <clipPath id="clip0_22_2">
+        <clipPath id={clipId}>
           <rect width="24" height="24" fill="white" />
         </clipPath>
       </defs>

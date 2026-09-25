@@ -100,7 +100,7 @@ export function FeatureItem({
       tabIndex={focusable ? 0 : -1}
       onClick={onSelect}
       className={cn(
-        "group relative flex items-center gap-6 rounded-row px-5 py-1 text-24 font-regular text-bg tablet:text-40",
+        "group relative flex items-center gap-6 rounded-row px-5 py-1 text-start text-24 font-regular text-bg tablet:text-40",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg",
         className,
       )}

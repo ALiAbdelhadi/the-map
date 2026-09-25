@@ -238,5 +238,6 @@ export const en: SiteContent = {
     skipToContent: "Skip to content",
     home: "The Map — home",
     menu: "Menu",
+    mainNav: "Main",
   },
 };

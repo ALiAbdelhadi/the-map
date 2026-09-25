@@ -11,7 +11,8 @@ import { cn } from "../lib/cn";
  *   radius 17, Reviews shadow; the photo is a 107 px column (tablet 113) with a 1 px
  *   primary/500 border and the Click-here shadow; beside it, 14 px away, the name
  *   (24 px primary/400), the rating (16 px Natural/600), the quote (24 px, tablet
- *   14 px, primary/950) and the 53 px quote mark.
+ *   14 px, primary/950) and the 53 px quote mark. The name is start-aligned (left in
+ *   English, right in Arabic `1030:24246`); the quote is centred.
  * - collapsed: the photo alone, 210 wide (tablet 88), 307 tall (tablet 211).
  *
  * The widths live in classes; the carousel animates between them. The text column
@@ -84,7 +85,7 @@ export function ReviewCard({
         )}
       >
         <figcaption className="flex flex-col gap-2 desktop:gap-3.75">
-          <span className="text-center text-24 font-regular text-primary-400">{name}</span>
+          <span className="text-start text-24 font-regular text-primary-400">{name}</span>
           <span className="flex items-center gap-2">
             <span className="flex size-6 shrink-0 items-center justify-center">{ratingIcon}</span>
             <span className="text-16 font-regular text-natural-600">{rating}</span>

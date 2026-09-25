@@ -21,6 +21,8 @@ export type SiteHeaderProps = {
   homeLabel: string;
   /** Inline navigation for the desktop frame. */
   nav: ReactNode;
+  /** Accessible name for the `<nav>` landmark, content-driven (not from Figma). */
+  mainNavLabel: string;
   /** Locale switch. */
   languageSwitch: ReactNode;
   /** Drawer for the mobile and tablet frames. */
@@ -33,6 +35,7 @@ export function SiteHeader({
   homeHref,
   homeLabel,
   nav,
+  mainNavLabel,
   languageSwitch,
   drawer,
   className,
@@ -54,7 +57,7 @@ export function SiteHeader({
             <span className="sr-only">{homeLabel}</span>
           </a>
 
-          <nav aria-label="Main" className="hidden flex-1 items-center gap-2 desktop:flex">
+          <nav aria-label={mainNavLabel} className="hidden flex-1 items-center gap-2 desktop:flex">
             {nav}
           </nav>
         </div>

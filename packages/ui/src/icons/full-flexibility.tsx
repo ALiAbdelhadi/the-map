@@ -1,7 +1,8 @@
-import type { SVGProps } from "react";
+import { useId, type SVGProps } from "react";
 
 /** full-flexibility — Figma icon, recoloured to currentColor. */
 export function FullFlexibilityIcon(props: SVGProps<SVGSVGElement>) {
+  const clipId = useId();
   return (
     <svg
       width="47"
@@ -11,7 +12,7 @@ export function FullFlexibilityIcon(props: SVGProps<SVGSVGElement>) {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <g id="Full Flexibility" clipPath="url(#clip0_22_2)">
+      <g id="Full Flexibility" clipPath={`url(#${clipId})`}>
         <g id="Group">
           <g id="Group_2">
             <g id="Group_3">
@@ -96,7 +97,7 @@ export function FullFlexibilityIcon(props: SVGProps<SVGSVGElement>) {
         </g>
       </g>
       <defs>
-        <clipPath id="clip0_22_2">
+        <clipPath id={clipId}>
           <rect width="47" height="47" fill="white" />
         </clipPath>
       </defs>

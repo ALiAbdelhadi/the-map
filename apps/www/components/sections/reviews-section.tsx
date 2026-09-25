@@ -12,7 +12,9 @@ import type { SiteContent } from "../../content/types";
  *
  * Figma `1007:20617` (1440x1024): a 48 px gap between the 62 px gradient
  * heading (primary/500 -> green/600, `1015:21009`) and the 48 px Natural/300
- * subheading, then the review row 481 px down.
+ * subheading, then the review row 481 px down. The subheading is start-aligned in
+ * the English frames (`1008:20620`, tablet `1037:32347`) and centred in the Arabic
+ * one (`1028:20722`); there is no Arabic tablet frame, so Arabic stays centred.
  *
  * The heading types itself once when it scrolls into view — see TypewriterHeading.
  *
@@ -33,7 +35,7 @@ export function ReviewsSection({ content }: { content: SiteContent }) {
           >
             {content.reviews.heading}
           </TypewriterHeading>
-          <p className="max-w-307.25 text-center text-32 font-medium text-natural-300 tablet:max-w-165.25 desktop:max-w-307.25 desktop:text-48">
+          <p className="w-full max-w-307.25 text-start text-32 rtl:text-center font-medium text-natural-300 tablet:max-w-165.25 desktop:max-w-307.25 desktop:text-48">
             {content.reviews.subheading}
           </p>
         </div>
