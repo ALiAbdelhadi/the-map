@@ -227,13 +227,13 @@ q75. `next.config.ts` now sets `images.qualities: [90]`, and the files below wer
 rebuilt from the largest source Figma holds (`cwebp -q 90 -m 6 -sharp_yuv -alpha_q 100`,
 q88 for the two full-bleed scenes).
 
-| Files                                    | Source                                                   | Was       | Now       |
-| ---------------------------------------- | -------------------------------------------------------- | --------- | --------- |
-| `app-screen-*.webp` (6)                  | uploaded originals (1199–1500 px wide), Lanczos to 900 w | 420 w     | 900 w     |
-| `orbit-*.webp` (9)                       | image fills of `898:20004`, full 1408x768 with alpha     | 1200x655  | 1408x768  |
-| `avatar-6661`–`6664.webp`                | node export at scale 4                                   | 420x614   | 840x1228  |
-| `avatar-6660.webp`                       | node export at scale 4                                   | 214x614   | 428x1228  |
-| `hero-map-scene.webp`, `service-areas-scene.webp` | node export at scale 2, re-encoded at q88       | q78       | q88       |
+| Files                                             | Source                                                   | Was      | Now      |
+| ------------------------------------------------- | -------------------------------------------------------- | -------- | -------- |
+| `app-screen-*.webp` (6)                           | uploaded originals (1199–1500 px wide), Lanczos to 900 w | 420 w    | 900 w    |
+| `orbit-*.webp` (9)                                | image fills of `898:20004`, full 1408x768 with alpha     | 1200x655 | 1408x768 |
+| `avatar-6661`–`6664.webp`                         | node export at scale 4                                   | 420x614  | 840x1228 |
+| `avatar-6660.webp`                                | node export at scale 4                                   | 214x614  | 428x1228 |
+| `hero-map-scene.webp`, `service-areas-scene.webp` | node export at scale 2, re-encoded at q88                | q78      | q88      |
 
 Source-limited, left as they are: `hero-bg-*.webp`, `hero-map-scene.webp`, the avatars
 and `why-choose-*` all come from 1408x768 uploaded images that Figma zooms well past
@@ -249,3 +249,23 @@ and the embedded cover image were dropped and `faststart` was added. It is 464x6
 6.04 s, 24 fps, H.264, 1.7 MB. That is its native resolution, so it is shown about
 3x enlarged and will stay soft until a higher-resolution original exists.
 `service-areas-scene.webp` stays in place as the poster and the reduced-motion fallback.
+
+## Addendum — new Why Choose Us images (2026-09-25)
+
+Figma replaced the Why Choose Us maze and character. Every frame (1440 `914:20600`
+and its five feature variants, 768 `1037:26497`, 375 `1038:25191`–`1038:25300`, Arabic
+1440 `1028:22136`) fills its image nodes from the same two uploaded sources, so one
+file each serves all breakpoints. Both were taken from the uploaded image fill at
+native resolution (no node export: the node exports come back flattened and clipped).
+The file names are new because the dimensions changed. The old `why-choose-maze.webp`
+and `why-choose-character.webp` were deleted on 2026-09-25 (owner request) and
+`app/dev/assets/page.tsx` now lists the `-v2` files; the Phase 3 rows above are history.
+
+| File                           | Nodes                                                                                                        | Source                          | Output                                                                                                                                                    | Settings                                         | Size   |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------ | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | ------ |
+| `why-choose-maze-v2.webp`      | `1171:9019` (1440), `1171:9038` (768), `1171:9057` (375), `1170:8755` (ar 1440), variants `1171:9023`–`9074` | uploaded fill 1487x1058, opaque | 1487x1058, uncropped                                                                                                                                      | `cwebp -q 88 -m 6 -sharp_yuv` (full-bleed scene) | 168 KB |
+| `why-choose-character-v2.webp` | `1170:8726` (1440), `1170:8751` (768), `1170:8746` (375), `1170:8730` (ar 1440)                              | uploaded fill 1378x1142, alpha  | 435x1134 — cropped to the figure's alpha bounds (805, 8)–(1240, 1142); artwork untouched, the stray corner pixels at (1345+, 1138+) fall outside the crop | `cwebp -q 90 -m 6 -sharp_yuv -alpha_q 100`       | 157 KB |
+
+Both sources are small for how large Figma draws them: the maze is shown at 1721 px
+wide on the 1440 frame (1.16x its source) and the character at 1003 px tall (0.88x),
+so neither holds 2x detail on high-density screens.
