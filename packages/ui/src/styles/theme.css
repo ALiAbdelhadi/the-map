@@ -295,3 +295,25 @@
   --font-sans: var(--font-baloo-2), system-ui, sans-serif;
   --font-arabic: var(--font-baloo-bhaijaan-2), var(--font-baloo-2), system-ui, sans-serif;
 }
+
+/* ---- fix pass 2026-09-24 — agent A (header / hero / nav) ---- */
+@theme {
+  /*
+   * 1 px light edge of the glass surfaces — header bar 888:20482 (tablet 1037:23582,
+   * phone 1040:26239) and hero card 888:19276. Not a Figma variable or stroke: it is
+   * the edge highlight of Figma's GLASS effect, which the MCP exposes only as a radius
+   * (gap K4). Measured off the Figma renders, where the edge lifts every channel by
+   * ~56 over the fill — primary/200 at 43 % reproduces that. Drawn inset so it adds
+   * no size, as Figma's effect does.
+   */
+  --shadow-glass-edge: inset 0 0 0 1px rgb(154 202 254 / 0.43);
+}
+
+/* ---- fix pass 2026-09-24 — agent B (reviews / footer) ---- */
+@theme {
+  --radius-footer-wide: 6.25rem; /* 100 — tablet/desktop footer top corners, nodes 1037:32742, 930:20465 */
+}
+
+/* ---- fix pass 2026-09-24 — agent C (why / get-app / service areas / provider) ---- */
+@theme {
+}

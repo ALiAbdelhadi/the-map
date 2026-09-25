@@ -207,15 +207,19 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
         />
       </div>
 
-      <div className="flex w-full max-w-desktop justify-start tablet:ps-24.5 desktop:ps-0">
-        <div data-why-card="" className="relative flex flex-col gap-15.5">
-          <GlassCard surface="field" className="w-fit tablet:w-152">
+      {/*
+        Phone: the card keeps Figma's place in the 375 frame (8 px in) inside a 359 px
+        column that is centred on wider phones, so it never drifts to one side.
+      */}
+      <div className="flex w-full max-w-89.75 justify-start tablet:max-w-desktop tablet:ps-24.5 desktop:ps-0">
+        <div data-why-card="" className="relative flex max-w-full flex-col gap-15.5">
+          <GlassCard surface="field" className="w-fit max-w-full tablet:w-152">
             <div className="flex flex-col gap-8">
               <div className="flex items-center gap-2 ps-5 py-1 tablet:gap-6">
                 <span className="flex size-15.5 shrink-0 items-center justify-center rounded-chip bg-secondary-500 p-2 text-bg">
                   <ChooseIcon width={40} height={40} />
                 </span>
-                <h2 className="text-32 font-regular whitespace-nowrap text-bg tablet:text-56">
+                <h2 className="min-w-0 text-32 font-regular text-bg tablet:text-56 tablet:whitespace-nowrap">
                   {title}
                 </h2>
               </div>

@@ -1,7 +1,8 @@
-import type { SVGProps } from "react";
+import { useId, type SVGProps } from "react";
 
 /** menu — Figma icon, recoloured to currentColor. */
 export function MenuIcon(props: SVGProps<SVGSVGElement>) {
+  const clipId = useId();
   return (
     <svg
       width="24"
@@ -11,7 +12,7 @@ export function MenuIcon(props: SVGProps<SVGSVGElement>) {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <g id="menu" clipPath="url(#clip0_22_2)">
+      <g id="menu" clipPath={`url(#${clipId})`}>
         <g id="Group">
           <g id="grip-solid-horizontal_1_">
             <path
@@ -33,7 +34,7 @@ export function MenuIcon(props: SVGProps<SVGSVGElement>) {
         </g>
       </g>
       <defs>
-        <clipPath id="clip0_22_2">
+        <clipPath id={clipId}>
           <rect width="24" height="24" fill="white" />
         </clipPath>
       </defs>

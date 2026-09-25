@@ -218,3 +218,34 @@ artwork too large.
 | `orbit-food.webp`        | Food                            |
 | `orbit-real-estate.webp` | Real estate                     |
 | `orbit-blinkz.webp`      | Blinkz                          |
+
+## Addendum — full-resolution re-export (2026-09-24)
+
+Rasters looked soft and blocky because they were compressed twice: once by `cwebp`
+at q78–85 after downscaling, then again by the Next image optimizer at its default
+q75. `next.config.ts` now sets `images.qualities: [90]`, and the files below were
+rebuilt from the largest source Figma holds (`cwebp -q 90 -m 6 -sharp_yuv -alpha_q 100`,
+q88 for the two full-bleed scenes).
+
+| Files                                    | Source                                                   | Was       | Now       |
+| ---------------------------------------- | -------------------------------------------------------- | --------- | --------- |
+| `app-screen-*.webp` (6)                  | uploaded originals (1199–1500 px wide), Lanczos to 900 w | 420 w     | 900 w     |
+| `orbit-*.webp` (9)                       | image fills of `898:20004`, full 1408x768 with alpha     | 1200x655  | 1408x768  |
+| `avatar-6661`–`6664.webp`                | node export at scale 4                                   | 420x614   | 840x1228  |
+| `avatar-6660.webp`                       | node export at scale 4                                   | 214x614   | 428x1228  |
+| `hero-map-scene.webp`, `service-areas-scene.webp` | node export at scale 2, re-encoded at q88       | q78       | q88       |
+
+Source-limited, left as they are: `hero-bg-*.webp`, `hero-map-scene.webp`, the avatars
+and `why-choose-*` all come from 1408x768 uploaded images that Figma zooms well past
+their native size (the hero scene shows ~760 source px across 1440). No export can add
+detail those sources do not have; a sharper look needs higher-resolution originals.
+
+### Service Areas video
+
+`974:20033` is a **video** fill, not an image. The Figma MCP cannot export video
+fills, so the original was saved from the Figma file in the browser and added as
+`public/video/service-areas.mp4`. It was remuxed only, with no re-encode: the audio track
+and the embedded cover image were dropped and `faststart` was added. It is 464x688,
+6.04 s, 24 fps, H.264, 1.7 MB. That is its native resolution, so it is shown about
+3x enlarged and will stay soft until a higher-resolution original exists.
+`service-areas-scene.webp` stays in place as the poster and the reduced-motion fallback.

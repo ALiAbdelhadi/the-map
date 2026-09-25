@@ -1,7 +1,8 @@
-import type { SVGProps } from "react";
+import { useId, type SVGProps } from "react";
 
 /** areas — Figma icon, recoloured to currentColor. */
 export function AreasIcon(props: SVGProps<SVGSVGElement>) {
+  const clipId = useId();
   return (
     <svg
       width="50"
@@ -11,7 +12,7 @@ export function AreasIcon(props: SVGProps<SVGSVGElement>) {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <g id="Areas" clipPath="url(#clip0_22_2)">
+      <g id="Areas" clipPath={`url(#${clipId})`}>
         <g id="Group">
           <path
             id="Vector"
@@ -60,7 +61,7 @@ export function AreasIcon(props: SVGProps<SVGSVGElement>) {
         </g>
       </g>
       <defs>
-        <clipPath id="clip0_22_2">
+        <clipPath id={clipId}>
           <rect width="50" height="50" fill="white" />
         </clipPath>
       </defs>

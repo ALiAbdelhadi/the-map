@@ -1,7 +1,8 @@
-import type { SVGProps } from "react";
+import { useId, type SVGProps } from "react";
 
 /** focus — Figma icon, recoloured to currentColor. */
 export function FocusIcon(props: SVGProps<SVGSVGElement>) {
+  const clipId = useId();
   return (
     <svg
       width="24"
@@ -11,7 +12,7 @@ export function FocusIcon(props: SVGProps<SVGSVGElement>) {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <g id="focus" clipPath="url(#clip0_22_2)">
+      <g id="focus" clipPath={`url(#${clipId})`}>
         <path
           id="Vector"
           d="M12.0001 17.0001C9.24304 17.0001 7 14.7571 7 12.0001C7 9.24304 9.24304 7 12.0001 7C14.7571 7 17.0001 9.24304 17.0001 12.0001C17.0001 14.7571 14.7571 17.0001 12.0001 17.0001ZM12.0001 8.5C10.0701 8.5 8.5 10.0701 8.5 12.0001C8.5 13.93 10.0701 15.5001 12.0001 15.5001C13.93 15.5001 15.5001 13.93 15.5001 12.0001C15.5001 10.0701 13.93 8.5 12.0001 8.5Z"
@@ -44,7 +45,7 @@ export function FocusIcon(props: SVGProps<SVGSVGElement>) {
         />
       </g>
       <defs>
-        <clipPath id="clip0_22_2">
+        <clipPath id={clipId}>
           <rect width="24" height="24" fill="white" />
         </clipPath>
       </defs>

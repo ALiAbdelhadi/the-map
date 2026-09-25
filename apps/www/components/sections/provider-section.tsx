@@ -29,10 +29,8 @@ import { ProviderShowcase, type StagePill } from "./provider-showcase";
  * opens on `Click here` — see ProviderShowcase. The email card gains a gradient
  * stroke on hover (`998:20790`, 0.3 s ease-out).
  *
- * The pills are absolutely positioned and rotated ~1.1° around the illustration
- * on the 1440 frame. Here they are a list beside the illustration: their Figma
- * positions are tied to the 813x637 desktop box and do not survive a narrower
- * viewport. Recorded as a Phase 5 deviation.
+ * The pills are scattered around the illustration at Figma's positions on the 768
+ * and 1440 frames (see PLACE) and stacked in a column on the phone frame.
  */
 
 const ICONS = {
@@ -56,20 +54,37 @@ const PHONE_ORDER: Record<string, string> = {
 };
 
 /*
- * The 768 frame (`1037:32101`) scatters the pills around the illustration in a
- * 706x637 box: Full Flexibility (343, 118), Ready Clients (0, 174), Increase Your
- * Income (340, 238, turned 1.1°), Wider Reach (4, 287), Simple & Organized System
- * (438, 353, turned 1.1°); the illustration is 510 wide at (67, 279).
+ * The final state scatters the pills around the illustration, in a 706x637 box on
+ * the 768 frame (`1037:32101`) and an 813x637 box on the 1440 frame (`998:20841`,
+ * `997:21767`, end-aligned in the 1282 px row, beside the 709 px email column).
+ * Positions (x, y) in that box:
+ *
+ *   pill               768                 1440
+ *   Full Flexibility   (343, 118)          (327, 0)
+ *   Ready Clients      (−5, 174)           (25, 80)
+ *   Increase Income    (342, 238), 1.1°    (538, 141)
+ *   Wider Reach        (4, 287)            (146, 189)
+ *   Simple & Organized (440, 353), 1.1°    (633, 315)
+ *   illustration       510 at (67, 279)    626 at (187, 166)
+ *
+ * On the phone frame (`1041:29327`) they are a column, Income and Simple also
+ * turned 1.1°.
  */
-const TABLET_PLACE: Record<string, string> = {
-  "full-flexibility": "tablet:absolute tablet:start-85.75 tablet:top-29.5 desktop:static",
-  "ready-clients": "tablet:absolute tablet:start-0 tablet:top-43.5 desktop:static",
+const PLACE: Record<string, string> = {
+  "full-flexibility":
+    "tablet:absolute tablet:start-85.75 tablet:top-29.5 desktop:start-81.75 desktop:top-0",
+  "ready-clients":
+    "tablet:absolute tablet:-start-1.25 tablet:top-43.5 desktop:start-6.25 desktop:top-20",
   income:
-    "tablet:absolute tablet:start-85 tablet:top-59.5 tablet:rotate-[1.1deg] desktop:static desktop:rotate-0",
-  "wider-reach": "tablet:absolute tablet:start-1 tablet:top-71.75 desktop:static",
+    "rotate-[1.1deg] tablet:absolute tablet:start-85.5 tablet:top-59.5 desktop:start-134.5 desktop:top-35.25 desktop:rotate-0",
+  "wider-reach":
+    "tablet:absolute tablet:start-1 tablet:top-71.75 desktop:start-36.5 desktop:top-47.25",
   simple:
-    "tablet:absolute tablet:start-109.5 tablet:top-88.25 tablet:rotate-[1.1deg] desktop:static desktop:rotate-0",
+    "rotate-[1.1deg] tablet:absolute tablet:start-110 tablet:top-88.25 desktop:start-158.25 desktop:top-78.75 desktop:rotate-0",
 };
+
+/** Increase Your Income and Simple & Organized System are Figma's compact pills. */
+const COMPACT = new Set(["income", "simple"]);
 
 export function ProviderSection({ content }: { content: SiteContent }) {
   return (
@@ -97,6 +112,7 @@ export function ProviderSection({ content }: { content: SiteContent }) {
                 title={benefit.title}
                 description={benefit.description}
                 icon={<Icon />}
+                variant="stage"
               />
             ),
           };
@@ -104,12 +120,12 @@ export function ProviderSection({ content }: { content: SiteContent }) {
         full={
           <div className="flex w-full max-w-desktop flex-col gap-8">
             <div className="flex flex-col items-start gap-6">
-              <div className="relative flex w-full items-center justify-center gap-4 rounded-button border-4 border-transparent bg-secondary-500/10 px-6 py-3 shadow-card tablet:w-auto">
+              <div className="relative flex w-full items-center justify-center gap-4 rounded-button bg-secondary-500/10 px-6 py-3 shadow-card tablet:w-auto">
                 <BadgeBorder />
                 <span className="flex size-6 items-center justify-center text-primary-700 tablet:size-12">
                   <AppIcon width={48} height={48} className="h-full w-full" />
                 </span>
-                <h2 className="text-20 font-semibold whitespace-nowrap text-primary-700 tablet:text-32 desktop:text-48 desktop:whitespace-normal">
+                <h2 className="text-20 font-semibold text-primary-700 tablet:text-32 tablet:whitespace-nowrap desktop:text-48 desktop:whitespace-normal">
                   {content.provider.badge}
                 </h2>
               </div>
@@ -118,9 +134,9 @@ export function ProviderSection({ content }: { content: SiteContent }) {
               </p>
             </div>
 
-            <div className="flex flex-col items-center gap-16 tablet:gap-0 desktop:flex-row desktop:items-center desktop:gap-16">
-              <div className="flex w-full flex-col gap-15.5 desktop:max-w-1/2">
-                <div className="relative flex flex-col gap-6 rounded-search bg-surface-field p-6 tablet:self-start desktop:self-auto">
+            <div className="flex flex-col items-center gap-16 tablet:gap-0 desktop:relative desktop:h-159.25 desktop:flex-row desktop:items-center">
+              <div className="flex w-full flex-col gap-15.5 desktop:w-177.25">
+                <div className="relative flex flex-col gap-6 rounded-search bg-surface-field p-6 self-start">
                   <GradientBorder
                     mode="hover"
                     width="p-0.5"
@@ -176,28 +192,28 @@ export function ProviderSection({ content }: { content: SiteContent }) {
                 </div>
               </div>
 
-              <div className="flex w-full flex-col items-center gap-0 tablet:relative tablet:-mt-18.25 tablet:block tablet:h-159.25 tablet:w-176.5 desktop:static desktop:mt-0 desktop:flex desktop:h-auto desktop:w-full desktop:max-w-1/2 desktop:gap-6">
+              <div className="flex w-full flex-col items-center gap-0 tablet:relative tablet:-mt-18.25 tablet:block tablet:h-159.25 tablet:w-176.5 desktop:pointer-events-none desktop:absolute desktop:end-0 desktop:top-0 desktop:mt-0 desktop:w-203.25">
                 <Image
                   src="/svg/illustration-provider-phone.svg"
                   alt={content.provider.illustrationAlt}
                   width={626}
                   height={471}
-                  className="order-2 -mt-4 h-auto w-full max-w-67.5 tablet:absolute tablet:start-16.75 tablet:top-69.75 tablet:mt-0 tablet:w-127.5 tablet:max-w-none desktop:static desktop:order-none desktop:w-full desktop:max-w-156.5"
+                  className="order-2 -mt-4 h-auto w-full max-w-67.5 tablet:absolute tablet:start-16.75 tablet:top-69.75 tablet:mt-0 tablet:w-127.5 tablet:max-w-none desktop:start-46.75 desktop:top-41.5 desktop:w-156.5"
                 />
-                <ul className="order-1 flex list-none flex-col gap-3.5 tablet:absolute tablet:inset-0 tablet:block desktop:static desktop:order-none desktop:flex desktop:gap-4">
+                <ul className="order-1 flex list-none flex-col gap-3.5 tablet:absolute tablet:inset-0 tablet:block">
                   {content.provider.benefits.map((benefit) => {
                     const Icon = ICONS[benefit.id as keyof typeof ICONS];
                     return (
                       <li
                         key={benefit.id}
-                        className={`${PHONE_ORDER[benefit.id] ?? ""} ${TABLET_PLACE[benefit.id] ?? ""}`}
+                        className={`desktop:pointer-events-auto ${PHONE_ORDER[benefit.id] ?? ""} ${PLACE[benefit.id] ?? ""}`}
                       >
                         <BenefitPill
                           title={benefit.title}
                           description={benefit.description}
                           icon={<Icon />}
-                          compact={benefit.id === "income" || benefit.id === "simple"}
-                          className="h-25.75 w-78.25 tablet:h-auto tablet:w-max desktop:w-auto"
+                          variant={COMPACT.has(benefit.id) ? "compact" : "default"}
+                          className="min-h-25.75 w-full max-w-79.25 tablet:min-h-0 tablet:w-max tablet:max-w-none"
                         />
                       </li>
                     );

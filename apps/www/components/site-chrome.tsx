@@ -81,6 +81,7 @@ export function Header({ content }: { content: SiteContent }) {
           <LogoWordmarkIcon width={178} height={40} className="h-full w-full text-primary-500" />
         }
         nav={<NavItems content={content} />}
+        mainNavLabel={content.a11y.mainNav}
         languageSwitch={<LocaleSwitch content={content} />}
         drawer={
           <MobileMenu icon={<MenuIcon className="h-full w-full" />} label={content.a11y.menu}>
@@ -99,64 +100,79 @@ const SOCIAL_ICONS = {
 } as const;
 
 /**
- * Footer, Figma `930:20465` — the `icon blue 2` watermark sits behind it.
- * Phone (`1041:29724`): radius 62, a 1 px primary/500 top border with a soft shadow,
- * 73 px above the column, and it overlaps the provider section by 51 px.
- * Tablet (`1037:32742`): 824 tall, the column 74 px down, a 408x92 logo.
+ * Footer, Figma `930:20465` (tablet `1037:32742`, phone `1041:29724`).
+ *
+ * Every frame: a 1 px top stroke painted with the primary/500 -> green/600 gradient
+ * (blue on the left, green on the right, in the Arabic frame too) and the Footer
+ * shadow; top corners 62 on the phone, 100 from the tablet up. CSS borders cannot
+ * take a gradient on a rounded edge, so the outer box carries the gradient and the
+ * inner panel sits 1 px lower with the same radius — the gradient shows only along
+ * the top, tapering round the corners exactly like a top-only stroke.
+ * Phone: 73 px above the column, and it overlaps the provider section by 51 px.
+ * Tablet: 824 tall, the column 74 px down, a 408x92 logo.
+ *
+ * Watermark: `icon blue 2` (`1022:20737` / `1037:32743` / `1041:29725`) is the maze-pin
+ * mark in primary/500 at 5 % opacity, drawn from a square image — 1662 on the 1440
+ * frame, 853 on the tablet, 759 on the phone. The mark itself is `logo-mark.svg`
+ * (the same artwork, vector), placed where the square puts it: phone 434 wide, 150
+ * down, centre +8; tablet 488 wide, 131 down, centred; desktop 951 wide, 372 above
+ * the top, centre +13. The Arabic frame (`1028:20725`) keeps the same physical
+ * position, so it is placed with `left`, not a logical property.
  */
 export function Footer({ content }: { content: SiteContent }) {
   return (
-    <div className="relative isolate -mt-12.75 flex w-full justify-center overflow-hidden rounded-t-footer border-t border-primary-500 bg-bg px-4 pt-18.25 pb-22.75 shadow-footer tablet:mt-0 tablet:rounded-t-card tablet:border-t-0 tablet:px-8 tablet:pt-18.5 tablet:pb-43.25 tablet:shadow-none desktop:pt-18.5 desktop:pb-23.25">
-      <Image
-        src="/images/footer-watermark.webp"
-        alt=""
-        width={2878}
-        height={810}
-        sizes="100vw"
-        className="-z-10 absolute inset-0 h-full w-full object-cover"
-      />
-      <SiteFooter
-        className="max-w-desktop gap-12"
-        logo={
-          <LogoWordmarkIcon
-            width={310}
-            height={70}
-            className="h-15.25 w-auto text-primary-500 tablet:h-23 desktop:h-23"
-          />
-        }
-        tagline={content.footer.tagline}
-        downloadHeading={content.footer.downloadHeading}
-        socialHeading={content.footer.socialHeading}
-        storeBadges={
-          <>
-            <StoreBadge
-              icon={<AppStoreIcon />}
-              topLine={content.stores.apple.topLine}
-              bottomLine={content.stores.apple.bottomLine}
-              href={content.stores.apple.href}
+    <div className="relative -mt-12.75 w-full rounded-t-footer bg-gradient-to-r from-primary-500 to-green-600 pt-px shadow-footer tablet:mt-0 tablet:rounded-t-footer-wide">
+      <div className="relative isolate flex w-full justify-center overflow-hidden rounded-t-footer bg-bg px-4 pt-18.25 pb-22.75 tablet:rounded-t-footer-wide tablet:px-8 tablet:pb-43.25 desktop:pb-23.25">
+        <Image
+          src="/svg/logo-mark.svg"
+          alt=""
+          width={165}
+          height={197}
+          className="pointer-events-none absolute top-37.5 left-1/2 -z-10 -ml-52.25 h-auto w-108.5 max-w-none opacity-5 tablet:top-32.75 tablet:-ml-61 tablet:w-122 desktop:-top-93 desktop:-ml-115.75 desktop:w-237.75"
+        />
+        <SiteFooter
+          className="max-w-desktop gap-12"
+          logo={
+            <LogoWordmarkIcon
+              width={310}
+              height={70}
+              className="h-15.25 w-auto text-primary-500 tablet:h-23 desktop:h-23"
             />
-            <StoreBadge
-              icon={<Image src="/svg/google-play.svg" alt="" width={24} height={24} />}
-              topLine={content.stores.google.topLine}
-              bottomLine={content.stores.google.bottomLine}
-              href={content.stores.google.href}
-            />
-          </>
-        }
-        socialLinks={content.social.map((item) => {
-          const Icon =
-            item.id in SOCIAL_ICONS ? SOCIAL_ICONS[item.id as keyof typeof SOCIAL_ICONS] : null;
-          return (
-            <SocialLink key={item.id} href={item.href} label={item.label}>
-              {Icon ? (
-                <Icon width={48} height={48} className="text-primary-500" />
-              ) : (
-                <Image src={`/svg/${item.id}.svg`} alt="" width={48} height={48} />
-              )}
-            </SocialLink>
-          );
-        })}
-      />
+          }
+          tagline={content.footer.tagline}
+          downloadHeading={content.footer.downloadHeading}
+          socialHeading={content.footer.socialHeading}
+          storeBadges={
+            <>
+              <StoreBadge
+                icon={<AppStoreIcon />}
+                topLine={content.stores.apple.topLine}
+                bottomLine={content.stores.apple.bottomLine}
+                href={content.stores.apple.href}
+              />
+              <StoreBadge
+                icon={<Image src="/svg/google-play.svg" alt="" width={24} height={24} />}
+                topLine={content.stores.google.topLine}
+                bottomLine={content.stores.google.bottomLine}
+                href={content.stores.google.href}
+              />
+            </>
+          }
+          socialLinks={content.social.map((item) => {
+            const Icon =
+              item.id in SOCIAL_ICONS ? SOCIAL_ICONS[item.id as keyof typeof SOCIAL_ICONS] : null;
+            return (
+              <SocialLink key={item.id} href={item.href} label={item.label}>
+                {Icon ? (
+                  <Icon width={48} height={48} className="text-primary-500" />
+                ) : (
+                  <Image src={`/svg/${item.id}.svg`} alt="" width={48} height={48} />
+                )}
+              </SocialLink>
+            );
+          })}
+        />
+      </div>
     </div>
   );
 }

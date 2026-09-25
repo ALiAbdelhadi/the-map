@@ -10,6 +10,7 @@ import { prototype } from "@themap/ui/motion/tokens";
 
 import type { SiteContent } from "../../content/types";
 import { ITEM_START, ORBIT, RING_START } from "./hero-orbit-data";
+import type { OrbitItem, OrbitState } from "./hero-orbit-data";
 
 /**
  * Hero service switcher.
@@ -54,6 +55,71 @@ const AT = {
   rotate: "rotate-[calc(var(--r)*1deg)]",
 } as const;
 
+/**
+ * Phone logo (`1041:26353` → `Group` `1038:26412`): Figma draws "The Map" mark 121.6 px
+ * wide, 36 px above the marker on the ring — larger, relative to the ring, than the 1440
+ * geometry gives it (75 px). Below the tablet breakpoint, while the logo is the chosen
+ * item (`--on` 1 → 0 as it drops into the ring), it is scaled by 121.6 / 75.5 and lifted
+ * 98.4 frame px so its tip keeps Figma's 36 px gap. Above it, `--k` and `--lift` are inert.
+ */
+const LOGO = {
+  width: "w-[calc(var(--w)*var(--k)*100cqw/669.642)]",
+  top: "top-[calc((var(--cy)-var(--lift))*100cqw/669.642)]",
+  vars: "[--on:1] [--k:1] [--lift:0] max-tablet:[--k:calc(1+0.611*var(--on))] max-tablet:[--lift:calc(98.4*var(--on))]",
+} as const;
+
+/**
+ * Figma places each variant by hand, so its ring centre drifts and the marker lands
+ * up to 12° off 12 o'clock. The owner asked (2026-09-25) for the ring and marker to
+ * stay put, so each variant is turned about its ring centre until the marker is at
+ * 12 o'clock, moved onto the first variant's centre, and every dot is snapped to
+ * one radius (the mean across all variants) so it sits on the ring line.
+ */
+const [CENTRE_X, CENTRE_Y] = ORBIT[0]?.ring ?? [0, 0];
+const DOT_RADIUS = (() => {
+  const radii = ORBIT.flatMap(({ ring: [cx, cy], items }) =>
+    Object.values(items).map(([, , , , dx, dy]) => Math.hypot(dx - cx, dy - cy)),
+  );
+  return radii.reduce((sum, r) => sum + r, 0) / radii.length;
+})();
+
+function upright({ ring: [cx, cy, rr], items }: OrbitState): OrbitState {
+  const marker = Object.values(items).find(([, , , , , , dot]) => dot > 18);
+  // Clockwise from 12 o'clock, in screen coordinates (y down).
+  const delta = marker ? Math.atan2(marker[4] - cx, -(marker[5] - cy)) : 0;
+  const cos = Math.cos(delta);
+  const sin = Math.sin(delta);
+  const deg = (delta * 180) / Math.PI;
+  const turn = (x: number, y: number): [number, number] => [
+    (x - cx) * cos + (y - cy) * sin,
+    (y - cy) * cos - (x - cx) * sin,
+  ];
+  return {
+    ring: [CENTRE_X, CENTRE_Y, rr - deg],
+    items: Object.fromEntries(
+      Object.entries(items).map(
+        ([id, [fx, fy, fw, rotation, dx, dy, dot]]): [string, OrbitItem] => {
+          const [ax, ay] = turn(fx, fy);
+          const [px, py] = turn(dx, dy);
+          const k = DOT_RADIUS / Math.hypot(px, py);
+          return [
+            id,
+            [
+              CENTRE_X + ax,
+              CENTRE_Y + ay,
+              fw,
+              rotation - deg,
+              CENTRE_X + px * k,
+              CENTRE_Y + py * k,
+              dot,
+            ],
+          ];
+        },
+      ),
+    ),
+  };
+}
+
 type Hero = SiteContent["hero"];
 
 export function HeroSwitcher({ hero }: { hero: Hero }) {
@@ -77,8 +143,9 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
 
       const tween = animate ? figmaTween(prototype.hero.click) : { duration: 0 };
 
-      const state = ORBIT[selected];
-      if (!state) return;
+      const figma = ORBIT[selected];
+      if (!figma) return;
+      const state = upright(figma);
       const turn = (key: string, rotation: number) => {
         const now = turned.current[key] ?? rotation;
         const next = now + (((((rotation - now) % 360) + 540) % 360) - 180);
@@ -102,6 +169,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
           "--cy": cy,
           "--w": width,
           "--r": turn(id, rotation),
+          ...(id === "the-map" ? { "--on": selected === 0 ? 1 : 0 } : {}),
           ...tween,
         });
         gsap.to(`[data-orbit-dot='${id}']`, { "--cx": dx, "--cy": dy, "--s": dot, ...tween });
@@ -192,7 +260,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
                   setAnnounce(true);
                   setSelected(index);
                 }}
-                className={`absolute flex -translate-x-1/2 -translate-y-1/2 items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bg ${service ? "aspect-[120/65]" : "aspect-[162/194.6]"} ${AT.left} ${AT.top} ${AT.width} ${AT.rotate} ${ITEM_START[slot.id]?.art ?? ""}`}
+                className={`absolute flex -translate-x-1/2 -translate-y-1/2 items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bg ${service ? `aspect-[120/65] ${AT.top} ${AT.width}` : `aspect-[162/194.6] ${LOGO.top} ${LOGO.width} ${LOGO.vars}`} ${AT.left} ${AT.rotate} ${ITEM_START[slot.id]?.art ?? ""}`}
               >
                 {/*
                   The service artwork is Figma's own image fill: the full 1408x768 source
@@ -202,8 +270,8 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
                 <Image
                   src={service ? service.image : "/svg/logo-mark.svg"}
                   alt=""
-                  width={service ? 1200 : 165}
-                  height={service ? 655 : 196}
+                  width={service ? 1408 : 165}
+                  height={service ? 768 : 196}
                   unoptimized={!service}
                   sizes="(min-width: 90rem) 620px, 90vw"
                   className="h-full w-full object-cover"

@@ -1,7 +1,8 @@
-import type { SVGProps } from "react";
+import { useId, type SVGProps } from "react";
 
 /** email — Figma icon, recoloured to currentColor. */
 export function EmailIcon(props: SVGProps<SVGSVGElement>) {
+  const clipId = useId();
   return (
     <svg
       width="143"
@@ -11,7 +12,7 @@ export function EmailIcon(props: SVGProps<SVGSVGElement>) {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <g id="Email" clipPath="url(#clip0_22_2)">
+      <g id="Email" clipPath={`url(#${clipId})`}>
         <g id="Page-1">
           <g id="015---Email">
             <path
@@ -63,7 +64,7 @@ export function EmailIcon(props: SVGProps<SVGSVGElement>) {
         </g>
       </g>
       <defs>
-        <clipPath id="clip0_22_2">
+        <clipPath id={clipId}>
           <rect width="143" height="143" fill="white" />
         </clipPath>
       </defs>

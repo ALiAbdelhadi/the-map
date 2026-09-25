@@ -70,6 +70,10 @@ export function StepItem({
           Always rendered: out of flow while collapsed (so the pill hugs its number),
           in flow when open — the growing pill then uncovers it.
         */}
+        {/*
+          The body is one line, as drawn, whenever the stepper is at least the phone
+          frame's 344 px column; only a narrower stepper (phones under 375) wraps it.
+        */}
         <span
           id={panelId}
           data-step-panel=""
@@ -84,7 +88,7 @@ export function StepItem({
             className={
               compactDescription
                 ? "text-14 font-regular"
-                : "text-14 font-regular whitespace-nowrap tablet:text-16"
+                : "text-14 font-regular @mobile:whitespace-nowrap tablet:text-16"
             }
           >
             {description}

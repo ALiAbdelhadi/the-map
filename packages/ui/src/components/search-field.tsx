@@ -15,6 +15,8 @@ import { GradientBorder } from "./gradient-border";
  * variants add a 3 px primary/500 → white gradient stroke, faded in with a 1.022 s
  * `GENTLE` spring on hover or focus.
  * Phone (`1041:27905`): 341x65, the padding overflows and the row is centred.
+ * Arabic has no phone frame; its placeholder is wider in Baloo Bhaijaan 2, so on
+ * phones it is set at 20 px to fit the 341 px field instead of being cut off.
  */
 export type SearchFieldProps = {
   /** Field name submitted with the form. */
@@ -46,14 +48,17 @@ export function SearchField({
   return (
     <div
       className={cn(
-        "relative flex h-16.25 items-center gap-3 rounded-search border-3 border-transparent bg-surface-field px-6 text-bg tablet:h-auto tablet:p-6",
+        "relative flex h-16.25 items-center gap-3 rounded-search bg-surface-field px-6 text-bg tablet:h-auto tablet:p-6",
         className,
       )}
     >
-      {/* Hover and focus variants (`984:20300`, `984:20299`): a 3 px gradient stroke. */}
+      {/*
+        Hover and focus variants (`984:20300`, `984:20299`): a 3 px gradient stroke,
+        drawn inside the field as Figma does (607x86 on the 1440 and 768 frames).
+      */}
       <GradientBorder
         mode="hover"
-        width="-m-0.75 p-0.75"
+        width="p-0.75"
         states={[
           null,
           [
@@ -79,7 +84,7 @@ export function SearchField({
           type="search"
           placeholder={placeholder}
           defaultValue={defaultValue}
-          className="peer min-w-0 flex-1 bg-transparent text-24 font-regular text-bg caret-bg outline-none placeholder:text-bg focus:placeholder:text-transparent focus:placeholder-shown:caret-transparent"
+          className="peer -my-1 min-w-0 flex-1 bg-transparent py-1 text-ellipsis text-24 font-regular rtl:text-20 tablet:rtl:text-24 text-bg caret-bg outline-none placeholder:text-bg focus:placeholder:text-transparent focus:placeholder-shown:caret-transparent"
         />
         <BlinkingCaret className="absolute start-0 hidden peer-placeholder-shown:peer-focus:block" />
       </span>
@@ -87,7 +92,9 @@ export function SearchField({
         type="submit"
         aria-label={actionLabel}
         className={cn(
-          "flex size-9 shrink-0 items-center justify-center rounded-full bg-bg p-1",
+          "relative flex size-9 shrink-0 items-center justify-center rounded-full bg-bg p-1",
+          // The 36 px Figma button, with a 44 px touch target.
+          "before:absolute before:-inset-1 before:rounded-full",
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg",
         )}
       >
