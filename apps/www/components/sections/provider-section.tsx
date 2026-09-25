@@ -69,18 +69,26 @@ const PHONE_ORDER: Record<string, string> = {
  *
  * On the phone frame (`1041:29327`) they are a column, Income and Simple also
  * turned 1.1°.
+ *
+ * The Arabic 1440 frame (`1028:22478`) is its own composition, not a mirror: the
+ * 805 px box sits at the left beside a 529 px email column, the illustration at its
+ * left (4, 214.5), and the pills at Ready Clients (22.5, 111.5), Full Flexibility
+ * (325.5, 106.5), Wider Reach (−7.5, 225.5), Increase Income (441.5, 236.5) and
+ * Simple (444.5, 380.5). In RTL `start` is the right edge, so the `rtl:` offsets
+ * are those positions measured from the box's right edge with Figma's Arabic pill
+ * widths (277, 273, 284, 258, 260).
  */
 const PLACE: Record<string, string> = {
   "full-flexibility":
-    "tablet:absolute tablet:start-85.75 tablet:top-29.5 desktop:start-81.75 desktop:top-0",
+    "tablet:absolute tablet:start-85.75 tablet:top-29.5 desktop:start-81.75 desktop:top-0 desktop:rtl:start-51.5 desktop:rtl:top-26.75",
   "ready-clients":
-    "tablet:absolute tablet:-start-1.25 tablet:top-43.5 desktop:start-6.25 desktop:top-20",
+    "tablet:absolute tablet:-start-1.25 tablet:top-43.5 desktop:start-6.25 desktop:top-20 desktop:rtl:start-126.25 desktop:rtl:top-28",
   income:
-    "rotate-[1.1deg] tablet:absolute tablet:start-85.5 tablet:top-59.5 desktop:start-134.5 desktop:top-35.25 desktop:rotate-0",
+    "rotate-[1.1deg] tablet:absolute tablet:start-85.5 tablet:top-59.5 desktop:start-134.5 desktop:top-35.25 desktop:rotate-0 desktop:rtl:start-26.5 desktop:rtl:top-59",
   "wider-reach":
-    "tablet:absolute tablet:start-1 tablet:top-71.75 desktop:start-36.5 desktop:top-47.25",
+    "tablet:absolute tablet:start-1 tablet:top-71.75 desktop:start-36.5 desktop:top-47.25 desktop:rtl:start-132 desktop:rtl:top-56.25",
   simple:
-    "rotate-[1.1deg] tablet:absolute tablet:start-110 tablet:top-88.25 desktop:start-158.25 desktop:top-78.75 desktop:rotate-0",
+    "rotate-[1.1deg] tablet:absolute tablet:start-110 tablet:top-88.25 desktop:start-158.25 desktop:top-78.75 desktop:rotate-0 desktop:rtl:start-25 desktop:rtl:top-95",
 };
 
 /** Increase Your Income and Simple & Organized System are Figma's compact pills. */
@@ -135,7 +143,7 @@ export function ProviderSection({ content }: { content: SiteContent }) {
             </div>
 
             <div className="flex flex-col items-center gap-16 tablet:gap-0 desktop:relative desktop:h-159.25 desktop:flex-row desktop:items-center">
-              <div className="flex w-full flex-col gap-15.5 desktop:w-177.25">
+              <div className="flex w-full flex-col gap-15.5 desktop:w-177.25 desktop:rtl:w-132.25">
                 <div className="relative flex flex-col gap-6 rounded-search bg-surface-field p-6 self-start">
                   <GradientBorder
                     mode="hover"
@@ -169,7 +177,7 @@ export function ProviderSection({ content }: { content: SiteContent }) {
                 </div>
 
                 <div className="flex flex-col items-center gap-6.5 tablet:self-start desktop:self-auto">
-                  <h3 className="text-14 font-semibold text-primary-950 tablet:text-24 desktop:text-30">
+                  <h3 className="text-14 font-semibold text-primary-950 tablet:text-24 desktop:text-30 desktop:rtl:text-24">
                     {content.provider.downloadHeading}
                   </h3>
                   <div
@@ -192,13 +200,13 @@ export function ProviderSection({ content }: { content: SiteContent }) {
                 </div>
               </div>
 
-              <div className="flex w-full flex-col items-center gap-0 tablet:relative tablet:-mt-18.25 tablet:block tablet:h-159.25 tablet:w-176.5 desktop:pointer-events-none desktop:absolute desktop:end-0 desktop:top-0 desktop:mt-0 desktop:w-203.25">
+              <div className="flex w-full flex-col items-center gap-0 tablet:relative tablet:-mt-18.25 tablet:block tablet:h-159.25 tablet:w-176.5 desktop:pointer-events-none desktop:absolute desktop:end-0 desktop:top-0 desktop:mt-0 desktop:w-203.25 desktop:rtl:w-201.25">
                 <Image
                   src="/svg/illustration-provider-phone.svg"
                   alt={content.provider.illustrationAlt}
                   width={626}
                   height={471}
-                  className="order-2 -mt-4 h-auto w-full max-w-67.5 tablet:absolute tablet:start-16.75 tablet:top-69.75 tablet:mt-0 tablet:w-127.5 tablet:max-w-none desktop:start-46.75 desktop:top-41.5 desktop:w-156.5"
+                  className="order-2 -mt-4 h-auto w-full max-w-67.5 tablet:absolute tablet:start-16.75 tablet:top-69.75 tablet:mt-0 tablet:w-127.5 tablet:max-w-none desktop:start-46.75 desktop:top-41.5 desktop:w-156.5 desktop:rtl:start-43.75 desktop:rtl:top-53.5"
                 />
                 <ul className="order-1 flex list-none flex-col gap-3.5 tablet:absolute tablet:inset-0 tablet:block">
                   {content.provider.benefits.map((benefit) => {
