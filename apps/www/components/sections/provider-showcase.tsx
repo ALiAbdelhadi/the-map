@@ -20,7 +20,10 @@ import { useHoverTween } from "@themap/ui/motion/use-hover-tween";
  * The 899x850 stage sits at (196, 127) in the 1440x1024 section — 118 px into the
  * 1284 px container, with 47 px under it so the section stays 1024 tall. Positions
  * below are in that stage, read from `998:20840` (cart 5); the connectors run from
- * the illustration to the dot beside each pill. Below 1440, and with reduced motion,
+ * the illustration to the dot beside each pill. The Arabic `cart 5` (`1028:22867`)
+ * uses the same positions, so the stage is placed physically (left margin) in both
+ * directions; Figma's Arabic frame sets it at x 270, which runs the Increase Income
+ * pill 27 px past the 1440 frame, so the English x 196 is used instead. Below 1440, and with reduced motion,
  * only the full section is shown.
  */
 
@@ -199,7 +202,7 @@ export function ProviderShowcase({
       {active ? (
         <div
           data-provider-stage=""
-          className="relative col-start-1 row-start-1 ms-29.5 mt-31.75 mb-11.75 h-212.5 w-224.75 opacity-0"
+          className="relative col-start-1 row-start-1 mr-auto ml-29.5 mt-31.75 mb-11.75 h-212.5 w-224.75 opacity-0"
         >
           <div className="absolute inset-0">
             <div className="absolute top-44 left-0 h-168.5 w-224.75">{illustration}</div>
