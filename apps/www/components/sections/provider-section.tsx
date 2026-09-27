@@ -153,7 +153,7 @@ export function ProviderSection({ content }: { content: SiteContent }) {
 
             <div className="flex flex-col items-center gap-16 tablet:gap-0 desktop:max-wide:gap-16 wide:relative wide:h-159.25 wide:flex-row wide:items-center">
               <div className="@container flex w-full flex-col gap-15.5 desktop:max-wide:flex-row desktop:max-wide:items-center desktop:max-wide:justify-between desktop:max-wide:gap-8 wide:w-177.25 wide:rtl:w-132.25">
-                <div className="relative flex flex-col gap-6 self-start rounded-search desktop:max-wide:shrink-0 desktop:max-wide:self-center bg-surface-field p-4 @email-card:p-6">
+                <div className="relative flex w-full max-w-112.5 flex-col gap-6 rounded-search desktop:max-wide:w-auto desktop:max-wide:shrink-0 desktop:max-wide:self-center bg-surface-field p-4 @email-card:p-6">
                   <GradientBorder
                     mode="hover"
                     width="p-0.5"
