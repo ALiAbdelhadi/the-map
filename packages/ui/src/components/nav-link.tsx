@@ -83,14 +83,21 @@ export function NavLink({ href, children, icon, current, className }: NavLinkPro
       onClick={href.startsWith("#") ? onHashLinkClick : undefined}
       aria-current={isCurrent ? "location" : undefined}
       className={cn(
-        "inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-nav px-4 py-1 text-24 font-regular text-bg",
+        "inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-nav px-4 py-1 text-24 font-regular text-bg select-none",
+        // Header row from 1023: the 1440 pill times `--scale-landscape` (theme.css). The
+        // pill may then be shorter than 44 px (33 at 1023), so the 44 px hit area is a
+        // centred pseudo-element instead of `min-h-11`, and the pill keeps its proportions.
+        "desktop:relative desktop:min-h-0 desktop:gap-[calc(8*var(--scale-landscape))] desktop:px-[calc(16*var(--scale-landscape))] desktop:py-[calc(4*var(--scale-landscape))] desktop:text-[length:calc(24*var(--scale-landscape))]",
+        "desktop:before:absolute desktop:before:inset-x-0 desktop:before:top-1/2 desktop:before:h-11 desktop:before:-translate-y-1/2",
         "hover:bg-primary-400",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg",
         isCurrent && "inset-ring inset-ring-white",
         className,
       )}
     >
-      <span className="flex size-6 shrink-0 items-center justify-center">{icon}</span>
+      <span className="flex size-6 shrink-0 items-center justify-center desktop:size-[calc(24*var(--scale-landscape))]">
+        {icon}
+      </span>
       {children}
     </a>
   );

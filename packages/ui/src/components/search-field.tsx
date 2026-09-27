@@ -92,7 +92,7 @@ export function SearchField({
         type="submit"
         aria-label={actionLabel}
         className={cn(
-          "relative flex size-9 shrink-0 items-center justify-center rounded-full bg-bg p-1",
+          "relative flex size-9 shrink-0 items-center justify-center rounded-full bg-bg p-1 select-none",
           // The 36 px Figma button, with a 44 px touch target.
           "before:absolute before:-inset-1 before:rounded-full",
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg",

@@ -69,27 +69,34 @@ function LocaleSwitch({ content }: { content: SiteContent }) {
 /**
  * Header, floating over the hero exactly as in Figma `888:20482` (y 88 on the
  * 1440 frame, 1357 wide).
+ *
+ * From 1023 (`desktop:`) the bar shows the full nav row, the 1440 frame reduced by
+ * `--scale-landscape` (theme.css). The outer box is the full-bleed query container that
+ * unit is measured on, so its offset from the top is padding on the inner box (a
+ * container cannot size its own box in its own units).
  */
 export function Header({ content }: { content: SiteContent }) {
   return (
-    <div className="absolute inset-x-0 top-5 z-20 flex justify-center px-2 tablet:top-8.25 tablet:px-7.5 desktop:top-22 desktop:px-8">
-      <SiteHeader
-        className="max-w-header"
-        homeHref={`/${content.locale}`}
-        homeLabel={content.a11y.home}
-        logo={
-          <LogoWordmarkIcon width={178} height={40} className="h-full w-full text-primary-500" />
-        }
-        nav={<NavItems content={content} />}
-        mainNavLabel={content.a11y.mainNav}
-        languageSwitch={<LocaleSwitch content={content} />}
-        drawer={
-          <MobileMenu icon={<MenuIcon className="h-full w-full" />} label={content.a11y.menu}>
-            <NavItems content={content} />
-            <LocaleSwitch content={content} />
-          </MobileMenu>
-        }
-      />
+    <div className="@container absolute inset-x-0 top-5 z-20 tablet:top-8.25 desktop:top-0">
+      <div className="flex justify-center px-2 tablet:px-7.5 desktop:px-8 desktop:pt-[calc(88*var(--scale-landscape))]">
+        <SiteHeader
+          className="max-w-header"
+          homeHref={`/${content.locale}`}
+          homeLabel={content.a11y.home}
+          logo={
+            <LogoWordmarkIcon width={178} height={40} className="h-full w-full text-primary-500" />
+          }
+          nav={<NavItems content={content} />}
+          mainNavLabel={content.a11y.mainNav}
+          languageSwitch={<LocaleSwitch content={content} />}
+          drawer={
+            <MobileMenu icon={<MenuIcon className="h-full w-full" />} label={content.a11y.menu}>
+              <NavItems content={content} />
+              <LocaleSwitch content={content} />
+            </MobileMenu>
+          }
+        />
+      </div>
     </div>
   );
 }
@@ -118,25 +125,27 @@ const SOCIAL_ICONS = {
  * down, centre +8; tablet 488 wide, 131 down, centred; desktop 951 wide, 372 above
  * the top, centre +13. The Arabic frame (`1028:20725`) keeps the same physical
  * position, so it is placed with `left`, not a logical property.
+ * 1023–1439: the desktop watermark and logo scale with viewport ÷ 1440 (`footer-*`
+ * tokens), exact at 1440.
  */
 export function Footer({ content }: { content: SiteContent }) {
   return (
     <div className="relative -mt-12.75 w-full rounded-t-footer bg-gradient-to-r from-primary-500 to-green-600 pt-px shadow-footer tablet:mt-0 tablet:rounded-t-footer-wide">
-      <div className="relative isolate flex w-full justify-center overflow-hidden rounded-t-footer bg-bg px-4 pt-18.25 pb-22.75 tablet:rounded-t-footer-wide tablet:px-8 tablet:pb-43.25 desktop:pb-23.25">
+      <div className="relative isolate flex w-full justify-center overflow-hidden rounded-t-footer bg-bg px-4 pt-18.25 pb-16 tablet:rounded-t-footer-wide tablet:px-8">
         <Image
           src="/svg/logo-mark.svg"
           alt=""
           width={165}
           height={197}
-          className="pointer-events-none absolute top-37.5 left-1/2 -z-10 -ml-52.25 h-auto w-108.5 max-w-none opacity-5 tablet:top-32.75 tablet:-ml-61 tablet:w-122 desktop:-top-93 desktop:-ml-115.75 desktop:w-237.75"
+          className="pointer-events-none absolute top-37.5 left-1/2 -z-10 -ml-52.25 h-auto w-108.5 max-w-none opacity-5 tablet:top-32.75 tablet:-ml-61 tablet:w-122 desktop:-top-footer-mark-top desktop:-ml-footer-mark-shift desktop:w-footer-mark"
         />
         <SiteFooter
-          className="max-w-desktop gap-12"
+          className="max-w-desktop"
           logo={
             <LogoWordmarkIcon
               width={310}
               height={70}
-              className="h-15.25 w-auto text-primary-500 tablet:h-23 desktop:h-23"
+              className="h-15.25 w-auto text-primary-500 tablet:h-23 desktop:h-footer-logo"
             />
           }
           tagline={content.footer.tagline}

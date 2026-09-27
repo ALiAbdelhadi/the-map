@@ -26,7 +26,7 @@ export function SocialLink({ href, label, children, className }: SocialLinkProps
       rel="noreferrer"
       target="_blank"
       className={cn(
-        "inline-flex size-12 shrink-0 items-center justify-center rounded-social",
+        "inline-flex size-12 shrink-0 items-center justify-center rounded-social select-none",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500",
         className,
       )}

@@ -48,7 +48,12 @@ const PHONE_POSITIONS = [
   [2.5, 24.38, 51.5, -324.53],
 ] as const;
 
-/** Tailwind's `tablet` breakpoint (`--breakpoint-tablet`, 48rem). */
+/**
+ * Tailwind's `tablet` breakpoint (`--breakpoint-tablet`, 48rem). The tile has only the
+ * phone and the square layouts; from `desktop` (63.9375rem, 1023) up it is the same square tile,
+ * just sized by the section (`desktop:w-app-tile`), and its columns are container
+ * units of the tile, so no desktop split is needed here.
+ */
 const TABLET = "(min-width: 48rem)";
 
 const COLUMNS = [
@@ -115,7 +120,7 @@ export function AppScreens({ label }: { label: string }) {
       role="img"
       aria-label={label}
       dir="ltr"
-      className="@container relative aspect-4/5 w-[calc(100%-var(--spacing)*3)] max-w-114 shrink-0 overflow-hidden rounded-tile bg-primary-700 tablet:aspect-square tablet:w-full tablet:max-w-141.25"
+      className="@container relative aspect-4/5 w-[calc(100%-var(--spacing)*3)] max-w-114 shrink-0 overflow-hidden rounded-tile bg-primary-700 tablet:aspect-square tablet:w-full tablet:max-w-141.25 desktop:w-app-tile"
     >
       {COLUMNS.map((column, index) => (
         <div

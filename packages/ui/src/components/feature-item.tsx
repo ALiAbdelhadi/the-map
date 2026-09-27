@@ -12,14 +12,17 @@ import { IconBadge } from "./icon-badge";
  * Why Choose Us feature row.
  *
  * Figma `Why Choose features` — Defult `911:19599`, hover `911:19598`,
- * Select `911:19597`. gap 24, px 20, py 4, label 40 px regular.
+ * Select `911:19597`. gap 24, px 20, py 4, label 40 px regular in a 64 px line box,
+ * so rows are 72 px tall in both languages (`--leading-row`).
  * - default: no background, chip primary/400, label Natural/BG
  * - hover: gradient primary/500 -> white, chip primary/600, label Secondary/500, radius 56
  * - select: 4 px primary/500 → white gradient stroke, radius 56, chip primary/400,
  *   label Natural/BG. The stroke sits inside the row, so selecting never moves it.
  *
  * The hover gradient fades in and out (0.25 s) on a mouse pointer only — a tap on a
- * touch screen selects without leaving a stuck hover state.
+ * touch screen selects without leaving a stuck hover state. The selected row always
+ * shows the select look: CSS overrides any hover style GSAP left inline on it.
+ * Rows are `select-none`: a press or force-click must not select the label text.
  */
 export type FeatureItemProps = {
   children: ReactNode;
@@ -100,7 +103,10 @@ export function FeatureItem({
       tabIndex={focusable ? 0 : -1}
       onClick={onSelect}
       className={cn(
-        "group relative flex items-center gap-6 rounded-row px-5 py-1 text-start text-24 font-regular text-bg tablet:text-40",
+        "group relative flex items-center gap-6 rounded-row py-3 ps-3 pe-6 text-start text-24 font-regular text-bg select-none tablet:py-1 tablet:pe-5 tablet:text-40",
+        // The selected row never shows the hover look, even if a hover tween was still
+        // running (or its inline styles were left behind) when the row got selected.
+        "aria-selected:text-bg! aria-selected:[&_[data-hover-fill]]:opacity-0! aria-selected:[&_[data-chip]>span]:bg-primary-400!",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg",
         className,
       )}
@@ -120,7 +126,7 @@ export function FeatureItem({
       <span data-chip="" className="relative">
         <IconBadge>{icon}</IconBadge>
       </span>
-      <span className="relative">{children}</span>
+      <span className="relative tablet:leading-row">{children}</span>
     </button>
   );
 }

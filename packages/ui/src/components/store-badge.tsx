@@ -11,7 +11,7 @@ import { useHoverTween } from "../motion/use-hover-tween";
  *
  * Figma `Button` — Default `942:20434`, hover `942:20433`.
  * Default bg Secondary/500, hover bg Secondary/400, px 24, py 2, radius 12,
- * gap 7, icon 24, two lines at 16 px (regular over medium). The hover change is a
+ * gap 7, icon 24, two lines at 16 px (regular over medium), 56 tall. The hover change is a
  * 1.25 s `SLOW` spring.
  */
 export type StoreBadgeProps = {
@@ -34,7 +34,7 @@ export function StoreBadge({ icon, topLine, bottomLine, href, className }: Store
       ref={ref}
       href={href}
       className={cn(
-        "inline-flex items-center gap-1.75 overflow-hidden rounded-button bg-secondary-500 px-6 py-0.5 text-bg",
+        "inline-flex min-h-14 items-center gap-1.75 overflow-hidden rounded-button bg-secondary-500 px-6 py-0.5 text-bg select-none",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500",
         className,
       )}

@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { GlassCard } from "@themap/ui/components/glass-card";
 import { figmaTween } from "@themap/ui/motion/figma-easing";
 import { gsap, useGSAP } from "@themap/ui/motion/gsap";
+import { SECTION_SCROLL_EVENT } from "@themap/ui/motion/scroll-to";
 import { prototype } from "@themap/ui/motion/tokens";
 
 import type { SiteContent } from "../../content/types";
@@ -44,6 +45,19 @@ import { ORBIT } from "./hero-orbit-data";
  * (300 px of image), lifted 8 px clear of its neighbours' tops (radius 336.8). The
  * logo is 83.2 wide in the ring (100 tall, like the services) and 162 on top
  * (radius 325, Figma's).
+ *
+ * - The ring advances by itself to the next item every 20 s (owner-approved 2026-09-26,
+ *   reversing the 2026-09-22 "no auto-advance" decision; docs/figma-gaps.md D1). It uses
+ *   the same turn as a click, is silent to screen readers, restarts its 20 s after every
+ *   change (a click included), and — WCAG 2.2.2 — waits while the pointer is on the ring
+ *   or card, focus is inside them, the tab is hidden, a smooth scroll is running or the
+ *   hero is under half in view. It never runs with reduced motion. On resume the 20 s
+ *   start again from zero.
+ *
+ * From 1023 to 1440 (`desktop:`) the landscape composition is the 1440 frame reduced by
+ * `--scale-landscape` (theme.css; measured on the hero section): orbit box, card, type,
+ * gaps and the section's 1024 px height all scale together, so 1023–1439 looks like the
+ * 1440 design, smaller. Everything inside the orbit is already in the orbit's own `cqw`.
  *
  * Phone (`1041:26353`): the orbit box is at most 312 px wide (ring ≈ 175 px, approved
  * 2026-09-22) so every item stays on screen; items are ≥ 68 px wide down to 320.
@@ -99,6 +113,11 @@ const RING = {
   // Figma's default ring angle (−0.6°) plus the 1.7° that brings its marker to 12 o'clock.
   rotate: "rotate-[calc((1.1+var(--turn))*1deg)]",
 } as const;
+
+/** Time between automatic advances, ms (owner, 2026-09-26). */
+const AUTO_INTERVAL = 20_000;
+/** When the ring is still turning at the deadline, look again after this long, ms. */
+const AUTO_RETRY = 250;
 
 /** Hover / focus lift of an unselected item, and its pressed state. */
 const LIFT = { scale: 1.08, pressed: 0.96, brightness: 1.12 } as const;
@@ -198,6 +217,92 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
     { scope, dependencies: [selected] },
   );
 
+  // Auto-advance (see the header comment). One timer per `selected`; every change,
+  // the visitor's or its own, re-runs this effect and so restarts the 20 s.
+  useEffect(() => {
+    const root = scope.current;
+    if (!root || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const orbit = root.querySelector<HTMLElement>("[data-orbit]");
+    const card = root.querySelector<HTMLElement>("[data-hero-copy]")?.parentElement;
+    if (!orbit) return;
+
+    const wait = { pointer: 0, focus: false, hidden: document.hidden, away: true, scroll: false };
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    const fire = () => {
+      const turning = gsap.getTweensOf(orbit).some((tween) => tween.isActive());
+      if (turning || wait.scroll) {
+        timer = setTimeout(fire, AUTO_RETRY);
+        return;
+      }
+      setAnnounce(false);
+      setSelected((current) => (current + 1) % slots.length);
+    };
+    const sync = () => {
+      clearTimeout(timer);
+      timer = undefined;
+      const paused = wait.pointer > 0 || wait.focus || wait.hidden || wait.away || wait.scroll;
+      if (!paused) timer = setTimeout(fire, AUTO_INTERVAL);
+    };
+
+    const zones = [orbit, card].filter((el): el is HTMLElement => Boolean(el));
+    const cleanups: Array<() => void> = [];
+    const on = <T extends EventTarget>(target: T, type: string, handler: EventListener) => {
+      target.addEventListener(type, handler);
+      cleanups.push(() => target.removeEventListener(type, handler));
+    };
+    for (const zone of zones) {
+      on(zone, "pointerenter", (event) => {
+        if ((event as PointerEvent).pointerType !== "mouse") return;
+        wait.pointer += 1;
+        sync();
+      });
+      on(zone, "pointerleave", (event) => {
+        if ((event as PointerEvent).pointerType !== "mouse") return;
+        wait.pointer = Math.max(0, wait.pointer - 1);
+        sync();
+      });
+      on(zone, "focusin", () => {
+        wait.focus = true;
+        sync();
+      });
+      on(zone, "focusout", () => {
+        wait.focus = zones.some((el) => el.contains(document.activeElement));
+        sync();
+      });
+    }
+    on(document, "visibilitychange", () => {
+      wait.hidden = document.hidden;
+      sync();
+    });
+    on(window, SECTION_SCROLL_EVENT, (event) => {
+      wait.scroll = (event as CustomEvent<string | null>).detail !== null;
+      sync();
+    });
+
+    const watch = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry) return;
+        // "Half in view" of the hero, or of the viewport when the hero is taller than it.
+        wait.away = !(
+          entry.intersectionRatio >= 0.5 || entry.intersectionRect.height >= window.innerHeight / 2
+        );
+        sync();
+      },
+      { threshold: [0, 0.25, 0.5, 0.75, 1] },
+    );
+    watch.observe(root);
+
+    sync();
+    return () => {
+      clearTimeout(timer);
+      watch.disconnect();
+      cleanups.forEach((off) => off());
+    };
+    // `slots.length` is constant (ten); `selected` restarts the countdown.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected]);
+
   /**
    * Hover (mouse), keyboard focus and press on an unselected item. The state lives on
    * the button (`data-hover`, `data-focus`, `data-press`) so the three combine.
@@ -222,7 +327,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
   return (
     <div
       ref={scope}
-      className="flex w-full items-center justify-center px-2 pt-47.5 pb-3 tablet:px-8 tablet:pt-30 tablet:pb-12 desktop:min-h-256 desktop:py-0"
+      className="flex w-full items-center justify-center px-2 pt-47.5 pb-3 tablet:px-8 tablet:pt-30 tablet:pb-12 desktop:min-h-[calc(1024*var(--scale-landscape))] desktop:py-0"
     >
       {/* Background scenes — Figma exports them already composited, so no extra opacity. */}
       <div aria-hidden="true" className="absolute inset-0 -z-10">
@@ -244,12 +349,12 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
         ))}
       </div>
 
-      <div className="flex w-full max-w-desktop flex-col items-center gap-18.75 tablet:gap-8 desktop:flex-row-reverse desktop:gap-16 desktop:items-end desktop:justify-center desktop:self-stretch desktop:pt-0">
+      <div className="flex w-full max-w-desktop flex-col items-center gap-18.75 tablet:gap-8 desktop:flex-row-reverse desktop:gap-[calc(64*var(--scale-landscape))] desktop:items-end desktop:justify-center desktop:self-stretch desktop:pt-0">
         <div
           role="group"
           aria-label={hero.ringLabel}
           data-orbit=""
-          className="@container relative aspect-[669.642/767.626] w-full max-w-78 shrink-0 [--turn:0] tablet:max-w-167.25"
+          className="@container relative aspect-[669.642/767.626] w-full max-w-78 shrink-0 [--turn:0] tablet:max-w-167.25 desktop:w-[calc(669.642*var(--scale-landscape))]"
         >
           {/* `Ellipse 1593` (888:20654), 375.8 px. */}
           <Image
@@ -288,7 +393,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
                 key={index}
                 dir="auto"
                 data-orbit-title={index}
-                className={`col-start-1 row-start-1 text-20 font-bold text-balance text-bg tablet:text-38 ${shown(index)}`}
+                className={`col-start-1 row-start-1 text-20 font-bold text-balance text-bg tablet:text-38 desktop:text-[length:calc(38*100cqw/669)] ${shown(index)}`}
               >
                 {title}
               </span>
@@ -323,7 +428,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
                     setFace(event.currentTarget, index, { focus: true });
                 }}
                 onBlur={(event) => setFace(event.currentTarget, index, { focus: false })}
-                className={`absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer aria-pressed:cursor-default focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bg ${index === 0 ? "[--f:1]" : "[--f:0]"} ${SLOT[index]} ${POLAR.angle} ${POLAR.left} ${POLAR.top} ${service ? `${SERVICE.rho} ${SERVICE.width}` : `${LOGO.rho} ${LOGO.width} ${LOGO.vars}`}`}
+                className={`absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer select-none aria-pressed:cursor-default focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bg ${index === 0 ? "[--f:1]" : "[--f:0]"} ${SLOT[index]} ${POLAR.angle} ${POLAR.left} ${POLAR.top} ${service ? `${SERVICE.rho} ${SERVICE.width}` : `${LOGO.rho} ${LOGO.width} ${LOGO.vars}`}`}
               >
                 <span
                   data-orbit-face=""
@@ -349,19 +454,25 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
           })}
         </div>
 
-        <GlassCard className="flex h-76.25 w-full max-w-88 shrink-0 flex-col justify-center tablet:h-117.75 tablet:max-w-136 desktop:mb-37">
+        <GlassCard className="flex h-76.25 w-full max-w-88 shrink-0 flex-col justify-center tablet:h-117.75 tablet:max-w-136 desktop:mb-[calc(148*var(--scale-landscape))] desktop:h-[calc(471*var(--scale-landscape))] desktop:max-w-[calc(544*var(--scale-landscape))] desktop:rounded-[calc(32*var(--scale-landscape))] desktop:p-[calc(24*var(--scale-landscape))]">
           <div
             data-hero-copy=""
             aria-live={announce ? "polite" : "off"}
-            className="flex flex-col gap-10.25 tablet:gap-20"
+            className="flex flex-col gap-10.25 tablet:gap-20 desktop:gap-[calc(80*var(--scale-landscape))]"
           >
-            <div dir="auto" className="flex flex-col gap-3">
-              <h1 className="text-38 font-bold text-primary-300">
+            <div
+              dir="auto"
+              className="flex flex-col gap-3 desktop:gap-[calc(12*var(--scale-landscape))]"
+            >
+              <h1 className="text-38 font-bold text-primary-300 desktop:text-[length:calc(38*var(--scale-landscape))]">
                 {active ? active.title : hero.title}
               </h1>
-              <span aria-hidden="true" className="h-1.25 w-35.5 rounded-full bg-primary-200" />
+              <span
+                aria-hidden="true"
+                className="h-1.25 w-35.5 rounded-full bg-primary-200 desktop:h-[calc(5*var(--scale-landscape))] desktop:w-[calc(142*var(--scale-landscape))]"
+              />
             </div>
-            <p className="text-16 font-regular text-bg tablet:text-28 tablet:font-medium">
+            <p className="text-16 font-regular text-bg tablet:text-28 tablet:font-medium desktop:text-[length:calc(28*var(--scale-landscape))]">
               {active ? (
                 <>
                   {active.lead}

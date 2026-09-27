@@ -41,7 +41,7 @@ export function BenefitPill({
   return (
     <div
       className={cn(
-        "relative flex items-center overflow-hidden rounded-pill bg-surface-glass-strong text-bg",
+        "relative flex items-center overflow-hidden rounded-pill bg-surface-glass-strong text-bg select-none",
         compact ? "p-4" : "px-8 py-4",
         className,
       )}

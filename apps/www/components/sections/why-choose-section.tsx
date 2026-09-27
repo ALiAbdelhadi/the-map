@@ -33,8 +33,16 @@ import type { SiteContent } from "../../content/types";
  * - removes the character;
  * - outlines the row and shows the feature beside the card — a pill with the
  *   feature's chip, label and description, reached by a hand-drawn arrow on the
- *   1440 frame; below 1440 (phone and tablet) the pill sits 62 px under the card,
- *   without the arrow — the tablet frame is too narrow to hold it beside the card.
+ *   1440 frame; below the desktop breakpoint (phone and tablet) the pill sits 62 px
+ *   under the card, without the arrow — the tablet frame is too narrow to hold it
+ *   beside the card.
+ *
+ * 1023–1439 (responsive pass 2026-09-26, no Figma frame): the 1440 composition,
+ * reduced as one piece — `frame-scaled` re-bases every spacing step, the type sizes,
+ * leading and card radius on `--frame-px` (100vw / 1440, 1 px from 1440 up), so the
+ * card, the pill and its arrow, the section height and the gaps all shrink together
+ * (0.71 at 1023: labels 28 px, rows 51 px tall, the description 23 px) and nothing
+ * leaves the section. The maze and the character are already % of the section.
  *
  * Motion: only a click changes the state (the prototype's auto-advance is dropped,
  * approved 2026-09-22). Clicking a row zooms the maze and moves the card over 0.8 s
@@ -51,6 +59,16 @@ const ICONS = {
 } as const;
 
 type Place = { scale: number; xPercent: number; yPercent: number };
+
+/**
+ * The desktop composition (card left, pill and arrow beside it, character at the end)
+ * starts where the CSS `desktop:` classes do — `--breakpoint-desktop`, 63.9375rem (1023).
+ * Keep the two in step: the image `sizes` below are built from it too.
+ */
+const DESKTOP = "(min-width: 63.9375rem)";
+
+/** Scale of the 1440 frame at this width — the JS twin of `--frame-px` (theme.css). */
+const frameScale = () => Math.min(1, window.innerWidth / 1440);
 
 /*
  * Where each variant puts the maze, as a transform of the default placement. The
@@ -110,8 +128,8 @@ const MAZE = {
  */
 function mazePlace(section: HTMLElement, box: HTMLElement, selected: string | null): Place {
   const phone = !window.matchMedia("(min-width: 48rem)").matches;
-  const wide = window.matchMedia("(min-width: 90rem)").matches;
-  const maze = phone ? MAZE.phone : wide ? MAZE.desktop : MAZE.tablet;
+  const desktop = window.matchMedia(DESKTOP).matches;
+  const maze = phone ? MAZE.phone : desktop ? MAZE.desktop : MAZE.tablet;
   const place: Place = selected
     ? maze.places[selected as FeatureId]
     : { scale: 1, xPercent: 0, yPercent: 0 };
@@ -133,7 +151,8 @@ function mazePlace(section: HTMLElement, box: HTMLElement, selected: string | nu
 }
 
 /*
- * How far the card moves from its default place in each variant (px).
+ * How far the card moves from its default place in each variant (px of the frame; the
+ * desktop shift is reduced with the composition below 1440, see `frameScale`).
  * 1440: default (48, 222); All-in-One (62, 195); Nearby (51, 236); others (51, 195).
  * 375: default (10, 90); All-in-One (18, 134), Flexible (17, 160), Nearby (17, 101),
  * Fast (17, 124 — its frame is 475 wide, the extra 50 px ignored), Easy (17, 196).
@@ -206,7 +225,13 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
         ? (phone ? CARD_SHIFT.phone : CARD_SHIFT.desktop)[selected as FeatureId]
         : [0, 0];
       const flip = document.documentElement.dir === "rtl" ? -1 : 1;
-      gsap.to("[data-why-card]", { x: shift[0] * flip, y: shift[1], ...move, overwrite: "auto" });
+      const k = window.matchMedia(DESKTOP).matches ? frameScale() : 1;
+      gsap.to("[data-why-card]", {
+        x: shift[0] * flip * k,
+        y: shift[1] * k,
+        ...move,
+        overwrite: "auto",
+      });
 
       gsap.to("[data-character]", { autoAlpha: selected ? 0 : 1, ...arrive, overwrite: "auto" });
       // The feature pill arrives after the card has started moving; the arrow draws with it.
@@ -217,8 +242,9 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
       );
       gsap.fromTo("[data-selected-ring]", { opacity: 0 }, { opacity: 1, ...arrive });
 
-      // Below 1440 the pill sits under the card, so the section grows to fit it.
-      const stacked = !window.matchMedia("(min-width: 90rem)").matches;
+      // Below the desktop breakpoint the pill sits under the card, so the section grows
+      // to fit it.
+      const stacked = !window.matchMedia(DESKTOP).matches;
       if (stacked && height.current) {
         gsap.fromTo(section, { height: height.current }, { height: "auto", ...move });
       }
@@ -234,7 +260,7 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
     <section
       ref={ref}
       id="why-us"
-      className={`relative isolate flex w-full flex-col items-center overflow-hidden px-2 pt-22.5 pb-7.25 tablet:min-h-256 tablet:px-0 tablet:pt-3.75 tablet:pb-4 desktop:flex-row desktop:items-center desktop:justify-center desktop:px-8 desktop:py-0 ${selected ? "min-h-256" : ""}`}
+      className={`relative isolate flex w-full flex-col items-center overflow-hidden px-2 pt-22.5 pb-7.25 tablet:min-h-256 tablet:px-0 tablet:pt-3.75 tablet:pb-4 desktop:frame-scaled desktop:flex-row desktop:items-center desktop:justify-center desktop:px-8 desktop:py-0 ${selected ? "min-h-256" : ""}`}
     >
       {/*
         The maze box is the default `image 6676` rectangle at each frame, in % of the
@@ -252,7 +278,7 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
           src="/images/why-choose-maze-v2.webp"
           alt=""
           fill
-          sizes="(min-width: 90rem) 120vw, (min-width: 48rem) 238vw, 397vw"
+          sizes={`${DESKTOP} 120vw, (min-width: 48rem) 238vw, 397vw`}
           className="object-cover"
         />
       </div>
@@ -260,16 +286,19 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
       {/*
         Phone: the card keeps Figma's place in the 375 frame (8 px in) inside a 359 px
         column that is centred on wider phones, so it never drifts to one side.
+        Tablet: the 768 frame's column (98 px in), centred, so a wider tablet keeps the
+        card over the character instead of pushing the card to one side.
+        Desktop: the 1284 px content column of the 1440 frame, reduced with it.
       */}
-      <div className="flex w-full max-w-89.75 justify-start tablet:max-w-desktop tablet:ps-24.5 desktop:ps-0">
+      <div className="flex w-full max-w-89.75 justify-start tablet:max-w-192 tablet:ps-24.5 desktop:w-321 desktop:max-w-none desktop:ps-0">
         <div data-why-card="" className="relative flex max-w-full flex-col gap-15.5">
           <GlassCard surface="field" className="w-fit max-w-full tablet:w-152">
             <div className="flex flex-col gap-8">
               <div className="flex items-center gap-2 ps-5 py-1 tablet:gap-6">
                 <span className="flex size-15.5 shrink-0 items-center justify-center rounded-chip bg-secondary-500 p-2 text-bg">
-                  <ChooseIcon width={40} height={40} />
+                  <ChooseIcon width={40} height={40} className="size-10" />
                 </span>
-                <h2 className="min-w-0 text-32 font-regular text-bg tablet:text-56 tablet:whitespace-nowrap">
+                <h2 className="min-w-0 text-32 font-regular text-bg tablet:text-56 tablet:leading-title tablet:whitespace-nowrap">
                   {title}
                 </h2>
               </div>
@@ -319,7 +348,7 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
                   <div className="flex flex-col gap-0 desktop:w-116.25 desktop:gap-3">
                     <div className="flex h-16.5 items-center gap-6 pe-5 py-1 desktop:h-auto">
                       <span className="flex size-15.5 shrink-0 items-center justify-center rounded-chip bg-primary-400 p-2">
-                        <Icon width={40} height={40} />
+                        <Icon width={40} height={40} className="size-10" />
                       </span>
                       <span className="text-24 font-regular whitespace-nowrap tablet:text-32 desktop:text-40">
                         {feature.label}
@@ -353,7 +382,7 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
         alt=""
         width={435}
         height={1134}
-        sizes="(min-width: 90rem) 27vw, (min-width: 48rem) 22vw, 32vw"
+        sizes={`${DESKTOP} 27vw, (min-width: 48rem) 22vw, 32vw`}
         className={`pointer-events-none relative -mt-16.5 ms-41.5 h-77.25 w-auto tablet:-mt-16.25 tablet:ms-14.75 tablet:h-106.5 desktop:absolute desktop:-bottom-[0.13%] desktop:end-[8.48%] desktop:-z-10 desktop:ms-0 desktop:mt-0 desktop:h-[97.97%] desktop:rtl:bottom-[2.45%] desktop:rtl:end-[9.67%] desktop:rtl:h-[89.21%] rtl:-scale-x-100 ${selected ? "max-desktop:hidden" : ""}`}
       />
     </section>

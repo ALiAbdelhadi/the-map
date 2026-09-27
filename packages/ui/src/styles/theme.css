@@ -240,7 +240,11 @@
    * ------------------------------------------------------------------ */
   --breakpoint-*: initial;
   --breakpoint-tablet: 48rem; /* 768 — iPad mini 5 */
-  --breakpoint-desktop: 90rem; /* 1440 — Desktop */
+  /* 2026-09-26, owner request: the landscape composition starts at iPad width in
+     landscape (from 1023) instead of at 1440, and scales fluidly up to the exact 1440
+     Figma frame. `wide:` is that exact-design width. */
+  --breakpoint-desktop: 63.9375rem; /* 1023 — owner asked for the landscape composition from 1023 up */
+  --breakpoint-wide: 90rem; /* 1440 — Desktop, the Figma frame */
 
   --container-*: initial;
   --container-mobile: 21.5rem; /* 344 = 375 − 2×15.5 */
@@ -316,4 +320,167 @@
 
 /* ---- fix pass 2026-09-24 — agent C (why / get-app / service areas / provider) ---- */
 @theme {
+}
+
+/* ---- spacing pass 2026-09-26 — agent S2 ---- */
+@theme {
+  /*
+   * Narrowest column that holds the provider email card (998:20791 / phone 1041:29333)
+   * at Figma's 24 px padding: 24 + 244 (the info@Themap.com pill, Arabic width) + 24.
+   * Below it (320–339 px phones) the card drops to 16 px padding instead of pushing
+   * the column 3–4 px past the page gutter.
+   */
+  --container-email-card: 18.25rem; /* 292 */
+}
+
+/* ---- spacing pass 2026-09-26 — agent S1 ---- */
+@theme {
+  /*
+   * Why Choose Us row label box at the 40 px size — 64 px, the auto leading of the
+   * English label (`911:19547`), which with the row's 4 px padding gives Figma's 72 px
+   * row. The Arabic frame keeps the same 72 px rows (`1028:22147`–`1028:22151`), but
+   * Baloo Bhaijaan 2's auto leading is taller (68 px), so each Arabic row grew to 76 and
+   * the list to 476 instead of 456. A fixed label box keeps both at Figma's rhythm.
+   */
+  --leading-row: 4rem;
+  /*
+   * Why Choose Us title box at the 56 px size — 90 px (`911:19513` / Arabic
+   * `1028:22145`, both 90 tall), for the same reason: the Arabic face's auto leading
+   * made the title row 103 px instead of Figma's 98.
+   */
+  --leading-title: 5.625rem;
+}
+
+/* ---- responsive pass 2026-09-26 — agent D (reviews / footer) ---- */
+@theme {
+  /*
+   * From 1023 to 1439 the Reviews section and the footer are the 1440 frame scaled
+   * by viewport ÷ 1440, so the composition keeps its proportions. Every value is
+   * min(<Figma px>, <Figma px> × 100vw ÷ 1440): exactly the Figma value at 1440 and
+   * above, 71 % of it at 1023. 100vw is the window width (scrollbar included), so
+   * 1440 stays exact whether or not a classic scrollbar is shown. Only used behind
+   * `desktop:`; phone and tablet keep their own fixed values. Text never drops
+   * below 16 px (24 × 1023 ÷ 1440 = 17), and hit targets (social marks 48, store
+   * badges 56, rating icon) are not scaled.
+   */
+
+  /* Reviews — Figma 1007:20617 (EN) / 1028:20718 (AR), row `Real Reviews` 1015:20920. */
+  --spacing-review-frame: min(64rem, calc(1024 * 100vw / 1440)); /* 1024 — section height, the frame */
+  --spacing-review-top: min(4.375rem, calc(70 * 100vw / 1440)); /* 70 — column top, 1007:20617 */
+  --spacing-review-intro: min(3rem, calc(48 * 100vw / 1440)); /* 48 — heading → subheading */
+  --spacing-review-stack: min(11.25rem, calc(180 * 100vw / 1440)); /* 180 — subheading → row */
+  --spacing-review-sub: min(76.8125rem, calc(1229 * 100vw / 1440)); /* 1229 — subheading width, 1008:20620 */
+  --spacing-review-gap: min(4.25rem, calc(68 * 100vw / 1440)); /* 68 — row gap, 1015:20920 */
+  --spacing-review-open: min(25.9375rem, calc(415 * 100vw / 1440)); /* 415 — expanded card */
+  --spacing-review-closed: min(13.125rem, calc(210 * 100vw / 1440)); /* 210 — collapsed card */
+  --spacing-review-h: min(19.1875rem, calc(307 * 100vw / 1440)); /* 307 — card height */
+  --spacing-review-photo: min(6.6875rem, calc(107 * 100vw / 1440)); /* 107 — photo column, expanded */
+  --spacing-review-text-start: min(7.5625rem, calc(121 * 100vw / 1440)); /* 121 = 107 photo + 14 gap */
+  --spacing-review-text: min(16.875rem, calc(270 * 100vw / 1440)); /* 270 — text column */
+  --spacing-review-text-gap: min(0.75rem, calc(12 * 100vw / 1440)); /* 12 — caption → quote */
+  --spacing-review-caption-gap: min(0.9375rem, calc(15 * 100vw / 1440)); /* 15 — name → rating */
+  --spacing-review-mark: min(3.3125rem, calc(53 * 100vw / 1440)); /* 53 — quote mark */
+  --spacing-review-mark-pull: min(2.25rem, calc(36 * 100vw / 1440)); /* 36 — mark overlaps the quote (EN) */
+  --spacing-review-mark-pull-ar: min(0.75rem, calc(12 * 100vw / 1440)); /* 12 — mark pull, Arabic 1030:24261 */
+  --text-review-sub: min(3rem, calc(48 * 100vw / 1440)); /* 48 — subheading, 1008:20620 */
+  --text-review-sub--line-height: normal;
+  --text-review-sub--letter-spacing: -0.02em;
+  --text-review-body: min(1.5rem, calc(24 * 100vw / 1440)); /* 24 — reviewer name and quote */
+  --text-review-body--line-height: normal;
+  --text-review-body--letter-spacing: -0.02em;
+
+  /* Footer — Figma 930:20465 / 1023:20803 (EN), 1028:20726 (AR). */
+  --spacing-footer-gap: min(3rem, calc(48 * 100vw / 1440)); /* 48 — column gap, EN */
+  --spacing-footer-gap-ar: min(5.125rem, calc(82 * 100vw / 1440)); /* 82 — column gap, AR */
+  --spacing-footer-logo: min(5.75rem, calc(92 * 100vw / 1440)); /* 92 — logo height */
+  --spacing-footer-intro: min(2rem, calc(32 * 100vw / 1440)); /* 32 — logo → tagline */
+  --spacing-footer-tagline: min(30.8125rem, calc(493 * 100vw / 1440)); /* 493 — tagline, EN */
+  --spacing-footer-tagline-ar: min(27.8125rem, calc(445 * 100vw / 1440)); /* 445 — tagline, AR */
+  --spacing-footer-download: min(27.1875rem, calc(435 * 100vw / 1440)); /* 435 — download line */
+  --spacing-footer-mark: min(59.4375rem, calc(951 * 100vw / 1440)); /* 951 — watermark width, 1022:20737 */
+  --spacing-footer-mark-top: min(23.25rem, calc(372 * 100vw / 1440)); /* 372 — watermark above the top */
+  --spacing-footer-mark-shift: min(28.9375rem, calc(463 * 100vw / 1440)); /* 463 = 951 ÷ 2 − 13 */
+  --text-footer: min(1.5rem, calc(24 * 100vw / 1440)); /* 24 — tagline and column headings */
+  --text-footer--line-height: normal;
+  --text-footer--letter-spacing: -0.02em;
+}
+
+/* ---- responsive pass 2026-09-26 — agent B ---- */
+@theme {
+  /*
+   * One px of the 1440 Desktop frame, reduced with the viewport below it: exactly 1 px
+   * (0.0625rem) from 1440 up, 100vw / 1440 at 1023–1439 (0.71 at 1023). Why Choose Us
+   * uses it to draw the 1440 composition proportionally reduced (see `frame-scaled`).
+   */
+  --frame-px: min(0.0625rem, 100vw / 1440);
+  /*
+   * Get the App phone-mockup tile at 1024–1439. 565 (Figma `936:20018`) at the 1284
+   * content width of the 1440 frame, 440 at 960 (1024 − 2×32; clamped to 440 at 1023), linear between them, in
+   * container units of the section's content column (`@container`): 125 / 324 = 38.58cqw,
+   * 440 − 0.3858 × 960 = 69.6 px; rounded up to 38.6cqw so the slope reaches the 565 cap
+   * just before 1284 and the 1440 tile is exactly 565, not 564.96. The row's gap takes the
+   * rest: 63–64 at 1023–1024 → Figma's 263 at 1440.
+   */
+  --container-app-tile: clamp(27.5rem, 38.6cqw + 4.35rem, 35.3125rem);
+}
+
+/*
+ * Why Choose Us at 1023–1439 (desktop:) — the 1440 composition as one piece reduced by
+ * --frame-px: every spacing step and the type, leading and card radius the section uses
+ * at that size are re-based on it. At 1440 and up every value equals its token above.
+ */
+@utility frame-scaled {
+  --spacing: calc(var(--frame-px) * 4); /* --spacing 0.25rem */
+  --text-32: calc(var(--frame-px) * 32);
+  --text-40: calc(var(--frame-px) * 40);
+  --text-56: calc(var(--frame-px) * 56);
+  --leading-row: calc(var(--frame-px) * 64); /* --leading-row 4rem */
+  --leading-title: calc(var(--frame-px) * 90); /* --leading-title 5.625rem */
+  --radius-card: calc(var(--frame-px) * 32); /* --radius-card 2rem */
+}
+
+/* ---- responsive pass 2026-09-26 — agent A ---- */
+@theme {
+  /*
+   * One Figma pixel of the landscape composition (header bar + hero), for widths from
+   * `desktop` (1023) up to `wide` (1440). Figma has only the 1440 frame; between 1023 and
+   * 1440 the header and hero are that frame reduced proportionally, so every length is
+   * written `calc(<Figma px> * var(--scale-landscape))`.
+   *
+   * It is measured on a full-bleed query container (`@container` on the header wrapper in
+   * site-chrome.tsx and on the hero section), so it tracks the page width without the
+   * scrollbar. The 1440 frame's content box is 1440 − 2×32 (the pages' 32 px side gutter
+   * from the tablet up) = 1376 wide, so at 1440 the unit is exactly 1 px — the 1440 frame
+   * is unchanged — and it is capped at 1 px above, where the composition stays centred.
+   * At 1023: (1023 − 64) / 1376 = 0.697 px, so the 24 px nav label is 16.7 px and the
+   * 1357 px header bar content fits a 960 px bar with ~1.7 % to spare at every width.
+   */
+  --scale-landscape: min(1px, (100cqw - 4rem) / 1376);
+}
+
+/* ---- responsive pass 2026-09-26 — agent C ---- */
+@theme {
+  /*
+   * Service Areas title from the 768 frame up: Figma's 100 px (`974:20045`), capped so
+   * the wider of the two swapped titles — "Where We Operate", 8.02 em wide in Baloo 2 —
+   * still fits the viewport less the section's 14 px gutters (8.1 em keeps a hair of
+   * slack). 100 px from ~838 px wide; 91 px at 768.
+   */
+  --text-area-title: min(6.25rem, calc((100vw - 1.75rem) / 8.1));
+  --text-area-title--letter-spacing: -0.02em; /* as --text-100 */
+  --text-area-title--line-height: normal; /* as --text-100 */
+  /*
+   * Service Areas height from 1024 to 1439: Figma's 1440x1024 frame (`963:20233`) scaled
+   * with the viewport — 1024 / 1440 of its width (727 px at 1023). `wide:` keeps 1024.
+   */
+  --spacing-area-desktop: calc(100vw * 1024 / 1440);
+  /*
+   * The provider build-up stage (`998:20842`) is drawn in px: its pills reach from 146 px
+   * left of the stage to 1194 px right of it, 1340 px in all (50 px from each edge of the
+   * 1440 frame). Below 1440 the stage redefines Tailwind's 4 px spacing step (and its
+   * 24 / 20 px text) in this unit, so every offset, box, connector and pill shrinks
+   * together, keeping those 1340 px inside the viewport with 24 px either side:
+   * 4 px from 1388 up, 2.91 px at 1023, where the 20 px pill body is still 14.6 px.
+   */
+  --provider-stage-unit: min(0.25rem, (100vw - 3rem) / 335);
 }

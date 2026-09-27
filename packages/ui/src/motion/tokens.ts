@@ -37,3 +37,10 @@ export const prototype = {
   /** Phone menu. */
   menu: out(0.25),
 } as const;
+
+/**
+ * Stepper autoplay — owner-approved 2026-09-26, a reversal of the 2026-09-22 "nothing
+ * moves by itself" rule for this one component (docs/figma-gaps.md D1). Seconds each
+ * step stays open before the next one opens; the progress line fills over this time.
+ */
+export const STEPPER_AUTOPLAY_SECONDS = 10;

@@ -23,11 +23,27 @@ import { useHoverTween } from "@themap/ui/motion/use-hover-tween";
  * the illustration to the dot beside each pill. The Arabic `cart 5` (`1028:22867`)
  * uses the same positions, so the stage is placed physically (left margin) in both
  * directions; Figma's Arabic frame sets it at x 270, which runs the Increase Income
- * pill 27 px past the 1440 frame, so the English x 196 is used instead. Below 1440, and with reduced motion,
- * only the full section is shown.
+ * pill 27 px past the 1440 frame, so the English x 196 is used instead. Below 1023,
+ * and with reduced motion, only the full section is shown.
+ *
+ * From 1023 to 1439 (responsive pass 2026-09-26) the stage is the same drawing scaled
+ * down with the viewport: the stage redefines Tailwind's spacing step and its 24 / 20
+ * px text in `--provider-stage-unit` (4 px from 1388 up, 2.91 px at 1023), so offsets,
+ * boxes, connectors, pills and `Click here` all shrink together. At 1023 the factor is
+ * 0.73 and the smallest text (the 20 px pill body) is 14.6 px. At 1440 the stage sits
+ * 118 px into the container, which centres its 1340 px of pills on the container; below
+ * 1440 it is centred instead (mx-auto, then 74 px back: the pills' centre lies 74.5 px
+ * right of the 899 px stage's centre), so the scaled drawing stays centred too.
  */
 
 type Stage = "stage" | "full";
+
+/**
+ * The stage plays wherever the landscape (`desktop:`, 63.9375rem = 1023 px) layout does, so the JS
+ * switch and the CSS switch agree. Below 1440 the stage is the 1440 drawing scaled
+ * with the viewport — see `--provider-stage-unit` in theme.css.
+ */
+const STAGE_MEDIA = "(min-width: 63.9375rem)";
 
 /**
  * Where each pill group comes from — the direction of Figma's hidden variants, at a
@@ -108,11 +124,11 @@ export function ProviderShowcase({
 
   useHoverTween(button, { backgroundColor: "var(--color-primary-500)" }, prototype.hover.card);
 
-  // The stage only exists on the 1440 frame, with motion allowed.
+  // The stage only exists on the landscape layout (1023 up), with motion allowed.
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
-      mm.add(`(min-width: 90rem) and ${MOTION_OK}`, () => {
+      mm.add(`${STAGE_MEDIA} and ${MOTION_OK}`, () => {
         setActive(true);
         setStage("stage");
         return () => {
@@ -202,7 +218,7 @@ export function ProviderShowcase({
       {active ? (
         <div
           data-provider-stage=""
-          className="relative col-start-1 row-start-1 mr-auto ml-29.5 mt-31.75 mb-11.75 h-212.5 w-224.75 opacity-0"
+          className="relative col-start-1 row-start-1 mr-auto ml-29.5 mt-31.75 mb-11.75 h-212.5 w-224.75 opacity-0 max-wide:mx-auto max-wide:-translate-x-18.5 max-wide:[--spacing:var(--provider-stage-unit)] max-wide:[--text-20:calc(var(--provider-stage-unit)*5)] max-wide:[--text-24:calc(var(--provider-stage-unit)*6)]"
         >
           <div className="absolute inset-0">
             <div className="absolute top-44 left-0 h-168.5 w-224.75">{illustration}</div>
@@ -236,7 +252,7 @@ export function ProviderShowcase({
                 onClick={() => {
                   setStage("full");
                 }}
-                className="flex h-14.5 w-41.25 rotate-[-28.97deg] items-center justify-center gap-1.75 rounded-button bg-secondary-500 px-5 py-2 text-24 font-semibold text-bg shadow-click focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                className="flex h-14.5 w-41.25 rotate-[-28.97deg] items-center justify-center gap-1.75 rounded-button bg-secondary-500 px-5 py-2 text-24 font-semibold text-bg shadow-click select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
               >
                 {clickHere}
                 <span

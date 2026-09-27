@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { MotionRefresh } from "@themap/ui/motion/motion-refresh";
+
 import { getContent, hasLocale, LOCALES } from "../../content";
 import { baloo2, balooBhaijaan2 } from "../fonts";
 import "../globals.css";
@@ -37,6 +39,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
         }`}
       >
         {children}
+        <MotionRefresh routeKey={lang} />
       </body>
     </html>
   );

@@ -87,7 +87,7 @@ export function ReviewCarousel({
     <ul
       ref={ref}
       aria-label={label}
-      className={cn("flex list-none items-center gap-5 desktop:gap-17", className)}
+      className={cn("flex list-none items-center gap-5 desktop:gap-review-gap", className)}
     >
       {reviews.map((review) => (
         <li key={review.id} className="contents">

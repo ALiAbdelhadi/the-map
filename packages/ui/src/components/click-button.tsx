@@ -27,7 +27,7 @@ export function ClickButton({
       type={type}
       className={cn(
         "inline-flex h-14.5 items-center justify-center gap-1.75 overflow-hidden rounded-button bg-secondary-500 px-5 py-2",
-        "text-24 font-semibold text-bg",
+        "text-24 font-semibold text-bg select-none",
         "hover:bg-primary-500",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500",
         className,

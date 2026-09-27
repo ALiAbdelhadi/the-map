@@ -15,7 +15,8 @@ import { cn } from "../lib/cn";
  * start corner. Rebuilt 2026-09-22: the text is always laid out, so opening a step
  * reveals it as the pill widens instead of popping it in, and the rocket is placed
  * so it only touches the pill's corner, never its text. The stepper animates the
- * sizes (see AppStepper).
+ * sizes (see AppStepper). Since 2026-09-26 the open pill also carries the autoplay
+ * progress line (`data-step-progress`), filled by AppStepper.
  */
 export type StepItemProps = {
   index: number;
@@ -93,6 +94,23 @@ export function StepItem({
           >
             {description}
           </span>
+        </span>
+        {/*
+          Autoplay progress (owner-approved 2026-09-26): a thin line inside the open
+          pill's bottom padding. AppStepper grows the fill's width from 0 to 100 % over
+          the autoplay interval; a block that narrow sits at the inline start, so it
+          fills from the left in English and from the right in Arabic. Decorative only,
+          and gone entirely under reduced motion (no autoplay there).
+        */}
+        <span
+          data-step-progress=""
+          aria-hidden="true"
+          className={cn(
+            "pointer-events-none absolute inset-x-6 bottom-1.5 h-1 overflow-hidden rounded-full bg-bg/25 motion-reduce:hidden",
+            expanded ? "" : "hidden",
+          )}
+        >
+          <span data-step-progress-fill="" className="block h-full w-0 rounded-full bg-bg" />
         </span>
       </button>
       {rocket ? (

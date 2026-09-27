@@ -272,3 +272,109 @@ differently, and nothing said what had been chosen. Changes in
   320 it shrinks to 304 px and no longer overflows the 8 px gutters.
 - `/ar` uses the same geometry and turn direction as `/en`, as before. The Arabic
   Figma set is identical.
+
+## Hero auto-advance (owner, 2026-09-26)
+
+The orbit now advances to the next item every 20 s (reverses "no auto-advance",
+2026-09-22). Same turn as a click; silent to screen readers; pauses on hover, focus,
+hidden tab, hero under 50 % in view and smooth scroll; off with reduced motion; the
+countdown restarts from zero after any change or resume. Details: docs/motion.md.
+
+## Footer bottom padding — owner-approved 2026-09-26
+
+The Figma frames leave 91 / 173 / 93 px under the social row (phone / tablet /
+desktop) versus 73 px on top. It now leaves 64 px at every width.
+
+## Why Choose row balance — owner-approved 2026-09-26
+
+Figma's row padding (px 20, py 4) plus the 4 px selected stroke drawn inside the row left
+the 48 px icon chip 0 px from the stroke top and bottom on phones but 16 px from its
+start. Standing owner approval to fix Figma's own spacing: the chip is now concentric
+with the pill. Phones: `py-3 ps-3 pe-6` — 8 px clear gap to the stroke on top, bottom
+and start, 20 px inside the stroke after the label; the row is 72 px tall (was 56), the
+gap between rows drops 24 → 8 so pitch stays 80, and the list takes `-my-2 ms-2` so the
+card height, chip x/y and the title-icon alignment are unchanged (the ring now starts 12 px
+left of the chip instead of 20). Tablet/desktop: start padding 20 → 12 (`ps-3`, top/bottom
+were already 8), end padding stays 20, list `ms-2` keeps chip x; rows stay 72 px, pitch 96.
+Logical properties throughout, so Arabic mirrors. No motion, colour or size tokens changed.
+
+## Responsive 1023–1439 — Reviews and footer — owner-approved 2026-09-26
+
+Figma has no frame between 768 and 1440. From 1023 (the new `desktop:` breakpoint) both
+sections are the 1440 frame scaled by viewport ÷ 1440 — `min(<Figma px>, <Figma px> × 100vw / 1440)`,
+the `review-*` / `footer-*` tokens in `theme.css` (agent D block) — so 1440 and wider are
+unchanged (pixel-identical to the pre-change baselines at 1440 and 1920, EN and AR).
+
+- Reviews: card widths (415 / 210), height 307, row gap 68, photo column, text column,
+  name and quote size (24 → 17 at 1023), quote mark, subheading (48 → 34, width 1229) and the
+  vertical rhythm (70 / 48 / 180, section height 1024) all scale together, so the open card
+  shows the same wrap as at 1440. Not scaled: the 62 px heading (fits from 1023 and is the
+  tablet size too) and the 16 px rating with its 24 px icon (readability floor).
+- Footer: column gaps (48 EN / 82 AR), logo height, tagline width (493 / 445) and text,
+  download-line width and the 24 px headings scale; the watermark keeps its 1440 placement
+  scaled. Store badges (56 tall) and social marks (48) keep their size as tap targets, so
+  when the download column is narrower than the two badges side by side (below ~1435 EN,
+  ~1320 AR) the badges stack 12 px apart (the Arabic frame's badge spacing) under the
+  download line, both aligned to the column's start edge. At 1440+ the column stays centred
+  as in Figma.
+
+## Responsive 1023–1439 — header and hero — owner-approved 2026-09-26
+
+- **Nav row from 1023, not a drawer.** Figma draws the inline nav only at 1440. From 1023 the
+  header shows the full row (five links with icons + language switch), nothing hidden; the drawer
+  is used below 1023 only. Every header length is the 1440 value times `--scale-landscape`
+  (`min(1px, (100cqw − 64px) / 1376)`, theme.css, measured on the header's full-bleed wrapper):
+  exactly 1 px at 1440 and above, 0.697 px at 1023 (label 16.7 px, logo 124×28, flags 22 px,
+  bar 61 px tall). The divisor is the 1440 content box (1440 − 2×32), not 1440, because the bar
+  content is 1352 of the 1357 px bar at 1440: scaling by `vw/1440` would overflow a 959 px bar at
+  1023 by ~2 px, this unit leaves 1.7 % spare at every width.
+- **Hit areas decoupled from the scaled pills.** At 1023 the nav pill is 33 px tall; the 44 px
+  target is a centred `::before` on each link (and the flag/track links keep 44 px boxes with
+  negative margins that follow the scaled art), so the bar keeps Figma's proportions instead of
+  growing to 44 px pills.
+- **Hero 1023–1439 is the 1440 frame reduced.** Section height (1024), orbit box (669.642 wide),
+  card (544×471, padding 24, radius 32, 148 above the bottom), the 64 gap, title 38 / body 28 and
+  the underline all use the same unit on the hero section's container (713 px tall at 1023 —
+  fits an iPad-landscape 768 px viewport). The ring title inside the orbit follows the orbit's own
+  width (`38 × 100cqw / 669`).
+
+## Responsive 1023–1439 — Why Choose Us / Get the App Now — owner-approved 2026-09-26
+
+No Figma frame exists between 768 and 1440; these are design-judgement fills.
+
+- **Why Choose Us, 1023–1439:** the 1440 composition (card at the start, pill + arrow
+  beside it, character at the end) reduced as one piece. The section gets
+  `desktop:frame-scaled` (theme.css, agent B block), which re-bases `--spacing`, the 32/40/56
+  type, `--leading-row`, `--leading-title` and `--radius-card` on `--frame-px`
+  = min(1px, 100vw / 1440). Card, pill, arrow, section height (1024 × s) and gaps all scale by
+  s = W / 1440 (0.71 at 1023: labels 28 px, rows 51 px tall, description 23 px). The card's
+  GSAP shift per variant is scaled by the same factor. JS breakpoint (maze placement set,
+  stacked-pill height tween) moved from 90rem to 63.9375rem (1023) to match the CSS. Exact from 1440 up.
+- **Why Choose Us, tablet 768–1022:** the card column is the 768 frame's (768 wide, card 98 px
+  in), centred, instead of hugging the start edge as the tablet widens.
+- **Get the App Now, 1023–1439:** the two-column row. The text column keeps 456 px and the
+  1440 type (scaling it would put the step bodies under 14 px); the tile shrinks linearly
+  565 → 440 px (`--container-app-tile`, cqw of the content column) and the gap 263 → 64 px.
+  Exact from 1440 up.
+
+## Responsive 1023–1439 — Service Areas + Become a Provider — owner-approved 2026-09-26
+
+- **Service Areas title (768 up)** — the 100 px title is capped by the viewport
+  (`--text-area-title` = min(100 px, (100vw − 28 px) / 8.1)) so the hover swap to the
+  wider "Where We Operate" (8.02 em) is never clipped: 91 px at 768, 98 at 820, Figma's 100
+  from ~838. Arabic keeps 100 px (its titles fit). Fixes the 802 px title clipped at 768–830.
+- **Service Areas height (1023–1439)** — the 1440 frame's 1024 px height scaled with the
+  viewport (`--spacing-area-desktop` = 100vw × 1024 / 1440, 727 px at 1023); the column keeps
+  its 1440 sizes, which fit. 1440 up unchanged.
+- **Provider build-up stage (1023–1439)** — now plays from 1023 (was 1440 only;
+  `STAGE_MEDIA` = 63.9375rem, same as `desktop:`). The stage is the 1440 drawing scaled
+  as one piece: it redefines the spacing step and its 24 / 20 px text in
+  `--provider-stage-unit` = min(4 px, (100vw − 48 px) / 335), so its 1340 px of pills stay
+  inside the viewport with 24 px margins; the smallest text is 14.6 px at 1023. Below 1440
+  the stage is centred on its pills instead of sitting 118 px into the container.
+- **Provider final state (1023–1439)** — not the 1440 row. The pills' 16 / 14 px text fixes
+  their widths, so the 813 px pill box cannot scale down without taking text under 14 px,
+  and beside the email card it needs ~1300 px. It stacks instead: badge and body as at
+  1440, then the email card and the downloads side by side (the heading centred and
+  balanced over two lines), then the 1440 pill box at its drawn size, centred on its pills
+  (EN 44 px left; AR 54 px right and 106 px up, where Figma's Arabic box starts empty).

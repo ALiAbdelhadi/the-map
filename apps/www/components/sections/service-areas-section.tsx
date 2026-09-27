@@ -19,12 +19,19 @@ import { ServiceAreasTitle } from "./service-areas-title";
  * full line box (no clipped glyphs, Latin or Arabic) and gives back the 70 px
  * with negative margins so the column keeps Figma's rhythm. The 768 frame
  * (`1037:30012`) sets the column 326 px down rather than centring it.
+ *
+ * Responsive (2026-09-26): from 768 the English title is capped by the viewport
+ * (`--text-area-title`) so the hover swap to the wider "Where We Operate" is never
+ * clipped — 91 px at 768, Figma's 100 px from ~838. The Arabic titles fit at 100 px.
+ * From 1023 to 1439 the section is the 1440 frame's height scaled with the viewport
+ * (`--spacing-area-desktop`, 727 px at 1023); the column stays at its 1440 size, which
+ * fits every width in that range.
  */
 export function ServiceAreasSection({ content }: { content: SiteContent }) {
   return (
     <section
       id="service-areas"
-      className="relative isolate flex w-full justify-center overflow-hidden py-16.5 tablet:min-h-291.5 tablet:items-start tablet:px-3.5 tablet:pt-81.5 tablet:pb-0 desktop:min-h-256 desktop:items-center desktop:py-0"
+      className="relative isolate flex w-full justify-center overflow-hidden py-16.5 tablet:min-h-291.5 tablet:items-start tablet:px-3.5 tablet:pt-81.5 tablet:pb-0 desktop:min-h-area-desktop desktop:items-center desktop:py-0 wide:min-h-256"
     >
       <Image
         src="/images/service-areas-scene.webp"
@@ -59,7 +66,7 @@ export function ServiceAreasSection({ content }: { content: SiteContent }) {
             <ServiceAreasTitle
               title={content.serviceAreas.title}
               titleAlt={content.serviceAreas.titleAlt}
-              className="py-5 text-center text-32 font-bold text-secondary-500 tablet:-my-8.75 tablet:py-0 tablet:text-100"
+              className="py-5 text-center text-32 font-bold text-secondary-500 tablet:-my-8.75 tablet:py-0 tablet:text-area-title tablet:rtl:text-100"
             />
             <p className="max-w-3xl px-3.5 text-center text-24 font-medium text-bg tablet:px-0 tablet:text-48 tablet:font-semibold">
               {content.serviceAreas.subtitle}
@@ -82,7 +89,7 @@ export function ServiceAreasSection({ content }: { content: SiteContent }) {
 
         <button
           type="submit"
-          className="flex h-12 items-center justify-center rounded-chip bg-secondary-500 px-6 py-0.5 text-16 font-regular text-bg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary-500"
+          className="flex h-12 items-center justify-center rounded-chip bg-secondary-500 px-6 py-0.5 text-16 font-regular text-bg select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary-500"
         >
           {content.serviceAreas.cta}
         </button>

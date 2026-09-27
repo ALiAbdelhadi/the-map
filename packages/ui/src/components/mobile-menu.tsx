@@ -21,7 +21,8 @@ import { prototype } from "../motion/tokens";
  * close, and focus is kept inside the panel while it is open.
  *
  * The header keeps the toggle at the right-hand end in both languages (see SiteHeader),
- * so the panel hangs from the right edge in Arabic too — `start-0` under rtl.
+ * so the panel opens out of that corner in Arabic too. It is anchored to the header
+ * (`relative` in SiteHeader), not the toggle, and spans the bar's full width.
  *
  * Motion: the panel opens out of the toggle — from 95 % and 6 px up, fading in
  * (0.25 s ease-out) — and closes the same way; it never grows from nothing.
@@ -125,7 +126,7 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
   }, [open]);
 
   return (
-    <div className={cn("relative", className)}>
+    <div className={className}>
       <button
         ref={toggleRef}
         type="button"
@@ -139,7 +140,7 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
         className={cn(
           // 44 px hit area around Figma's 32 px circle; the negative margin keeps the
           // bar's layout at the 32 px Figma draws.
-          "-m-1.5 flex size-11 items-center justify-center rounded-full",
+          "-m-1.5 flex size-11 select-none items-center justify-center rounded-full",
           "focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-primary-500",
         )}
       >
@@ -166,7 +167,7 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
           document.documentElement.classList.remove("overflow-hidden");
           setOpen(false);
         }}
-        className="absolute end-0 top-16 rtl:end-auto rtl:start-0 z-10 flex flex-col items-start gap-2 overflow-hidden rounded-button bg-surface-header p-5 shadow-glass-edge backdrop-blur-glass"
+        className="absolute inset-x-0 top-full z-10 mt-2 flex flex-col items-start gap-2 overflow-hidden rounded-button bg-surface-header p-5 shadow-glass-edge backdrop-blur-glass"
       >
         {children}
       </div>

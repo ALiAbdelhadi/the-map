@@ -17,9 +17,15 @@ import { BadgeBorder } from "./badge-border";
  * on the right and Arabic mirrors it to the left. The badge (`936:20234`) has a 4 px
  * primary/500 border, radius 12, `shadow`, a 48 px icon and a 48 px medium title in
  * primary/700; the subtitle is 32 px primary/950 and the stepper sits 72 px below.
- * The two store badges are centred under the row (`942:20453`). Figma's row is
+ * The two store badges are centred 46 px under the row and 68 px apart (`942:20453`:
+ * 767 − 721 and 262 − 194; the 768 frame `1037:29903` keeps the same 68). Figma's row is
  * 1307 px; in the 1284 px container the text column keeps its full 456 px (so the
  * subtitle stays on two lines) and the gap gives up the 23 px instead.
+ *
+ * 1023–1439 (responsive pass 2026-09-26, no Figma frame): the same row. The text
+ * column keeps its 456 px and the 1440 type (scaling it would drop the step bodies
+ * under 14 px); the tile shrinks linearly from 565 to 440 px (`--container-app-tile`,
+ * container units of the content column) and the gap from 263 to 64 px with it.
  */
 
 export function GetAppSection({ content }: { content: SiteContent }) {
@@ -28,8 +34,8 @@ export function GetAppSection({ content }: { content: SiteContent }) {
       id="get-the-app"
       className="flex w-full justify-center bg-primary-100 px-1.5 py-17 tablet:px-8 tablet:py-18 desktop:min-h-256 desktop:items-center desktop:py-0"
     >
-      <div className="flex w-full max-w-desktop flex-col items-center gap-12 tablet:gap-17 desktop:gap-12">
-        <div className="flex w-full flex-col items-center gap-11.5 desktop:flex-row desktop:items-center desktop:justify-between desktop:gap-0">
+      <div className="@container flex w-full max-w-desktop flex-col items-center gap-12 tablet:gap-17 desktop:gap-11.5">
+        <div className="flex w-full flex-col items-center gap-11.5 desktop:flex-row desktop:items-center desktop:justify-between desktop:gap-16">
           <div className="flex w-full max-w-114 flex-col gap-8 px-1.5 tablet:px-0 desktop:shrink-0 desktop:gap-18">
             <div className="flex flex-col gap-8">
               <div className="relative flex items-center justify-center gap-4 self-start rounded-button bg-gradient-to-r from-primary-200/30 to-secondary-600/30 px-6 py-3 shadow-card">
@@ -67,7 +73,7 @@ export function GetAppSection({ content }: { content: SiteContent }) {
 
         <div
           dir="ltr"
-          className="flex flex-col items-center justify-center gap-6 tablet:flex-row tablet:flex-wrap tablet:gap-17 desktop:gap-12"
+          className="flex flex-col items-center justify-center gap-6 tablet:flex-row tablet:flex-wrap tablet:gap-17"
         >
           <StoreBadge
             icon={<AppStoreIcon />}

@@ -34,6 +34,13 @@ export function morphSizes(
   const tweens: gsap.core.Tween[] = [];
   for (const [element, old] of before) {
     if (!element.isConnected) continue;
+    // A morph still running from the previous change holds an inline size; stop it and
+    // drop that size so the new target is the layout's own size, not the stale tween's.
+    // (`old` was measured before, mid-tween, so the new morph starts where it stood.)
+    if (gsap.isTweening(element)) {
+      gsap.killTweensOf(element, axes.join(","));
+      gsap.set(element, { clearProps: axes.join(",") });
+    }
     const box = element.getBoundingClientRect();
     const from: gsap.TweenVars = {};
     const to: gsap.TweenVars = {};
