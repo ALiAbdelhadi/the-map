@@ -1,25 +1,11 @@
 "use client";
 
-import { type ReactNode, useEffect, useState } from "react";
-
+import { useEffect, useState, type ReactNode } from "react";
 import { cn } from "../lib/cn";
-import { onHashLinkClick, SECTION_SCROLL_EVENT } from "../motion/scroll-to";
+import { SECTION_SCROLL_EVENT, onHashLinkClick } from "../motion/scroll-to";
+import { prototype } from "../motion/tokens";
+import { GradientBorder } from "./gradient-border";
 
-/**
- * Header / drawer navigation item.
- *
- * Figma `Header action` — Default `870:18939`, Hover `870:18938`, choose `870:18937`.
- * px 16, py 4, radius 38, gap 8, icon 24, label 24 px regular, colour Natural/BG.
- * Hover fills primary/400; the "choose" (current) state draws a 1 px white border
- * (header `888:20482` shows it on "About"). Figma's stroke sits inside the pill, so it
- * is drawn as an inset ring and choosing an item never shifts its neighbours.
- *
- * The current item follows the page: an in-page link (`#id`) is "choose" while its
- * section crosses the middle of the viewport, and is announced with
- * `aria-current="location"`. While a click glides the page to a section
- * (motion/scroll-to.ts) the target is "choose" from the start, instead of the mark
- * running through every section the page passes on the way.
- */
 export type NavLinkProps = {
   href: string;
   children: ReactNode;
@@ -83,7 +69,7 @@ export function NavLink({ href, children, icon, current, className }: NavLinkPro
       onClick={href.startsWith("#") ? onHashLinkClick : undefined}
       aria-current={isCurrent ? "location" : undefined}
       className={cn(
-        "inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-nav px-4 py-1 text-24 font-regular text-bg select-none",
+        "relative inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-nav px-4 py-1 text-24 font-regular text-bg select-none",
         // Header row from 1023: the 1440 pill times `--scale-landscape` (theme.css). The
         // pill may then be shorter than 44 px (33 at 1023), so the 44 px hit area is a
         // centred pseudo-element instead of `min-h-11`, and the pill keeps its proportions.
@@ -95,6 +81,24 @@ export function NavLink({ href, children, icon, current, className }: NavLinkPro
         className,
       )}
     >
+      {/*
+        Gradient stroke (bg → primary/400), owner-approved deviation, hover-only —
+        Figma's own pill has no border except the white 1 px ring above. Reuses
+        `GradientBorder`, the same hover-stroke pattern as `benefit-pill.tsx` /
+        `badge-border.tsx` / `search-field.tsx`, instead of a hand-rolled mask hack.
+      */}
+      <GradientBorder
+        mode="hover"
+        width="p-px"
+        states={[
+          null,
+          [
+            [0, "var(--color-bg)"],
+            [1, "var(--color-primary-400)"],
+          ],
+        ]}
+        steps={[prototype.hover.border, prototype.hover.border]}
+      />
       <span className="flex size-6 shrink-0 items-center justify-center desktop:size-[calc(24*var(--scale-landscape))]">
         {icon}
       </span>
