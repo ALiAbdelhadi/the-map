@@ -179,21 +179,39 @@ export function AppStepper({ steps, defaultStep = 1, label, rocket, className }:
       const step = (n: number) => root.querySelectorAll("[data-step]")[n - 1];
       const opened = step(openStep);
       const closed = step(saved.from);
+      // Every tween below overwrites (`true`) whatever is still queued on its element:
+      // on a fast second click the previous step's delayed fade-in would otherwise
+      // start after its step had closed, leaving two panels and two rockets visible.
+      // The closing fades are `to` (not fromTo from 1) so a half-faded panel leaves
+      // from where it stands, and each tween clears its inline styles at the end so
+      // the step's own classes decide visibility again.
+      const settle = "opacity,visibility,transform";
       // The closing step's text and rocket leave at once, before its pill narrows.
-      gsap.fromTo(
-        closed?.querySelector("[data-step-panel]") ?? [],
-        { autoAlpha: 1 },
-        { autoAlpha: 0, duration: 0.12, ease: "none" },
-      );
-      gsap.fromTo(
-        closed?.querySelector("[data-rocket]") ?? [],
-        { autoAlpha: 1 },
-        { autoAlpha: 0, duration: 0.15, ease: "none" },
-      );
+      gsap.to(closed?.querySelector("[data-step-panel]") ?? [], {
+        autoAlpha: 0,
+        duration: 0.12,
+        ease: "none",
+        overwrite: true,
+        clearProps: settle,
+      });
+      gsap.to(closed?.querySelector("[data-rocket]") ?? [], {
+        autoAlpha: 0,
+        duration: 0.15,
+        ease: "none",
+        overwrite: true,
+        clearProps: settle,
+      });
       gsap.fromTo(
         opened?.querySelector("[data-step-panel]") ?? [],
         { autoAlpha: 0, x: -8 },
-        { autoAlpha: 1, x: 0, ...figmaTween(prototype.hover.border), delay: move.duration * 0.4 },
+        {
+          autoAlpha: 1,
+          x: 0,
+          ...figmaTween(prototype.hover.border),
+          delay: move.duration * 0.4,
+          overwrite: true,
+          clearProps: settle,
+        },
       );
       const flip = document.documentElement.dir === "rtl" ? -1 : 1;
       gsap.fromTo(
@@ -206,6 +224,8 @@ export function AppStepper({ steps, defaultStep = 1, label, rocket, className }:
           rotate: 0,
           ...figmaTween(prototype.stepper.rocket),
           delay: move.duration * 0.8,
+          overwrite: true,
+          clearProps: settle,
         },
       );
     },

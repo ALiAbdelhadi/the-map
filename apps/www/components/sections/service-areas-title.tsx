@@ -24,14 +24,14 @@ export function ServiceAreasTitle({
 }) {
   const ref = useRef<HTMLHeadingElement>(null);
   const [alt, setAlt] = useState(false);
-  const first = useRef(true);
+  // The line last shown; a run that changes nothing (the first run, React's
+  // strict-mode re-run) leaves the classes' resting state alone.
+  const shownAlt = useRef(false);
 
   useGSAP(
     () => {
-      if (first.current) {
-        first.current = false;
-        return;
-      }
+      if (shownAlt.current === alt) return;
+      shownAlt.current = alt;
       const timing = window.matchMedia(MOTION_OK).matches
         ? figmaTween(prototype.serviceAreas.swap)
         : { duration: 0 };

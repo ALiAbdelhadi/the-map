@@ -190,8 +190,16 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
         });
       }
 
+      // `overwrite: true` (not "auto") on the fades below: "auto" only kills tweens that
+      // are already running, so a title fade-in still waiting out its 0.15 s delay
+      // survived the next click and later brought the old title back on top of the new
+      // one. `true` kills every earlier tween of the element the moment a new one starts.
       gsap.utils.toArray<HTMLElement>("[data-scene]").forEach((el) => {
-        gsap.to(el, { autoAlpha: Number(el.dataset.scene) === selected ? 1 : 0, ...tween });
+        gsap.to(el, {
+          autoAlpha: Number(el.dataset.scene) === selected ? 1 : 0,
+          ...tween,
+          overwrite: true,
+        });
       });
 
       const copy = animate ? figmaTween(prototype.hero.copy) : { duration: 0 };
@@ -200,17 +208,17 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
           gsap.fromTo(
             el,
             { autoAlpha: 0, y: animate ? 8 : 0 },
-            { autoAlpha: 1, y: 0, ...copy, delay: animate ? 0.15 : 0, overwrite: "auto" },
+            { autoAlpha: 1, y: 0, ...copy, delay: animate ? 0.15 : 0, overwrite: true },
           );
         } else {
-          gsap.to(el, { autoAlpha: 0, y: 0, ...copy, overwrite: "auto" });
+          gsap.to(el, { autoAlpha: 0, y: 0, ...copy, overwrite: true });
         }
       });
       if (animate) {
         gsap.fromTo(
           "[data-hero-copy]",
           { autoAlpha: 0, y: 8 },
-          { autoAlpha: 1, y: 0, ...figmaTween(prototype.hero.copy), delay: 0.15 },
+          { autoAlpha: 1, y: 0, ...figmaTween(prototype.hero.copy), delay: 0.15, overwrite: true },
         );
       }
     },

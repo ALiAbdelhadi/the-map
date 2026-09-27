@@ -176,6 +176,17 @@ const CARD_SHIFT = {
 
 type FeatureId = keyof typeof ICONS;
 
+/** The card's x / y for `selected` at the current width and direction. */
+function cardShift(selected: string | null) {
+  const phone = !window.matchMedia("(min-width: 48rem)").matches;
+  const shift = selected
+    ? (phone ? CARD_SHIFT.phone : CARD_SHIFT.desktop)[selected as FeatureId]
+    : [0, 0];
+  const flip = document.documentElement.dir === "rtl" ? -1 : 1;
+  const k = window.matchMedia(DESKTOP).matches ? frameScale() : 1;
+  return { x: shift[0] * flip * k, y: shift[1] * k };
+}
+
 export function WhyChooseSection({ content }: { content: SiteContent }) {
   const features = content.whyChoose.features;
   const ref = useRef<HTMLElement>(null);
@@ -190,7 +201,16 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
     const fit = () => {
       const section = ref.current;
       const box = section?.querySelector<HTMLElement>("[data-maze]");
-      if (section && box) gsap.set(box, mazePlace(section, box, current.current));
+      if (!section || !box) return;
+      // A move still running would finish at the target measured for the old width,
+      // so stop it and place the maze and the card for the new one straight away.
+      gsap.killTweensOf(box);
+      gsap.set(box, mazePlace(section, box, current.current));
+      const card = section.querySelector("[data-why-card]");
+      if (card) {
+        gsap.killTweensOf(card, "x,y");
+        gsap.set(card, cardShift(current.current));
+      }
     };
     window.addEventListener("resize", fit);
     return () => {
@@ -218,29 +238,21 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const move = reduce ? { duration: 0 } : figmaTween(prototype.whyChoose.click);
       const arrive = reduce ? { duration: 0 } : figmaTween(prototype.whyChoose.tip);
-      const phone = !window.matchMedia("(min-width: 48rem)").matches;
       gsap.to(box, { ...mazePlace(section, box, selected), ...move, overwrite: "auto" });
-
-      const shift = selected
-        ? (phone ? CARD_SHIFT.phone : CARD_SHIFT.desktop)[selected as FeatureId]
-        : [0, 0];
-      const flip = document.documentElement.dir === "rtl" ? -1 : 1;
-      const k = window.matchMedia(DESKTOP).matches ? frameScale() : 1;
-      gsap.to("[data-why-card]", {
-        x: shift[0] * flip * k,
-        y: shift[1] * k,
-        ...move,
-        overwrite: "auto",
-      });
+      gsap.to("[data-why-card]", { ...cardShift(selected), ...move, overwrite: "auto" });
 
       gsap.to("[data-character]", { autoAlpha: selected ? 0 : 1, ...arrive, overwrite: "auto" });
       // The feature pill arrives after the card has started moving; the arrow draws with it.
       gsap.fromTo(
         "[data-why-tip]:not([hidden])",
         { autoAlpha: 0, y: 12 },
-        { autoAlpha: 1, y: 0, ...arrive, delay: reduce ? 0 : 0.2 },
+        { autoAlpha: 1, y: 0, ...arrive, delay: reduce ? 0 : 0.2, overwrite: true },
       );
-      gsap.fromTo("[data-selected-ring]", { opacity: 0 }, { opacity: 1, ...arrive });
+      gsap.fromTo(
+        "[data-selected-ring]",
+        { opacity: 0 },
+        { opacity: 1, ...arrive, overwrite: true },
+      );
 
       // Below the desktop breakpoint the pill sits under the card, so the section grows
       // to fit it.

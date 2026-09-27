@@ -123,3 +123,43 @@ transition is Smart Animate.
 | Mobile menu `1038:26925`                       | open/close 0.3 s `EASE_IN_AND_OUT`                                                                                                                                                            | check                                                     |
 
 All of the above is now built — see "Implemented".
+
+## Reliability (2026-09-27)
+
+- `MotionRefresh` (`packages/ui/src/motion/motion-refresh.ts`, mounted once in
+  `app/[lang]/layout.tsx`) calls a debounced `ScrollTrigger.refresh()` after the
+  things ScrollTrigger does not watch itself: `document.fonts.ready` / font
+  `loadingdone`, late images or any other change of the page height
+  (ResizeObserver on `body`), crossings of the 768 / 1023 / 1440 breakpoints, a
+  bfcache restore (`pageshow` with `persisted`) and a language switch.
+- `revealOnce` (`packages/ui/src/motion/reveal.ts`) is the helper for `once`
+  reveals: when the page loads, reloads or jumps past a trigger, `onEnter` still
+  fires, and the helper tells the caller to jump to the end state instead of
+  playing the reveal off-screen.
+- The GSAP ticker keeps its default `lagSmoothing(500, 33)`: after a hidden tab,
+  tweens resume where they stood instead of skipping to the end.
+- `morphSizes` kills a size morph that is still running before it measures the
+  next target, so quick repeated changes do not measure a mid-tween size.
+- `prefersReducedMotion()` in `gsap.ts` reads `(prefers-reduced-motion: reduce)`.
+- Hero orbit, Why Choose Us tip/ring, stepper panel/rocket and the mobile menu use
+  `overwrite: true` on their fades: `"auto"` spares a tween still in its delay, so
+  a fast second click let the old title / rocket fade back in over the new one.
+  The stepper's closing fades start from where they stand and clear their inline
+  styles at the end.
+- Why Choose Us: a resize stops a running maze/card move and re-places both for the
+  new width (the card shift differs per breakpoint and direction).
+- Mobile menu: crossing to 1023+ closes it at once (the drawer is CSS-hidden there
+  and kept the page scroll-locked); a tap on the toggle while it closes reopens it.
+- App screens: the once-pass uses `revealOnce`.
+- Reviews heading typewriter and the provider stage use `revealOnce`: loaded or
+  jumped past, the heading is typed out in full and the stage shows its end state.
+  A partly typed heading in a full-page screenshot is the reveal mid-play (27
+  characters × 45 ms), not a stuck state.
+- Provider section: a breakpoint change now reverts the stage (`useGSAP`
+  `revertOnUpdate`); before, crossing below 1023 after the stage had played left
+  the full section at `visibility: hidden`. After "Click here" the full section
+  stays open across resizes instead of replaying the stage.
+- Review carousel: a card change cancels every text fade still pending, so a fast
+  run of clicks no longer lets a closed card's text fade in over its photo.
+- Gradient border and Service Areas title: the "skip the first run" guards survive
+  React's strict-mode double run; the border's tweens use `overwrite: "auto"`.

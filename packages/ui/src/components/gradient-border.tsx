@@ -55,27 +55,30 @@ function vars(state: GradientState) {
 export function GradientBorder({ states, steps, width, className }: GradientBorderProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const [state, setState] = useState<0 | 1>(0);
-  const first = useRef(true);
+  // The state last drawn. A run whose state has not changed (the first run, and
+  // React's strict-mode re-run after its revert) sets the stroke instead of tweening.
+  const drawn = useRef<0 | 1 | null>(null);
 
   useGSAP(
     () => {
       const ring = ref.current;
       if (!ring) return;
       const target = states[state];
-      if (first.current) {
-        first.current = false;
+      if (drawn.current === null || drawn.current === state) {
+        drawn.current = state;
         gsap.set(ring, target ? vars(target) : { ...vars(states[1]), "--gb-o": 0 });
         return;
       }
+      drawn.current = state;
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       // The transition into state 1 is step 0; back into state 0 is step 1.
       const timing = reduce ? { duration: 0 } : figmaTween(steps[state === 1 ? 0 : 1]);
       if (!target) {
-        gsap.to(ring, { "--gb-o": 0, ...timing });
+        gsap.to(ring, { "--gb-o": 0, ...timing, overwrite: "auto" });
         return;
       }
       if (!states[state === 1 ? 0 : 1]) gsap.set(ring, vars(target));
-      gsap.to(ring, { ...vars(target), ...timing });
+      gsap.to(ring, { ...vars(target), ...timing, overwrite: "auto" });
     },
     { scope: ref, dependencies: [state] },
   );

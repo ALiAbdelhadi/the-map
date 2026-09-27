@@ -4,7 +4,8 @@ import Image from "next/image";
 import { useRef } from "react";
 
 import { figmaTween } from "@themap/ui/motion/figma-easing";
-import { gsap, MOTION_OK, ScrollTrigger, useGSAP } from "@themap/ui/motion/gsap";
+import { gsap, MOTION_OK, useGSAP } from "@themap/ui/motion/gsap";
+import { revealOnce } from "@themap/ui/motion/reveal";
 import { prototype } from "@themap/ui/motion/tokens";
 
 /**
@@ -94,13 +95,15 @@ export function AppScreens({ label }: { label: string }) {
         };
         // Reduced motion, or a resize after the pass: go straight to the end place.
         if (reduce || played.current) return to(true);
-        ScrollTrigger.create({
+        if (!ref.current) return;
+        // Landing below the tile (reload mid-page, #hash) jumps to the end place
+        // instead of playing the pass off-screen.
+        revealOnce({
           trigger: ref.current,
           start: "top 65%",
-          once: true,
-          onEnter: () => {
+          reveal: (instant) => {
             played.current = true;
-            to();
+            to(instant);
           },
         });
       };

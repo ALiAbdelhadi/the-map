@@ -4,7 +4,8 @@ import Image from "next/image";
 import { type ReactNode, useRef, useState } from "react";
 
 import { figmaTween } from "@themap/ui/motion/figma-easing";
-import { gsap, MOTION_OK, ScrollTrigger, useGSAP } from "@themap/ui/motion/gsap";
+import { gsap, MOTION_OK, useGSAP } from "@themap/ui/motion/gsap";
+import { revealOnce } from "@themap/ui/motion/reveal";
 import { prototype } from "@themap/ui/motion/tokens";
 import { useHoverTween } from "@themap/ui/motion/use-hover-tween";
 
@@ -121,6 +122,9 @@ export function ProviderShowcase({
   const button = useRef<HTMLButtonElement>(null);
   const [stage, setStage] = useState<Stage>("full");
   const [active, setActive] = useState(false);
+  // Once `Click here` has opened the full section it stays open — also after the
+  // viewport leaves and re-enters the stage layout (resize, tablet rotation).
+  const opened = useRef(false);
 
   useHoverTween(button, { backgroundColor: "var(--color-primary-500)" }, prototype.hover.card);
 
@@ -130,7 +134,7 @@ export function ProviderShowcase({
       const mm = gsap.matchMedia();
       mm.add(`${STAGE_MEDIA} and ${MOTION_OK}`, () => {
         setActive(true);
-        setStage("stage");
+        setStage(opened.current ? "full" : "stage");
         return () => {
           setActive(false);
           setStage("full");
@@ -146,7 +150,7 @@ export function ProviderShowcase({
   // The build-up, once, when the stage comes into view.
   useGSAP(
     () => {
-      if (!active) return;
+      if (!active || opened.current) return;
       const { step } = prototype.provider;
       const groups = (Object.keys(HIDDEN) as (keyof typeof HIDDEN)[]).map(
         (id) => `[data-stage-group='${id}']`,
@@ -162,12 +166,13 @@ export function ProviderShowcase({
         .timeline({ paused: true })
         .to(groups, { x: 0, y: 0, autoAlpha: 1, ...figmaTween(step), stagger: step.stagger })
         .to("[data-click-here]", { autoAlpha: 1, scale: 1, ...figmaTween(step) }, "-=0.2");
-      const trigger = ScrollTrigger.create({
-        trigger: "[data-provider-stage]",
+      // Loaded or jumped past the stage: show it built rather than building off-screen.
+      const trigger = revealOnce({
+        trigger: ref.current?.querySelector("[data-provider-stage]") ?? "[data-provider-stage]",
         start: "top 70%",
-        once: true,
-        onEnter: () => {
-          tl.play();
+        reveal: (instant) => {
+          if (instant) tl.progress(1);
+          else tl.play();
         },
       });
 
@@ -185,7 +190,9 @@ export function ProviderShowcase({
         target?.removeEventListener("pointerleave", shrink);
       };
     },
-    { scope: ref, dependencies: [active] },
+    // Reverted whenever `active` changes: leaving the stage layout must hand the full
+    // section back visible, with none of the build-up's inline styles left on it.
+    { scope: ref, dependencies: [active], revertOnUpdate: true },
   );
 
   // Click here → the full section, which stays.
@@ -218,7 +225,10 @@ export function ProviderShowcase({
       {active ? (
         <div
           data-provider-stage=""
-          className="relative col-start-1 row-start-1 mr-auto ml-29.5 mt-31.75 mb-11.75 h-212.5 w-224.75 opacity-0 max-wide:mx-auto max-wide:-translate-x-18.5 max-wide:[--spacing:var(--provider-stage-unit)] max-wide:[--text-20:calc(var(--provider-stage-unit)*5)] max-wide:[--text-24:calc(var(--provider-stage-unit)*6)]"
+          // Once the full section is open the stage is gone for good: not focusable, and
+          // hidden outright when it mounts again after a resize.
+          inert={stage !== "stage"}
+          className={`${stage === "stage" ? "" : "invisible "}relative col-start-1 row-start-1 mr-auto ml-29.5 mt-31.75 mb-11.75 h-212.5 w-224.75 opacity-0 max-wide:mx-auto max-wide:-translate-x-18.5 max-wide:[--spacing:var(--provider-stage-unit)] max-wide:[--text-20:calc(var(--provider-stage-unit)*5)] max-wide:[--text-24:calc(var(--provider-stage-unit)*6)]`}
         >
           <div className="absolute inset-0">
             <div className="absolute top-44 left-0 h-168.5 w-224.75">{illustration}</div>
@@ -250,6 +260,7 @@ export function ProviderShowcase({
                 type="button"
                 aria-expanded={false}
                 onClick={() => {
+                  opened.current = true;
                   setStage("full");
                 }}
                 className="flex h-14.5 w-41.25 rotate-[-28.97deg] items-center justify-center gap-1.75 rounded-button bg-secondary-500 px-5 py-2 text-24 font-semibold text-bg shadow-click select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"

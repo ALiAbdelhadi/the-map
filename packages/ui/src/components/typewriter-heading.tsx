@@ -4,7 +4,8 @@ import { useRef, useState } from "react";
 
 import { cn } from "../lib/cn";
 import { figmaTween } from "../motion/figma-easing";
-import { gsap, MOTION_OK, ScrollTrigger, useGSAP } from "../motion/gsap";
+import { gsap, MOTION_OK, useGSAP } from "../motion/gsap";
+import { revealOnce } from "../motion/reveal";
 import { prototype } from "../motion/tokens";
 
 /**
@@ -52,6 +53,11 @@ export function TypewriterHeading({ children, className, textClassName }: Typewr
       mm.add(MOTION_OK, () => {
         setCount(0);
         const progress = { value: 0 };
+        let caretFade: gsap.core.Tween | undefined;
+        const finish = () => {
+          setCount(null);
+          setTyping(false);
+        };
         const tween = gsap.to(progress, {
           value: pieces.length,
           duration: pieces.length * prototype.typewriter.perChar,
@@ -65,7 +71,8 @@ export function TypewriterHeading({ children, className, textClassName }: Typewr
           },
           onComplete: () => {
             setCount(null);
-            gsap.to("[data-caret]", {
+            // Only this heading's caret; the fade is killed with the rest on revert.
+            caretFade = gsap.to(heading.querySelector("[data-caret]"), {
               opacity: 0,
               ...figmaTween(prototype.typewriter.caret),
               delay: 0.4,
@@ -75,26 +82,29 @@ export function TypewriterHeading({ children, className, textClassName }: Typewr
             });
           },
         });
-        const trigger = ScrollTrigger.create({
+        // revealOnce: if the page loaded or jumped past the heading, it is shown
+        // complete at once rather than typing off-screen.
+        const trigger = revealOnce({
           trigger: heading,
           start: "top 85%",
-          once: true,
-          onEnter: () => {
-            tween.play();
+          reveal: (instant) => {
+            if (instant) finish();
+            else tween.play();
           },
         });
         return () => {
           trigger.kill();
           tween.kill();
-          setCount(null);
-          setTyping(false);
+          caretFade?.kill();
+          finish();
         };
       });
       return () => {
         mm.revert();
       };
     },
-    { scope: ref, dependencies: [children] },
+    // Revert on every change of text, so a stale trigger or tween never outlives it.
+    { scope: ref, dependencies: [children], revertOnUpdate: true },
   );
 
   const typed = count === null ? children : pieces.slice(0, count).join("");

@@ -66,18 +66,39 @@ export function ReviewCarousel({
       const root = ref.current;
       const saved = before.current;
       before.current = null;
-      if (!root || !saved || !window.matchMedia(MOTION_OK).matches) return;
+      if (!root || !saved) return;
+
+      // A new choice cancels every text fade still pending from earlier clicks — a
+      // delayed fade-in must never land on a card that has closed since — and hands
+      // the texts back to their classes (closed: invisible).
+      const texts = root.querySelectorAll("[data-review-text]");
+      const oldText = root.querySelector(`[data-review='${saved.from}'] [data-review-text]`);
+      const newText = root.querySelector(`[data-review='${expandedId}'] [data-review-text]`);
+      // Where the closing text stands now: fully shown, unless a quick click caught it
+      // still fading in (then GSAP's inline opacity says how far it got).
+      const inline = oldText instanceof HTMLElement ? oldText.style.opacity : "";
+      const oldOpacity = inline === "" ? 1 : Number(inline);
+      gsap.killTweensOf(texts);
+      gsap.set(texts, { clearProps: "opacity,visibility,transform" });
+      if (!window.matchMedia(MOTION_OK).matches) return;
 
       const move = figmaTween(prototype.reviews.click);
       morphSizes(saved.sizes, move, ["width"]);
-
-      const oldText = root.querySelector(`[data-review='${saved.from}'] [data-review-text]`);
-      const newText = root.querySelector(`[data-review='${expandedId}'] [data-review-text]`);
-      gsap.fromTo(oldText, { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.15, ease: "none" });
+      gsap.fromTo(
+        oldText,
+        { autoAlpha: oldOpacity },
+        { autoAlpha: 0, duration: 0.15, ease: "none", clearProps: "opacity,visibility" },
+      );
       gsap.fromTo(
         newText,
         { autoAlpha: 0, x: 12 },
-        { autoAlpha: 1, x: 0, ...figmaTween(prototype.hover.border), delay: move.duration * 0.55 },
+        {
+          autoAlpha: 1,
+          x: 0,
+          ...figmaTween(prototype.hover.border),
+          delay: move.duration * 0.55,
+          clearProps: "opacity,visibility,transform",
+        },
       );
     },
     { scope: ref, dependencies: [expandedId] },

@@ -36,29 +36,69 @@ export type MobileMenuProps = {
   className?: string;
 };
 
+/** The drawer's wrapper is `desktop:hidden` (SiteHeader): `--breakpoint-desktop`, 1023. */
+const DESKTOP = "(min-width: 63.9375rem)";
+
 export function MobileMenu({ icon, label, children, className }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  // True while the closing tween runs (the panel is still mounted and `open` is true).
+  const closing = useRef(false);
 
   // Grow the panel out of the toggle on open; shrink it back before hiding it.
   const close = () => {
     const panel = panelRef.current;
+    if (closing.current) return;
     if (!panel || !window.matchMedia(MOTION_OK).matches) {
       setOpen(false);
       return;
     }
+    closing.current = true;
     gsap.to(panel, {
       opacity: 0,
       scale: 0.95,
       y: -6,
       ...figmaTween(prototype.menu),
+      overwrite: true,
       onComplete: () => {
+        closing.current = false;
         setOpen(false);
       },
     });
   };
+
+  // A tap on the toggle while the panel is still leaving brings it back from where it
+  // stands, instead of restarting the close.
+  const reopen = () => {
+    closing.current = false;
+    gsap.to(panelRef.current, {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      ...figmaTween(prototype.menu),
+      overwrite: true,
+    });
+  };
+
+  // From 1023 up the drawer is hidden by CSS; an open one would keep the page's
+  // scroll locked with nothing on screen to close it, so it closes at once.
+  useEffect(() => {
+    if (!open) return;
+    const query = window.matchMedia(DESKTOP);
+    const onChange = () => {
+      if (!query.matches) return;
+      closing.current = false;
+      gsap.killTweensOf(panelRef.current);
+      setOpen(false);
+    };
+    onChange();
+    query.addEventListener("change", onChange);
+    return () => {
+      query.removeEventListener("change", onChange);
+    };
+  }, [open]);
 
   useGSAP(
     () => {
@@ -73,7 +113,7 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
           // The toggle sits at the right-hand end of the bar in both languages.
           transformOrigin: "top right",
         },
-        { opacity: 1, scale: 1, y: 0, ...figmaTween(prototype.menu) },
+        { opacity: 1, scale: 1, y: 0, ...figmaTween(prototype.menu), overwrite: true },
       );
     },
     { dependencies: [open] },
@@ -134,8 +174,9 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
         aria-controls={panelId}
         aria-label={label}
         onClick={() => {
-          if (open) close();
-          else setOpen(true);
+          if (!open) setOpen(true);
+          else if (closing.current) reopen();
+          else close();
         }}
         className={cn(
           // 44 px hit area around Figma's 32 px circle; the negative margin keeps the
