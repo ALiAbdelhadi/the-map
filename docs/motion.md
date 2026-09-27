@@ -25,7 +25,7 @@ section must hold up at 375, 768 and 1440. Motion philosophy: `emil-design-eng`.
 | Why Choose Us                            | click only; maze zoom and card move 0.8 s; the feature pill rises in 0.2 s later; clicking the selected row goes back. Hover fades the row fill in 0.25 s (mouse only, never on the selected row). Below 1440 the pill sits under the card                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | Stepper                                  | click, plus autoplay every 10 s (owner-approved 2026-09-26, see below) with a progress line in the open pill; rebuilt 2026-09-22 without Flip: the real widths and heights animate 0.5 s (strong ease-in-out) — the opening pill widens over its text, the steps below glide — the text settles in, then the rocket flies in under the pill corner, clear of the text. On phone the open step fills the column and its text wraps, so nothing leaves the screen                                                                                                                                                                                                                                                                                                                                                                          |
 | Reviews                                  | click only; rebuilt 2026-09-22 without Flip: one element per card, widths animate 0.5 s, photos are never stretched; the old quote fades out first and the new one slides in once the card has room                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| App screens tile                         | scrolls through the five positions in one 2.4 s pass while hovered (or after a tap), glides back on leave                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| App screens tile                         | auto-loops the five positions forever and back, 0.8 s pause each end, once first scrolled into view (owner-approved third `docs/figma-gaps.md` D1 exception, 2026-09-27; see below)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Typewriter                               | types once, 45 ms per character, when the heading comes into view; the line keeps its final width so nothing jumps; the caret fades out at the end                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | Service Areas title                      | swaps to "Where We Operate" while hovered (roll, 0.4 s) and back                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | Gradient strokes (badge, provider pills) | change on hover only (0.3 s)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
@@ -66,13 +66,18 @@ a state has finished arriving, as in Figma.
 - **Timers wait** while a component is off-screen or the tab is hidden, and while
   keyboard focus is inside it (WCAG 2.2.2). The provider's full state also waits
   while the pointer is in the section, so the copy does not vanish mid-read.
-- **Hero auto-advance (owner-approved 2026-09-26, reverses the 2026-09-22 "click only"):**
-  the ring turns to the next item (logo → … → Blinkz → logo) every 20 s, with the same
-  turn as a click. The 20 s restart after every change, a visitor's click included. It
-  waits — and restarts from zero on resume — while the pointer is on the ring or card,
-  focus is inside them, the tab is hidden, a smooth scroll is running or the hero is less
-  than half in view, and it advances only once the previous turn has ended. Never with
-  reduced motion.
+- **Hero auto-advance (owner-approved 2026-09-26, reverses the 2026-09-22 "click only";
+  amended 2026-09-27):** the ring turns to the next item (logo → … → Blinkz → logo)
+  every 20 s, with the same turn as a click. The 20 s restart after every change, a
+  visitor's click included. It waits — and restarts from zero on resume — while
+  keyboard focus (`:focus-visible`) is inside the ring or card, the tab is hidden, a
+  smooth scroll is running or the hero is less than half in view, and it advances only
+  once the previous turn has ended. Never with reduced motion. It no longer pauses
+  just because the mouse rests on the ring or card (dropped 2026-09-27, owner-reported
+  it froze the ring for good): clicking a service icon leaves the pointer sitting there
+  with nowhere else to go, and unlike the stepper the ring has no other affordance for
+  a visitor to read while paused, so the trade favors always-on motion over a hover
+  pause. See "Reliability (2026-09-27)" below for the accompanying focus-gating fix.
 - **Stepper autoplay (owner-approved 2026-09-26, reverses the 2026-09-22 "click only"):**
   the next step opens (1 → 2 → 3 → 1) every 10 s (`STEPPER_AUTOPLAY_SECONDS` in
   `packages/ui/src/motion/tokens.ts`) through the same path, and the same 0.5 s
@@ -107,7 +112,7 @@ transition is Smart Animate.
 | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | Hero section `898:20007`                       | **auto-cycles** The Map → Service → Needed → Medical → Employee → Emergency → special → Food → Real estate → Blinkz → The Map, every 0.8 s; click any icon jumps there; 0.3 s `EASE_OUT`      | click, plus a slow auto-advance every 20 s (owner-approved 2026-09-26, same order and same 0.7 s turn; see below); 0.8 s `power3.inOut` |
 | Why Choose Us `914:20605`                      | **auto-cycles** default → All-in-One → Flexible → Nearby → Fast → Easy → default, 0.8 s delay, 1.022 s `GENTLE` spring (last step 0.744 s `QUICK`); click row 0.3 s `EASE_OUT`; hover instant | click only; 0.35 s `power2.out` fade                      |
-| Screens `936:20018` (app tile)                 | **auto-cycles** 5 screens, 0.8 s delay, 1.25 s `SLOW` spring                                                                                                                                  | static (two screenshots)                                  |
+| Screens `936:20018` (app tile)                 | **auto-cycles** 5 screens, 0.8 s delay, 1.25 s `SLOW` spring                                                                                                                                  | auto-loops forever, 0.8 s delay, `figmaTween` `SLOW` spring (owner-approved 2026-09-27; see below) |
 | Get the App Now badge `936:20234`              | loops between 2 variants, 0.8 s, 0.3 s `EASE_IN_AND_OUT` / `EASE_IN_AND_OUT_BACK`                                                                                                             | static                                                    |
 | Get the App stepper `963:20033`                | **auto-advances** 1 → 2 → 3 (0.8 s, 1.022 s `GENTLE`), 3 → 1 after 0.4 s (0.248 s `QUICK`); click 1.022 s `GENTLE`                                                                            | click, plus autoplay 1 → 2 → 3 → 1 every 10 s (owner-approved 2026-09-26, same 0.5 s open/close as a click; see below) |
 | Choose Your Store step `950:20377`             | Action → 3D after 0.2 s (0.417 s `SLOW`) → number after 0.4 s (1.022 s `GENTLE`)                                                                                                              | not built                                                 |
@@ -150,7 +155,10 @@ All of the above is now built — see "Implemented".
   new width (the card shift differs per breakpoint and direction).
 - Mobile menu: crossing to 1023+ closes it at once (the drawer is CSS-hidden there
   and kept the page scroll-locked); a tap on the toggle while it closes reopens it.
-- App screens: the once-pass uses `revealOnce`.
+- App screens: loops forever (`repeat: -1, yoyo: true`, 0.8 s `repeatDelay`) once an
+  `IntersectionObserver` first finds the tile ≥ 50 % in view; the same observer plus
+  a `visibilitychange` listener pause/resume it — hidden tab or scrolled below 50 %
+  holds it, no other gating. Third D1 exception, approved 2026-09-27.
 - Reviews heading typewriter and the provider stage use `revealOnce`: loaded or
   jumped past, the heading is typed out in full and the stage shows its end state.
   A partly typed heading in a full-page screenshot is the reveal mid-play (27
@@ -163,3 +171,10 @@ All of the above is now built — see "Implemented".
   run of clicks no longer lets a closed card's text fade in over its photo.
 - Gradient border and Service Areas title: the "skip the first run" guards survive
   React's strict-mode double run; the border's tweens use `overwrite: "auto"`.
+- Hero auto-advance froze for good after any click (owner-reported): a mouse click
+  focuses the clicked button without making `:focus-visible` match, but the ring's
+  `focusin` handler paused on any focus, and its `pointerenter`/`pointerleave` pause
+  never lifted because the cursor has nowhere to go but rest on the ring after a
+  click — the two together blocked the timer forever. Fixed by dropping the pointer
+  pause and gating `focusin`/`focusout` on `:focus-visible`, matching the stepper's
+  existing pattern; only genuine keyboard focus pauses the ring now.

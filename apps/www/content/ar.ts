@@ -178,7 +178,7 @@ export const ar: SiteContent = {
         name: "أحمد عمر",
         rating: "5/5",
         quote: "التطبيق ساعدني ألاقي مقدمي خدمات موثوقين بسرعة، وكانت تجربة ممتازة بشكل عام.",
-        photo: "/images/avatar-6660.webp",
+        photo: "/images/avatar-6661.webp",
       },
       {
         id: "menna-hamza",

@@ -192,7 +192,7 @@ export const en: SiteContent = {
         rating: "5/5",
         quote:
           "The app helped me find trusted service providers quickly. Great experience overall.",
-        photo: "/images/avatar-6660.webp",
+        photo: "/images/avatar-6661.webp",
       },
       {
         id: "menna-hamza",

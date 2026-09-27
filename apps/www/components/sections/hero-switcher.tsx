@@ -49,10 +49,14 @@ import { ORBIT } from "./hero-orbit-data";
  * - The ring advances by itself to the next item every 20 s (owner-approved 2026-09-26,
  *   reversing the 2026-09-22 "no auto-advance" decision; docs/figma-gaps.md D1). It uses
  *   the same turn as a click, is silent to screen readers, restarts its 20 s after every
- *   change (a click included), and — WCAG 2.2.2 — waits while the pointer is on the ring
- *   or card, focus is inside them, the tab is hidden, a smooth scroll is running or the
- *   hero is under half in view. It never runs with reduced motion. On resume the 20 s
- *   start again from zero.
+ *   change (a click included), and — WCAG 2.2.2 — waits while keyboard focus
+ *   (`:focus-visible`) is inside the ring or card, the tab is hidden, a smooth scroll is
+ *   running or the hero is under half in view. It never runs with reduced motion. On
+ *   resume the 20 s start again from zero. (Owner-approved 2026-09-27: it no longer
+ *   waits just because the pointer rests on the ring — clicking a service leaves the
+ *   mouse sitting on it with nowhere else to go, which froze the auto-advance for good;
+ *   only genuine keyboard focus still pauses it, matching the stepper's `:focus-visible`
+ *   gate below.)
  *
  * From 1023 to 1440 (`desktop:`) the landscape composition is the 1440 frame reduced by
  * `--scale-landscape` (theme.css; measured on the hero section): orbit box, card, type,
@@ -234,7 +238,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
     const card = root.querySelector<HTMLElement>("[data-hero-copy]")?.parentElement;
     if (!orbit) return;
 
-    const wait = { pointer: 0, focus: false, hidden: document.hidden, away: true, scroll: false };
+    const wait = { focus: false, hidden: document.hidden, away: true, scroll: false };
     let timer: ReturnType<typeof setTimeout> | undefined;
 
     const fire = () => {
@@ -249,7 +253,7 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
     const sync = () => {
       clearTimeout(timer);
       timer = undefined;
-      const paused = wait.pointer > 0 || wait.focus || wait.hidden || wait.away || wait.scroll;
+      const paused = wait.focus || wait.hidden || wait.away || wait.scroll;
       if (!paused) timer = setTimeout(fire, AUTO_INTERVAL);
     };
 
@@ -260,22 +264,17 @@ export function HeroSwitcher({ hero }: { hero: Hero }) {
       cleanups.push(() => target.removeEventListener(type, handler));
     };
     for (const zone of zones) {
-      on(zone, "pointerenter", (event) => {
-        if ((event as PointerEvent).pointerType !== "mouse") return;
-        wait.pointer += 1;
+      // Gated on `:focus-visible`, not any focus: a mouse click also focuses the
+      // button (Chrome/Firefox), and the pointer has nowhere else to go but rest on
+      // the ring right after — pausing on that focus alone froze the ring for good.
+      on(zone, "focusin", (event) => {
+        wait.focus = event.target instanceof Element && event.target.matches(":focus-visible");
         sync();
       });
-      on(zone, "pointerleave", (event) => {
-        if ((event as PointerEvent).pointerType !== "mouse") return;
-        wait.pointer = Math.max(0, wait.pointer - 1);
-        sync();
-      });
-      on(zone, "focusin", () => {
-        wait.focus = true;
-        sync();
-      });
-      on(zone, "focusout", () => {
-        wait.focus = zones.some((el) => el.contains(document.activeElement));
+      on(zone, "focusout", (event) => {
+        const to = (event as FocusEvent).relatedTarget;
+        wait.focus =
+          to instanceof Element && zones.some((el) => el.contains(to)) && to.matches(":focus-visible");
         sync();
       });
     }

@@ -5,17 +5,20 @@ import { useRef } from "react";
 
 import { figmaTween } from "@themap/ui/motion/figma-easing";
 import { gsap, MOTION_OK, useGSAP } from "@themap/ui/motion/gsap";
-import { revealOnce } from "@themap/ui/motion/reveal";
 import { prototype } from "@themap/ui/motion/tokens";
 
 /**
  * The phone-mockup tile — Figma `Screens` (`936:20018`).
  *
  * Two 200 px columns of app screenshots inside a 565 px tile. The set has five
- * variants that differ only in where the two columns sit. Figma cycles them on a
- * loop; the columns instead scroll from variant 1's place to variant 5's in one
- * smooth pass, once, when the tile first scrolls into view (no hover, no replay). Positions are container-query units of the 565 px tile
- * (px / 565 × 100), per variant: column one (x, y), column two (x, y).
+ * variants that differ only in where the two columns sit. Figma auto-cycles them
+ * with an 0.8 s delay between passes (`docs/motion.md`); the columns glide from
+ * variant 1's place to variant 5's and back, forever, once the tile first scrolls
+ * into view — pausing while the tab is hidden or the tile is under 50 % in view.
+ * No hover/focus pause: the tile is `role="img"`, decorative, non-interactive
+ * (owner-approved third exception to `docs/figma-gaps.md` D1, 2026-09-27). Positions
+ * are container-query units of the 565 px tile (px / 565 × 100), per variant:
+ * column one (x, y), column two (x, y).
  *
  * Phones (< tablet) — owner-approved deviation, 2026-09-25: at Figma's proportions a
  * 375 px screen showed ~108 px screenshots, too small to read. Below the tablet
@@ -57,6 +60,9 @@ const PHONE_POSITIONS = [
  */
 const TABLET = "(min-width: 48rem)";
 
+/** Pause between passes, matching Figma's auto-cycle delay (`docs/motion.md`). */
+const LOOP_PAUSE = 0.8;
+
 const COLUMNS = [
   {
     // Starting place (variant 1) — the variables GSAP moves from here.
@@ -79,8 +85,6 @@ const COLUMNS = [
 
 export function AppScreens({ label }: { label: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  // The pass plays once, when the tile first scrolls into view, and stays put.
-  const played = useRef(false);
 
   useGSAP(
     () => {
@@ -88,24 +92,66 @@ export function AppScreens({ label }: { label: string }) {
       const setup = (positions: typeof POSITIONS | typeof PHONE_POSITIONS, reduce: boolean) => {
         const end = positions[4];
         const [one, two] = ["[data-column='0']", "[data-column='1']"] as [string, string];
-        const to = (instant = false) => {
-          const pass = instant ? { duration: 0 } : figmaTween(prototype.screens.pass);
-          gsap.to(one, { "--x": end[0], "--y": end[1], ...pass });
-          gsap.to(two, { "--x": end[2], "--y": end[3], ...pass });
-        };
-        // Reduced motion, or a resize after the pass: go straight to the end place.
-        if (reduce || played.current) return to(true);
+
+        // Reduced motion: hold the end place, no loop.
+        if (reduce) {
+          gsap.set(one, { "--x": end[0], "--y": end[1] });
+          gsap.set(two, { "--x": end[2], "--y": end[3] });
+          return;
+        }
         if (!ref.current) return;
-        // Landing below the tile (reload mid-page, #hash) jumps to the end place
-        // instead of playing the pass off-screen.
-        revealOnce({
-          trigger: ref.current,
-          start: "top 65%",
-          reveal: (instant) => {
-            played.current = true;
-            to(instant);
+
+        const pass = figmaTween(prototype.screens.pass);
+        const tweens = [
+          gsap.to(one, {
+            "--x": end[0],
+            "--y": end[1],
+            ...pass,
+            repeat: -1,
+            yoyo: true,
+            repeatDelay: LOOP_PAUSE,
+            paused: true,
+          }),
+          gsap.to(two, {
+            "--x": end[2],
+            "--y": end[3],
+            ...pass,
+            repeat: -1,
+            yoyo: true,
+            repeatDelay: LOOP_PAUSE,
+            paused: true,
+          }),
+        ];
+
+        const wait = { hidden: document.hidden, away: true };
+        const sync = () => {
+          if (wait.hidden || wait.away) {
+            tweens.forEach((tween) => tween.pause());
+          } else {
+            tweens.forEach((tween) => tween.resume());
+          }
+        };
+
+        const io = new IntersectionObserver(
+          (entries) => {
+            wait.away = (entries[0]?.intersectionRatio ?? 0) < 0.5;
+            sync();
           },
-        });
+          { threshold: [0, 0.5, 1] },
+        );
+        io.observe(ref.current);
+
+        const onVisibility = () => {
+          wait.hidden = document.hidden;
+          sync();
+        };
+        document.addEventListener("visibilitychange", onVisibility);
+
+        return () => {
+          io.disconnect();
+          document.removeEventListener("visibilitychange", onVisibility);
+          tweens.forEach((tween) => tween.kill());
+        };
       };
       mm.add(`${TABLET} and ${MOTION_OK}`, () => setup(POSITIONS, false));
       mm.add(`(max-width: 47.999rem) and ${MOTION_OK}`, () => setup(PHONE_POSITIONS, false));

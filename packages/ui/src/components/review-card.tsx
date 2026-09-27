@@ -12,7 +12,10 @@ import { cn } from "../lib/cn";
  *   primary/500 border and the Click-here shadow; beside it, 14 px away, the name
  *   (24 px primary/400), the rating (16 px Natural/600), the quote (24 px, tablet
  *   14 px, primary/950) and the 53 px quote mark. The name is start-aligned (left in
- *   English, right in Arabic `1030:24246`); the quote is centred. The quote mark
+ *   English, right in Arabic `1030:24246`); the quote is justified with its last line
+ *   centred (Figma centres only the short trailing line, not every line — plain
+ *   center-align left an uneven gap before the mark; deviation, approved 2026-09-27).
+ *   The quote mark
  *   sits at the quote's bottom end: on the 1440 frame it overlaps the quote's last
  *   24 px in English and follows it with no gap in Arabic (`1030:24261`); on the
  *   tablet frame it hangs past the text column, its bottom level with the quote's.
@@ -93,7 +96,7 @@ export function ReviewCard({
         )}
       >
         <figcaption className="flex flex-col gap-2 desktop:gap-review-caption-gap">
-          <span className="text-start text-24 font-regular text-primary-400 desktop:text-review-body">
+          <span className="text-start text-24 font-regular whitespace-nowrap text-primary-400 desktop:text-review-body">
             {name}
           </span>
           <span className="flex items-center gap-2">
@@ -101,7 +104,7 @@ export function ReviewCard({
             <span className="text-16 font-regular text-natural-600">{rating}</span>
           </span>
         </figcaption>
-        <blockquote className="text-center text-14 font-regular text-primary-950 desktop:text-review-body">
+        <blockquote className="text-justify text-14 font-regular text-primary-950 [text-align-last:center] desktop:text-review-body">
           {quote}
         </blockquote>
         {quoteMark ? (

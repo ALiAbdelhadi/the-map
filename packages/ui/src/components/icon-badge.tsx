@@ -9,6 +9,10 @@ import { cn } from "../lib/cn";
  * - 22 px icon — provider pill (`995:20682`, `1037:26969`): Figma fixes the chip at
  *   32 px, so its 8 px padding overflows and the icon sits centred with 5 px round it.
  * - 16 px icon — the compact provider pills (`997:21640`): a 24 px chip.
+ *
+ * The glyph is pinned to Natural/BG (`text-bg`) regardless of the chip's own tone or
+ * an ancestor's animated text color — only the chip fill changes between states, so
+ * the icon never inherits a dark hover/select color meant for surrounding text.
  */
 export type IconBadgeProps = {
   children: ReactNode;
@@ -41,7 +45,10 @@ export function IconBadge({
       )}
     >
       <span
-        className={cn("flex items-center justify-center [&>svg]:size-full", SIZES[iconSize].icon)}
+        className={cn(
+          "flex items-center justify-center text-bg [&>svg]:size-full",
+          SIZES[iconSize].icon,
+        )}
       >
         {children}
       </span>

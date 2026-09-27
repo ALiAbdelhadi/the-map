@@ -17,5 +17,5 @@
  * See docs/figma-gaps.md. Elements with their own `cursor-*` class still win.
  */
 body {
-  cursor: url("/images/cursor-ufo.png") 24 30, auto;
+  cursor: url("/images/cursor-ufo.png") 34 51, auto;
 }
