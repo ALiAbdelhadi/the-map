@@ -29,14 +29,6 @@ import { StarIcon } from "@themap/ui/icons/star";
 import { WiderReachIcon } from "@themap/ui/icons/wider-reach";
 import { assertDevPage } from "../dev-only";
 
-/**
- * Dev-only asset sheet.
- *
- * Renders every asset exported from Figma in Phase 3 so they can be checked by eye:
- * 27 monochrome icons as React components using currentColor, 7 multicolour SVGs kept
- * as files, and 25 WebP rasters. Mapping to Figma node ids: docs/assets-manifest.md.
- */
-
 const ICONS = [
   { name: "about", Icon: AboutIcon },
   { name: "all-in-one", Icon: AllInOneIcon },
@@ -123,7 +115,6 @@ export default function AssetsPage() {
           images ({kb(TOTAL_IMAGE_BYTES)} total). Dev only.
         </p>
       </header>
-
       <section className="flex flex-col gap-4 border-t border-natural-200 pt-8">
         <h2 className="text-24 font-semibold">Icons — currentColor</h2>
         <div className="flex flex-wrap gap-4">
@@ -145,7 +136,6 @@ export default function AssetsPage() {
           ))}
         </div>
       </section>
-
       <section className="flex flex-col gap-4 border-t border-natural-200 pt-8">
         <h2 className="text-24 font-semibold">Multicolour SVGs — used as files</h2>
         <div className="flex flex-wrap items-end gap-6">

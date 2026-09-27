@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 import { AppStepper } from "@themap/ui/components/app-stepper";
 import { BenefitPill } from "@themap/ui/components/benefit-pill";
 import { ClickButton } from "@themap/ui/components/click-button";
@@ -33,6 +31,7 @@ import { LanguageToggleEnIcon } from "@themap/ui/icons/language-toggle-en";
 import { MenuIcon } from "@themap/ui/icons/menu";
 import { NearbyIcon } from "@themap/ui/icons/nearby";
 import { StarIcon } from "@themap/ui/icons/star";
+import Image from "next/image";
 import { assertDevPage } from "../dev-only";
 
 import { WhyChooseDemo } from "./why-choose-demo";

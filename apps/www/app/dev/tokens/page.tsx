@@ -1,14 +1,5 @@
 import { assertDevPage } from "../dev-only";
 
-/**
- * Dev-only token sheet.
- *
- * Renders every token declared in packages/ui/src/styles/theme.css so the token
- * layer can be compared against Figma by eye. Values are read through `var(...)`
- * rather than repeated here — this page must never become a second place where a
- * design value is defined.
- */
-
 const RAMPS = ["primary", "secondary", "green", "yellow", "natural", "error"] as const;
 const STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950] as const;
 
@@ -123,7 +114,6 @@ export default function TokensPage() {
           ))}
         </div>
       </Section>
-
       <Section
         title="Typography"
         note="Baloo 2 — 23 sizes x 4 weights. Tracking -2% at every size; line-height normal, matching the real text nodes."
@@ -151,7 +141,6 @@ export default function TokensPage() {
           ))}
         </div>
       </Section>
-
       <Section
         title="Font families"
         note="Latin: Baloo 2. Arabic: Baloo Bhaijaan 2 (approved substitute — gap T1)."
@@ -163,7 +152,6 @@ export default function TokensPage() {
           </p>
         </div>
       </Section>
-
       <Section
         title="Spacing"
         note="No Figma spacing variables; base unit 4px (--spacing: 0.25rem)."
@@ -181,7 +169,6 @@ export default function TokensPage() {
           ))}
         </div>
       </Section>
-
       <Section title="Radii" note="Raw values, each traced to the node it was read from.">
         <div className="flex flex-wrap gap-4">
           {RADII.map((radius) => (
@@ -195,7 +182,6 @@ export default function TokensPage() {
           ))}
         </div>
       </Section>
-
       <Section title="Shadows" note="Figma effect variables `shadow`, `Reviews`, `Click here`.">
         <div className="flex flex-wrap gap-8 p-4">
           {SHADOWS.map((shadow) => (
@@ -209,7 +195,6 @@ export default function TokensPage() {
           ))}
         </div>
       </Section>
-
       <Section title="Layout" note="Only the three widths that exist in Figma.">
         <dl className="grid grid-cols-2 gap-x-8 gap-y-2 text-14">
           <dt className="text-natural-600">breakpoint-tablet</dt>

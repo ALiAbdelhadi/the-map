@@ -1,7 +1,6 @@
 import { baloo2, balooBhaijaan2 } from "../fonts";
 import "../globals.css";
 
-/** Root layout for the dev review pages, which sit outside the `[lang]` tree. */
 export default function DevLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" dir="ltr" className={`${baloo2.variable} ${balooBhaijaan2.variable}`}>
