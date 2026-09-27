@@ -125,6 +125,7 @@ an option at the phase where it lands and wait for a yes.
 | D4  | Phone hero orbit 312 px instead of Figma's 218 px ring box (388 px)                                                                             | Figma's outer items left the screen                      |
 | D5  | Why Choose Us pill under the card below 1440 (Figma tablet frame puts it off-screen)                                                            | Responsive                                               |
 | D6  | Provider full section stays after `Click here` (Figma folds it away after 0.8 s)                                                                | Owner brief; resolves M7                                 |
+| D7  | Site-wide pointer cursor replaced with a custom flying-saucer graphic (`apps/www/public/images/cursor-ufo.png`, `body` rule in `apps/www/app/globals.css`). Not in the Figma file at all — the graphic is a photo Ali supplied in chat, cropped/made transparent for cursor use. Elements with their own `cursor-*` class are unaffected. | Owner request, approved 2026-09-27 (desktop pointer devices only; no native equivalent on touch) |
 
 ## Data
 

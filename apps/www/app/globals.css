@@ -11,3 +11,11 @@
 @import "@themap/ui/styles/theme.css";
 
 @source "../../../packages/ui/src";
+
+/*
+ * Custom pointer cursor — approved deviation, not part of the Figma file.
+ * See docs/figma-gaps.md. Elements with their own `cursor-*` class still win.
+ */
+body {
+  cursor: url("/images/cursor-ufo.png") 24 30, auto;
+}
