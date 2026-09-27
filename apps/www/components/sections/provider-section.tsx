@@ -194,13 +194,13 @@ export function ProviderSection({ content }: { content: SiteContent }) {
                     className="flex flex-col items-center justify-center gap-6.25 tablet:flex-row tablet:flex-wrap tablet:gap-17"
                   >
                     <StoreBadge
-                      icon={<AppStoreIcon />}
+                      icon={<AppStoreIcon width={20} height={20} />}
                       topLine={content.stores.apple.topLine}
                       bottomLine={content.stores.apple.bottomLine}
                       href={content.stores.apple.href}
                     />
                     <StoreBadge
-                      icon={<Image src="/svg/google-play.svg" alt="" width={24} height={24} />}
+                      icon={<Image src="/svg/google-play.svg" alt="" width={20} height={20} />}
                       topLine={content.stores.google.topLine}
                       bottomLine={content.stores.google.bottomLine}
                       href={content.stores.google.href}

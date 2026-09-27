@@ -11,14 +11,13 @@ import { cn } from "../lib/cn";
  *   radius 17, Reviews shadow; the photo is a 107 px column (tablet 113) with a 1 px
  *   primary/500 border and the Click-here shadow; beside it, 14 px away, the name
  *   (24 px primary/400), the rating (16 px Natural/600), the quote (24 px, tablet
- *   14 px, primary/950) and the 53 px quote mark. The name is start-aligned (left in
+ *   14 px, primary/950) and the quote mark (40 px, shrunk from Figma's 53, approved
+ *   deviation 2026-09-27). The name is start-aligned (left in
  *   English, right in Arabic `1030:24246`); the quote is justified with its last line
  *   centred (Figma centres only the short trailing line, not every line — plain
  *   center-align left an uneven gap before the mark; deviation, approved 2026-09-27).
- *   The quote mark
- *   sits at the quote's bottom end: on the 1440 frame it overlaps the quote's last
- *   24 px in English and follows it with no gap in Arabic (`1030:24261`); on the
- *   tablet frame it hangs past the text column, its bottom level with the quote's.
+ *   The quote mark sits at the quote's bottom end.
+ *
  * - collapsed: the photo alone, 210 wide (tablet 88), 307 tall (tablet 211).
  *
  * 1023–1439: every size above except the 16 px rating is the 1440 value scaled by
@@ -31,17 +30,24 @@ import { cn } from "../lib/cn";
 export type ReviewCardProps = {
   id: string;
   name: string;
+
   /** Rating as written in Figma, e.g. "5/5". */
   rating: string;
+
   quote: string;
+
   /** Portrait, rendered by the caller (next/image in the app). */
   photo: ReactNode;
+
   /** 24x24 rating icon. */
   ratingIcon: ReactNode;
-  /** 53x53 decorative quote mark. */
+
+  /** Decorative quote mark. */
   quoteMark?: ReactNode;
+
   expanded: boolean;
   onExpand: () => void;
+
   className?: string;
 };
 
@@ -99,20 +105,34 @@ export function ReviewCard({
           <span className="text-start text-24 font-regular whitespace-nowrap text-primary-400 desktop:text-review-body">
             {name}
           </span>
+
           <span className="flex items-center gap-2">
-            <span className="flex size-6 shrink-0 items-center justify-center">{ratingIcon}</span>
-            <span className="text-16 font-regular text-natural-600">{rating}</span>
+            <span className="flex size-6 shrink-0 items-center justify-center">
+              {ratingIcon}
+            </span>
+
+            <span className="text-16 font-regular text-natural-600">
+              {rating}
+            </span>
           </span>
         </figcaption>
+
         <blockquote className="text-justify text-14 font-regular text-primary-950 [text-align-last:center] desktop:text-review-body">
           {quote}
         </blockquote>
+
         {quoteMark ? (
           <span
             aria-hidden="true"
-            className="absolute -end-11.25 bottom-2 flex size-13.25 desktop:static desktop:-mt-review-mark-pull desktop:size-review-mark desktop:self-end desktop:rtl:-mt-review-mark-pull-ar"
+            className={cn(
+              "absolute -inset-e-11.25 bottom-0 flex size-9",
+              "desktop:static desktop:mt-2 desktop:size-9 desktop:self-end",
+              "desktop:rtl:mt-2",
+            )}
           >
-            {quoteMark}
+            <span className="flex size-full items-center justify-center">
+              {quoteMark}
+            </span>
           </span>
         ) : null}
       </figure>

@@ -17,8 +17,10 @@ import { BadgeBorder } from "./badge-border";
  * on the right and Arabic mirrors it to the left. The badge (`936:20234`) has a 4 px
  * primary/500 border, radius 12, `shadow`, a 48 px icon and a 48 px medium title in
  * primary/700; the subtitle is 32 px primary/950 and the stepper sits 72 px below.
- * The two store badges are centred 46 px under the row and 68 px apart (`942:20453`:
- * 767 − 721 and 262 − 194; the 768 frame `1037:29903` keeps the same 68). Figma's row is
+ * The two store badges sit under the row, 68 px apart (`942:20453`: 767 − 721 and
+ * 262 − 194; the 768 frame `1037:29903` keeps the same 68) — pushed down from Figma's
+ * 46 px to 56 px (owner request, approved 2026-09-27, `docs/figma-gaps.md` D11).
+ * Figma's row is
  * 1307 px; in the 1284 px container the text column keeps its full 456 px (so the
  * subtitle stays on two lines) and the gap gives up the 23 px instead.
  *
@@ -34,7 +36,7 @@ export function GetAppSection({ content }: { content: SiteContent }) {
       id="get-the-app"
       className="flex w-full justify-center bg-primary-100 px-1.5 py-17 tablet:px-8 tablet:py-18 desktop:min-h-256 desktop:items-center desktop:py-0"
     >
-      <div className="@container flex w-full max-w-desktop flex-col items-center gap-12 tablet:gap-17 desktop:gap-11.5">
+      <div className="@container flex w-full max-w-desktop flex-col items-center gap-14 tablet:gap-19 desktop:gap-14">
         <div className="flex w-full flex-col items-center gap-11.5 desktop:flex-row desktop:items-center desktop:justify-between desktop:gap-16">
           <div className="flex w-full max-w-114 flex-col gap-8 px-1.5 tablet:px-0 desktop:shrink-0 desktop:gap-18">
             <div className="flex flex-col gap-8">
@@ -76,13 +78,13 @@ export function GetAppSection({ content }: { content: SiteContent }) {
           className="flex flex-col items-center justify-center gap-6 tablet:flex-row tablet:flex-wrap tablet:gap-17"
         >
           <StoreBadge
-            icon={<AppStoreIcon />}
+            icon={<AppStoreIcon width={20} height={20} />}
             topLine={content.stores.apple.topLine}
             bottomLine={content.stores.apple.bottomLine}
             href={content.stores.apple.href}
           />
           <StoreBadge
-            icon={<Image src="/svg/google-play.svg" alt="" width={24} height={24} unoptimized />}
+            icon={<Image src="/svg/google-play.svg" alt="" width={20} height={20} unoptimized />}
             topLine={content.stores.google.topLine}
             bottomLine={content.stores.google.bottomLine}
             href={content.stores.google.href}

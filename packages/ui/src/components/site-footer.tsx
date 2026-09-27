@@ -1,35 +1,12 @@
 import type { ReactNode } from "react";
-
 import { cn } from "../lib/cn";
 
-/**
- * Site footer.
- *
- * Figma `Frame 2147226013` `1023:20803` on the 1440 frame: three columns with a
- * 48 px gap. Column 1 is the logo over a 24 px paragraph (Natural/950, 493 wide);
- * column 2 is a gradient 24 px line (primary/500 -> green/600) over the two store
- * badges with a 48 px gap; column 3 is a centred gradient line over the four
- * social marks with a 16 px gap.
- * Phone (`1041:29726`): one centred column, 16 px tagline and download line, the
- * store badges stacked 32 px apart.
- * Arabic 1440 (`1028:20726`): the columns sit 82 px apart (1225 wide in all), the
- * tagline is 445 wide, the badges sit 12 px apart, and the social column is 216
- * wide — marks 8 px apart, heading at its start (right) edge.
- * 1023–1439 (no Figma frame): the 1440 row scaled by viewport ÷ 1440 (`footer-*`
- * tokens, exact at 1440). The badges and social marks keep their size (tap
- * targets), so when the download column is narrower than the two badges side by
- * side (below ~1435 in English, ~1320 in Arabic) they wrap into a 12 px-spaced stack under the heading, aligned
- * to its start edge.
- */
 export type SiteFooterProps = {
-  /** Logo artwork. */
   logo: ReactNode;
   tagline: string;
   downloadHeading: string;
-  /** The two store badges. */
   storeBadges: ReactNode;
   socialHeading: string;
-  /** The four social links. */
   socialLinks: ReactNode;
   className?: string;
 };
@@ -71,7 +48,7 @@ export function SiteFooter({
         </p>
         <div
           dir="ltr"
-          className="flex flex-col items-start gap-8 tablet:flex-row tablet:flex-wrap tablet:gap-12 desktop:gap-y-3 desktop:rtl:justify-end desktop:rtl:gap-3"
+          className="flex flex-col items-start gap-8 desktop:flex-row desktop:flex-wrap desktop:gap-12 desktop:gap-y-3 desktop:rtl:justify-end desktop:rtl:gap-3"
         >
           {storeBadges}
         </div>

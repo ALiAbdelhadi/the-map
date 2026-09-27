@@ -379,7 +379,7 @@
   --spacing-review-text: min(16.875rem, calc(270 * 100vw / 1440)); /* 270 — text column */
   --spacing-review-text-gap: min(0.75rem, calc(12 * 100vw / 1440)); /* 12 — caption → quote */
   --spacing-review-caption-gap: min(0.9375rem, calc(15 * 100vw / 1440)); /* 15 — name → rating */
-  --spacing-review-mark: min(3.3125rem, calc(53 * 100vw / 1440)); /* 53 — quote mark */
+  --spacing-review-mark: min(2.5rem, calc(40 * 100vw / 1440)); /* 40 — quote mark, reduced from Figma's 53, approved deviation 2026-09-27 */
   --spacing-review-mark-pull: min(2.25rem, calc(36 * 100vw / 1440)); /* 36 — mark overlaps the quote (EN) */
   --spacing-review-mark-pull-ar: min(0.75rem, calc(12 * 100vw / 1440)); /* 12 — mark pull, Arabic 1030:24261 */
   --text-review-sub: min(3rem, calc(48 * 100vw / 1440)); /* 48 — subheading, 1008:20620 */
