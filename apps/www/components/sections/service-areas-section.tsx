@@ -5,6 +5,7 @@ import { AreasIcon } from "@themap/ui/icons/areas";
 import { FocusIcon } from "@themap/ui/icons/focus";
 
 import type { SiteContent } from "../../content/types";
+import { AvailabilityButton } from "./availability-button";
 import { ServiceAreasTitle } from "./service-areas-title";
 
 /**
@@ -87,12 +88,7 @@ export function ServiceAreasSection({ content }: { content: SiteContent }) {
           </div>
         </div>
 
-        <button
-          type="submit"
-          className="flex h-12 items-center justify-center rounded-chip bg-secondary-500 px-6 py-0.5 text-16 font-regular text-bg select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary-500"
-        >
-          {content.serviceAreas.cta}
-        </button>
+        <AvailabilityButton>{content.serviceAreas.cta}</AvailabilityButton>
       </form>
     </section>
   );

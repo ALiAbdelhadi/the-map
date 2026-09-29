@@ -44,3 +44,10 @@ export const prototype = {
  * step stays open before the next one opens; the progress line fills over this time.
  */
 export const STEPPER_AUTOPLAY_SECONDS = 10;
+
+/**
+ * Why Choose Us autoplay — owner-approved 2026-09-29, the stepper's autoplay applied to
+ * this section (docs/figma-gaps.md D1). Seconds each feature holds before the next one
+ * (All-in-One → … → Easy → All-in-One; the default only on load).
+ */
+export const WHY_CHOOSE_AUTOPLAY_SECONDS = 10;

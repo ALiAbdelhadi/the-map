@@ -12,7 +12,7 @@ import { AppIcon } from "@themap/ui/icons/app";
 import { AppStoreIcon } from "@themap/ui/icons/app-store";
 import { AreasIcon } from "@themap/ui/icons/areas";
 import { ChooseIcon } from "@themap/ui/icons/choose";
-import { ContactUsIcon } from "@themap/ui/icons/contact-us";
+import { ProvidersIcon } from "@themap/ui/icons/providers";
 import { FacebookIcon } from "@themap/ui/icons/facebook";
 import { InstagramIcon } from "@themap/ui/icons/instagram";
 import { LanguageToggleArIcon } from "@themap/ui/icons/language-toggle-ar";
@@ -27,7 +27,7 @@ const NAV_ICONS = {
   choose: ChooseIcon,
   app: AppIcon,
   areas: AreasIcon,
-  contact: ContactUsIcon,
+  provider: ProvidersIcon,
 } as const;
 
 function NavItems({ content }: { content: SiteContent }) {
@@ -36,7 +36,7 @@ function NavItems({ content }: { content: SiteContent }) {
       {content.nav.map((item) => {
         const Icon = NAV_ICONS[item.icon];
         return (
-          <NavLink key={item.href} href={item.href} icon={<Icon />}>
+          <NavLink key={item.href} href={item.href} icon={<Icon className="size-full" />}>
             {item.label}
           </NavLink>
         );

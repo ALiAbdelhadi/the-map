@@ -1,12 +1,13 @@
 "use client";
 
-import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { type ReactNode, useCallback, useRef, useState } from "react";
 
 import { cn } from "../lib/cn";
 import { figmaTween } from "../motion/figma-easing";
 import { gsap, MOTION_OK, useGSAP } from "../motion/gsap";
 import { measureSizes, morphSizes, type Sizes } from "../motion/size-morph";
 import { prototype, STEPPER_AUTOPLAY_SECONDS } from "../motion/tokens";
+import { useAutoplay } from "../motion/use-autoplay";
 import { StepItem } from "./step-item";
 
 /**
@@ -67,104 +68,22 @@ export function AppStepper({ steps, defaultStep = 1, label, rocket, className }:
     [openStep],
   );
 
-  // Autoplay (see the header comment). The progress tween is the timer: when the
-  // line is full the next step opens. It is rebuilt for every open step, so any
-  // change restarts it from zero, and reverting the context empties the old line.
-  useEffect(() => {
-    const root = ref.current;
-    if (!root || !window.matchMedia(MOTION_OK).matches) return;
-    const fill = root
-      .querySelectorAll("[data-step]")
-      [openStep - 1]?.querySelector("[data-step-progress-fill]");
-    if (!fill) return;
-
-    const wait = { pointer: false, focus: false, hidden: document.hidden, away: true };
-    const ctx = gsap.context(() => {}, root);
-    let progress: gsap.core.Tween | undefined;
-
-    const next = () => {
-      // Never cut into an open/close tween still running (it cannot be, 10 s after
-      // the last change, but a retry costs nothing).
-      const moving = gsap
+  // Autoplay (see the header comment). The open step's progress line is the timer.
+  useAutoplay(ref, {
+    step: openStep,
+    seconds: STEPPER_AUTOPLAY_SECONDS,
+    fill: (root) =>
+      root
+        .querySelectorAll("[data-step]")
+        [openStep - 1]?.querySelector("[data-step-progress-fill]"),
+    busy: (root) =>
+      gsap
         .getTweensOf(root.querySelectorAll("[data-step], [data-step-button], [data-rocket]"))
-        .some((tween) => tween.isActive());
-      if (moving) {
-        ctx.add(() => gsap.delayedCall(0.1, next));
-        return;
-      }
+        .some((tween) => tween.isActive()),
+    next: () => {
       open((openStep % steps.length) + 1);
-    };
-
-    ctx.add(() => {
-      progress = gsap.fromTo(
-        fill,
-        { width: "0%" },
-        {
-          width: "100%",
-          duration: STEPPER_AUTOPLAY_SECONDS,
-          ease: "none",
-          paused: true,
-          onComplete: next,
-        },
-      );
-    });
-
-    const sync = () => {
-      const paused = wait.pointer || wait.focus || wait.hidden || wait.away;
-      progress?.paused(paused);
-    };
-
-    const offs: Array<() => void> = [];
-    const on = (target: EventTarget, type: string, handler: EventListener) => {
-      target.addEventListener(type, handler);
-      offs.push(() => {
-        target.removeEventListener(type, handler);
-      });
-    };
-    on(root, "pointerenter", (event) => {
-      if ((event as PointerEvent).pointerType !== "mouse") return;
-      wait.pointer = true;
-      sync();
-    });
-    on(root, "pointerleave", (event) => {
-      if ((event as PointerEvent).pointerType !== "mouse") return;
-      wait.pointer = false;
-      sync();
-    });
-    on(root, "focusin", (event) => {
-      wait.focus = event.target instanceof Element && event.target.matches(":focus-visible");
-      sync();
-    });
-    on(root, "focusout", (event) => {
-      const to = (event as FocusEvent).relatedTarget;
-      wait.focus = to instanceof Element && root.contains(to) && to.matches(":focus-visible");
-      sync();
-    });
-    on(document, "visibilitychange", () => {
-      wait.hidden = document.hidden;
-      sync();
-    });
-    const watch = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry) return;
-        wait.away = entry.intersectionRatio < 0.5;
-        sync();
-      },
-      { threshold: [0, 0.5, 1] },
-    );
-    watch.observe(root);
-
-    // Focus can already be inside (keyboard focus moved the step on).
-    wait.focus = root.contains(document.activeElement) && root.matches(":has(:focus-visible)");
-    sync();
-    return () => {
-      watch.disconnect();
-      offs.forEach((off) => {
-        off();
-      });
-      ctx.revert();
-    };
-  }, [openStep, open, steps.length]);
+    },
+  });
 
   useGSAP(
     () => {

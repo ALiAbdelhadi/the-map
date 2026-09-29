@@ -19,7 +19,7 @@ export const en: SiteContent = {
     { label: "Why Us", href: "#why-us", icon: "choose" },
     { label: "Get the App", href: "#get-the-app", icon: "app" },
     { label: "Service Areas", href: "#service-areas", icon: "areas" },
-    { label: "Become a Provider", href: "#become-a-provider", icon: "contact" },
+    { label: "Become a Provider", href: "#become-a-provider", icon: "provider" },
   ],
   hero: {
     title: "The Map",

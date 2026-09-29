@@ -13,7 +13,8 @@ import { FlexibleIcon } from "@themap/ui/icons/flexible";
 import { NearbyIcon } from "@themap/ui/icons/nearby";
 import { figmaTween } from "@themap/ui/motion/figma-easing";
 import { gsap, useGSAP } from "@themap/ui/motion/gsap";
-import { prototype } from "@themap/ui/motion/tokens";
+import { prototype, WHY_CHOOSE_AUTOPLAY_SECONDS } from "@themap/ui/motion/tokens";
+import { useAutoplay } from "@themap/ui/motion/use-autoplay";
 
 import type { SiteContent } from "../../content/types";
 
@@ -44,10 +45,17 @@ import type { SiteContent } from "../../content/types";
  * (0.71 at 1023: labels 28 px, rows 51 px tall, the description 23 px) and nothing
  * leaves the section. The maze and the character are already % of the section.
  *
- * Motion: only a click changes the state (the prototype's auto-advance is dropped,
- * approved 2026-09-22). Clicking a row zooms the maze and moves the card over 0.8 s
- * on a strong ease-in-out; the feature pill rises in just after. Clicking the
- * selected row goes back to the default the same way. Hover only restyles the row.
+ * Motion: clicking a row zooms the maze and moves the card over 0.8 s on a strong
+ * ease-in-out; the feature pill rises in just after. Clicking the selected row goes
+ * back to the default the same way. Hover only restyles the row.
+ *
+ * Autoplay, owner-approved 2026-09-29 (revised the same day): every
+ * WHY_CHOOSE_AUTOPLAY_SECONDS (10 s) the next feature is chosen — the default on load,
+ * then All-in-One → Flexible → Nearby → Fast → Easy → All-in-One, forever — through
+ * the same path a click takes. No progress line and no hover or focus pause; it waits
+ * only while the tab is hidden or less than half of the card is in view. A click
+ * restarts the count. None under reduced motion. Silent to screen readers; the rows
+ * keep `aria-selected`.
  */
 
 const ICONS = {
@@ -223,6 +231,24 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
     setSelected(next);
   };
 
+  const card = useRef<HTMLDivElement>(null);
+  useAutoplay(card, {
+    step: selected,
+    seconds: WHY_CHOOSE_AUTOPLAY_SECONDS,
+    pauseOnInteraction: false,
+    busy: () => {
+      const section = ref.current;
+      if (!section) return false;
+      return gsap
+        .getTweensOf([section, ...section.querySelectorAll("[data-maze], [data-why-card]")])
+        .some((tween) => tween.isActive());
+    },
+    next: () => {
+      const ids = features.map((feature) => feature.id);
+      go(ids[(selected === null ? 0 : ids.indexOf(selected) + 1) % ids.length] ?? null);
+    },
+  });
+
   useGSAP(
     () => {
       const section = ref.current;
@@ -303,7 +329,7 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
         Desktop: the 1284 px content column of the 1440 frame, reduced with it.
       */}
       <div className="flex w-full max-w-89.75 justify-start tablet:max-w-192 tablet:ps-24.5 desktop:w-321 desktop:max-w-none desktop:ps-0">
-        <div data-why-card="" className="relative flex max-w-full flex-col gap-15.5">
+        <div ref={card} data-why-card="" className="relative flex max-w-full flex-col gap-15.5">
           <GlassCard surface="field" className="w-fit max-w-full tablet:w-152">
             <div className="flex flex-col gap-8">
               <div className="flex items-center gap-2 ps-5 py-1 tablet:gap-6">

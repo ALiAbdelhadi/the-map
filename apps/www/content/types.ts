@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 export type SiteContent = {
   locale: "en" | "ar";
   dir: "ltr" | "rtl";
-  nav: { label: string; href: string; icon: "about" | "app" | "areas" | "choose" | "contact" }[];
+  nav: { label: string; href: string; icon: "about" | "app" | "areas" | "choose" | "provider" }[];
   hero: {
     /** Card heading — the default hero state, Figma 888:19266. */
     title: string;

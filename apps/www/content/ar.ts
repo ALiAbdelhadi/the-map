@@ -26,7 +26,7 @@ export const ar: SiteContent = {
     { label: "لماذا نحن", href: "#why-us", icon: "choose" },
     { label: "حمّل التطبيق", href: "#get-the-app", icon: "app" },
     { label: "أماكن خدماتنا", href: "#service-areas", icon: "areas" },
-    { label: "كن مقدم خدمة", href: "#become-a-provider", icon: "contact" },
+    { label: "كن مقدم خدمة", href: "#become-a-provider", icon: "provider" },
   ],
   hero: {
     title: "The Map",
