@@ -1,6 +1,5 @@
 import { useId, type SVGProps } from "react";
 
-/** menu — Figma icon, recoloured to currentColor. */
 export function MenuIcon(props: SVGProps<SVGSVGElement>) {
   const clipId = useId();
   return (

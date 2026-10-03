@@ -7,11 +7,6 @@ import { figmaTween } from "../motion/figma-easing";
 import { gsap, MOTION_OK, useGSAP } from "../motion/gsap";
 import { prototype } from "../motion/tokens";
 
-/**
- * Figma `Cursor` (`982:20292`): a 1x45 Natural/BG bar, radius 14, whose fill fades
- * to 6 % and back, each after 0.8 s with a 1.022 s `GENTLE` spring. Shown in the
- * search field's typing state (`984:20299`).
- */
 export function BlinkingCaret({ className }: { className?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
 

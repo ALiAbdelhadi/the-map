@@ -3,7 +3,6 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import prettier from "eslint-config-prettier/flat";
 import tseslint from "typescript-eslint";
 
-/** Shared base config: plain TypeScript, no framework assumptions. */
 export const baseConfig = defineConfig([
   globalIgnores(["**/node_modules/**", "**/dist/**", "**/.next/**", "**/.turbo/**"]),
   js.configs.recommended,

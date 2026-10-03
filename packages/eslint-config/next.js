@@ -3,7 +3,6 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import prettier from "eslint-config-prettier/flat";
 
-/** Config for the Next.js application. */
 export const nextJsConfig = defineConfig([
   ...nextVitals,
   ...nextTs,

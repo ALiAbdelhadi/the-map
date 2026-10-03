@@ -1,6 +1,5 @@
 import { useId, type SVGProps } from "react";
 
-/** providers — Figma icon, recoloured to currentColor. */
 export function ProvidersIcon(props: SVGProps<SVGSVGElement>) {
   const clipId = useId();
   return (

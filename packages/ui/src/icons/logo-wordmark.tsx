@@ -1,6 +1,5 @@
 import type { SVGProps } from "react";
 
-/** logo-wordmark — Figma icon, recoloured to currentColor. */
 export function LogoWordmarkIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg

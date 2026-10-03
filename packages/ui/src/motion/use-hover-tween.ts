@@ -5,12 +5,6 @@ import { type RefObject } from "react";
 import { type FigmaTransition, figmaTween } from "./figma-easing";
 import { gsap, MOTION_OK, useGSAP } from "./gsap";
 
-/**
- * Figma's "While hovering → Change to" with a Smart Animate transition: tweens the
- * element's own CSS properties to `hover` on pointer enter and back on leave.
- * Colour values may be token references (`var(--color-…)`). Under reduced motion
- * the change is instant.
- */
 export function useHoverTween(
   scope: RefObject<HTMLElement | null>,
   hover: Record<string, string>,

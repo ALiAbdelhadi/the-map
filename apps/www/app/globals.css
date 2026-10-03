@@ -3,7 +3,8 @@
 
 @source "../../../packages/ui/src";
 
-
 body {
-  cursor: url("/images/cursor-ufo.png") 34 51, auto;
+  cursor:
+    url("/images/cursor-ufo.png") 34 51,
+    auto;
 }

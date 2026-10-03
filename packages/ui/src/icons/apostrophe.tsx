@@ -1,6 +1,5 @@
 import type { SVGProps } from "react";
 
-/** apostrophe — Figma icon, recoloured to currentColor. */
 export function ApostropheIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg

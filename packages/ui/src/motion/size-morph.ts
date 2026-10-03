@@ -1,18 +1,7 @@
-/**
- * Size morphs — animate real width / height changes instead of scaling.
- *
- * GSAP Flip scales elements to fake a layout change, which stretches images and
- * squashes text mid-move. For components whose boxes change size between states
- * (reviews, stepper, Why Choose Us), measure the boxes before the state change,
- * measure again after React has rendered, and tween each box from its old size to
- * its new one. When the tween ends the inline size is removed, so the classes (and
- * the responsive layout) take over again.
- */
 import { gsap } from "./gsap";
 
 export type Sizes = Map<Element, { width: number; height: number }>;
 
-/** Border-box sizes of `elements`, as rendered now. */
 export function measureSizes(elements: Iterable<Element>): Sizes {
   const sizes: Sizes = new Map();
   for (const element of elements) {
@@ -22,10 +11,6 @@ export function measureSizes(elements: Iterable<Element>): Sizes {
   return sizes;
 }
 
-/**
- * Tweens every element whose size differs between `before` and now. `axes` picks
- * which dimensions animate. Returns the tweens so the caller can sequence them.
- */
 export function morphSizes(
   before: Sizes,
   vars: gsap.TweenVars,
@@ -34,9 +19,6 @@ export function morphSizes(
   const tweens: gsap.core.Tween[] = [];
   for (const [element, old] of before) {
     if (!element.isConnected) continue;
-    // A morph still running from the previous change holds an inline size; stop it and
-    // drop that size so the new target is the layout's own size, not the stale tween's.
-    // (`old` was measured before, mid-tween, so the new morph starts where it stood.)
     if (gsap.isTweening(element)) {
       gsap.killTweensOf(element, axes.join(","));
       gsap.set(element, { clearProps: axes.join(",") });

@@ -9,27 +9,6 @@ import type { SiteContent } from "../../content/types";
 import { AppScreens } from "./app-screens";
 import { BadgeBorder } from "./badge-border";
 
-/**
- * Get the App Now.
- *
- * Figma `930:20466` / Arabic `1029:27815` (1440x1024): the 456 px text column and the
- * 565x565 phone-mockup tile sit 286 px apart — text first, so English has the tile
- * on the right and Arabic mirrors it to the left. The badge (`936:20234`) has a 4 px
- * primary/500 border, radius 12, `shadow`, a 48 px icon and a 48 px medium title in
- * primary/700; the subtitle is 32 px primary/950 and the stepper sits 72 px below.
- * The two store badges sit under the row, 68 px apart (`942:20453`: 767 − 721 and
- * 262 − 194; the 768 frame `1037:29903` keeps the same 68) — pushed down from Figma's
- * 46 px to 56 px (owner request, approved 2026-09-27, `docs/figma-gaps.md` D11).
- * Figma's row is
- * 1307 px; in the 1284 px container the text column keeps its full 456 px (so the
- * subtitle stays on two lines) and the gap gives up the 23 px instead.
- *
- * 1023–1439 (responsive pass 2026-09-26, no Figma frame): the same row. The text
- * column keeps its 456 px and the 1440 type (scaling it would drop the step bodies
- * under 14 px); the tile shrinks linearly from 565 to 440 px (`--container-app-tile`,
- * container units of the content column) and the gap from 263 to 64 px with it.
- */
-
 export function GetAppSection({ content }: { content: SiteContent }) {
   return (
     <section

@@ -8,26 +8,6 @@ import type { SiteContent } from "../../content/types";
 import { AvailabilityButton } from "./availability-button";
 import { ServiceAreasTitle } from "./service-areas-title";
 
-/**
- * Service Areas.
- *
- * Figma `963:20233` / `1028:20709` (1440x1024): the `grok-video` render fills
- * the section, over it a centred column with an 80 px gap — a 100 px bold
- * Secondary/500 title, a 48 px semibold Natural/BG subtitle — then the 607 px
- * search field, then the 48 px tall Secondary/500 CTA with radius 37.
- *
- * Figma's title box is 90 px tall around the 100 px line; the heading keeps its
- * full line box (no clipped glyphs, Latin or Arabic) and gives back the 70 px
- * with negative margins so the column keeps Figma's rhythm. The 768 frame
- * (`1037:30012`) sets the column 326 px down rather than centring it.
- *
- * Responsive (2026-09-26): from 768 the English title is capped by the viewport
- * (`--text-area-title`) so the hover swap to the wider "Where We Operate" is never
- * clipped — 91 px at 768, Figma's 100 px from ~838. The Arabic titles fit at 100 px.
- * From 1023 to 1439 the section is the 1440 frame's height scaled with the viewport
- * (`--spacing-area-desktop`, 727 px at 1023); the column stays at its 1440 size, which
- * fits every width in that range.
- */
 export function ServiceAreasSection({ content }: { content: SiteContent }) {
   return (
     <section
@@ -41,11 +21,6 @@ export function ServiceAreasSection({ content }: { content: SiteContent }) {
         sizes="100vw"
         className="-z-20 object-cover"
       />
-      {/*
-        The Figma fill is a video (`974:20033`, 464x688 source, 6 s), 1441x2136 at
-        y -346 in the 1024 tall frame: 346 / (2136 - 1024) = 31.1% down. The still
-        above stays as the poster and as the reduced-motion fallback.
-      */}
       <video
         src="/video/service-areas.mp4"
         poster="/images/service-areas-scene.webp"
@@ -74,7 +49,6 @@ export function ServiceAreasSection({ content }: { content: SiteContent }) {
             </p>
           </div>
 
-          {/* A 16 px gutter on the narrowest phones; at 375 the 341 px field fits as drawn. */}
           <div className="flex w-full justify-center px-4 tablet:px-0">
             <SearchField
               name="area"

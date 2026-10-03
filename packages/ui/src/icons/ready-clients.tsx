@@ -1,6 +1,5 @@
 import type { SVGProps } from "react";
 
-/** ready-clients — Figma icon, recoloured to currentColor. */
 export function ReadyClientsIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg

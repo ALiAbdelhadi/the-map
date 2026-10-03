@@ -1,6 +1,5 @@
 import type { SVGProps } from "react";
 
-/** arrow — Figma icon, recoloured to currentColor. */
 export function ArrowIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg

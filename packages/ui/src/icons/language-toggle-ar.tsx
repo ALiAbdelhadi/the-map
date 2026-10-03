@@ -1,9 +1,6 @@
 import { type SVGProps, useId } from "react";
 
-/** language-toggle-ar — Figma icon, recoloured to currentColor. */
 export function LanguageToggleArIcon(props: SVGProps<SVGSVGElement>) {
-  // The icon renders twice (header and drawer); a shared gradient id would resolve to
-  // the copy inside the hidden one, and the track would not paint.
   const gradient = `toggle-track-${useId().replace(/[^\w-]/g, "")}`;
   return (
     <svg
@@ -29,14 +26,7 @@ export function LanguageToggleArIcon(props: SVGProps<SVGSVGElement>) {
         </g>
       </g>
       <defs>
-        <linearGradient
-          id={gradient}
-          x1="0"
-          y1="12"
-          x2="59"
-          y2="12"
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id={gradient} x1="0" y1="12" x2="59" y2="12" gradientUnits="userSpaceOnUse">
           <stop stopColor="#087DFD" />
           <stop offset="1" stopColor="white" />
         </linearGradient>

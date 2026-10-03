@@ -8,28 +8,10 @@ import { gsap, MOTION_OK, useGSAP } from "../motion/gsap";
 import { prototype } from "../motion/tokens";
 import { IconBadge } from "./icon-badge";
 
-/**
- * Why Choose Us feature row.
- *
- * Figma `Why Choose features` — Defult `911:19599`, hover `911:19598`,
- * Select `911:19597`. gap 24, px 20, py 4, label 40 px regular in a 64 px line box,
- * so rows are 72 px tall in both languages (`--leading-row`).
- * - default: no background, chip primary/400, label Natural/BG
- * - hover: gradient primary/500 -> white, chip primary/600, label Secondary/500, radius 56
- * - select: 4 px primary/500 → white gradient stroke, radius 56, chip primary/400,
- *   label Natural/BG. The stroke sits inside the row, so selecting never moves it.
- *
- * The hover gradient fades in and out (0.25 s) on a mouse pointer only — a tap on a
- * touch screen selects without leaving a stuck hover state. The selected row always
- * shows the select look: CSS overrides any hover style GSAP left inline on it.
- * Rows are `select-none`: a press or force-click must not select the label text.
- */
 export type FeatureItemProps = {
   children: ReactNode;
-  /** 32x32 icon. */
   icon: ReactNode;
   selected?: boolean;
-  /** In the tab order — the selected row, or the first when none is selected. */
   focusable?: boolean;
   onSelect?: () => void;
   id?: string;
@@ -60,7 +42,6 @@ export function FeatureItem({
       const timing = () =>
         window.matchMedia(MOTION_OK).matches ? figmaTween(prototype.hover.card) : { duration: 0 };
       const enter = (event: PointerEvent) => {
-        // The selected row keeps its stroke and no hover fill.
         if (event.pointerType !== "mouse" || row.getAttribute("aria-selected") === "true") return;
         gsap.to(fill, { opacity: 1, ...timing(), overwrite: "auto" });
         gsap.to(row, { color: color("--color-secondary-500"), ...timing(), overwrite: "auto" });
@@ -81,7 +62,6 @@ export function FeatureItem({
       };
       row.addEventListener("pointerenter", enter);
       row.addEventListener("pointerleave", leave);
-      // Selecting clears the hover fill so the selected state reads cleanly.
       row.addEventListener("click", leave);
       return () => {
         row.removeEventListener("pointerenter", enter);
@@ -104,8 +84,6 @@ export function FeatureItem({
       onClick={onSelect}
       className={cn(
         "group relative flex items-center gap-6 rounded-row py-3 ps-3 pe-6 text-start text-24 font-regular text-bg select-none tablet:py-1 tablet:pe-5 tablet:text-40",
-        // The selected row never shows the hover look, even if a hover tween was still
-        // running (or its inline styles were left behind) when the row got selected.
         "aria-selected:text-bg! aria-selected:[&_[data-hover-fill]]:opacity-0! aria-selected:[&_[data-chip]>span]:bg-primary-400!",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg",
         className,

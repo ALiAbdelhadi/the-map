@@ -1,6 +1,5 @@
 import type { SVGProps } from "react";
 
-/** flexible — Figma icon, recoloured to currentColor. */
 export function FlexibleIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg

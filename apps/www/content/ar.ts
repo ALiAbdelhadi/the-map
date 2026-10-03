@@ -1,23 +1,5 @@
 import type { SiteContent } from "./types";
 
-/**
- * Arabic copy, lifted verbatim from the Arabic frame `عربي` (1028:20692) and the
- * Arabic component set (1028:21461) of Figma file jfNj5yN77f5lk3SULMAHjN.
- *
- * Node references: nav 1028:21471–1028:21475 · hero card I1028:26386 ·
- * Why Choose Us 1028:22136 · Get the App 1029:27815, steps 1030:24656/24652/24648 ·
- * Service Areas 1028:20709 · provider 1028:22478 · reviews 1015:21033, 1028:20722,
- * 1028:23154 · footer 1028:20726.
- *
- * Not from Figma — accessibility labels the design has no text for (the English
- * equivalents are also authored, see docs/phase-5-deviations.md): `hero.ringLabel`,
- * `getApp.screensAlt`, `serviceAreas.locateLabel`, `provider.illustrationAlt`,
- * `a11y.*` including `a11y.mainNav`, `language.switchLabel`.
- *
- * The store badges stay in English: the Arabic frame uses the same English badges.
- * Only Ahmed Omar has an Arabic name in Figma; the other three reviewers exist only as
- * the English variant names, and are used as such.
- */
 export const ar: SiteContent = {
   locale: "ar",
   dir: "rtl",
@@ -166,7 +148,6 @@ export const ar: SiteContent = {
       { id: "full-flexibility", title: "مرونة كاملة", description: "اشتغل في الوقت اللي يناسبك." },
     ],
     illustrationAlt: "هاتف يعرض إحصائيات مقدم الخدمة",
-    // Figma keeps this English in the Arabic frame too (1028:22477).
     clickHere: "Click here",
   },
   reviews: {

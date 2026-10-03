@@ -17,30 +17,6 @@ import type { SiteContent } from "../../content/types";
 import { BadgeBorder } from "./badge-border";
 import { ProviderShowcase, type StagePill } from "./provider-showcase";
 
-/**
- * Become a Provider — Figma calls this component `Contact us` (`998:20842`).
- *
- * Final state `998:20841` (1282x864): the badge (`997:21768`), a 22 px body, the
- * email card `998:20791` (fill rgb(5 35 76 / .5), padding 24, radius 50) with the
- * `info@Themap.com` pill, the 30 px download heading over the two store badges,
- * and five benefit pills scattered around the provider illustration.
- *
- * Motion: on the 1440 frame the section builds up from the illustration alone and
- * opens on `Click here` — see ProviderShowcase. The email card gains a gradient
- * stroke on hover (`998:20790`, 0.3 s ease-out).
- *
- * The pills are scattered around the illustration at Figma's positions on the 768
- * and 1440 frames (see PLACE) and stacked in a column on the phone frame.
- *
- * 1023–1439 (responsive pass 2026-09-26, `desktop:max-wide:`): the 1440 row does not
- * fit — the pills' 16 / 14 px text sets their widths (245–315 px), so the 813 px pill
- * box cannot shrink without taking the text under 14 px, and beside the 449 px email
- * card it needs ~1300 px. So the final state stacks: the email card and the downloads
- * side by side, then the 1440 pill box at its drawn size, centred on its pills (EN
- * 44 px left; AR 54 px right and 106 px up, where Figma's Arabic box starts empty).
- * From 1440 (`wide:`) the row is Figma's.
- */
-
 const ICONS = {
   "wider-reach": WiderReachIcon,
   income: IncomeIcon,
@@ -49,10 +25,6 @@ const ICONS = {
   "full-flexibility": FullFlexibilityIcon,
 } as const;
 
-/*
- * The phone frame (`1041:29327`) lists the pills Wider Reach, Income, Simple, Full
- * Flexibility, Ready Clients — the last two swapped against the desktop order.
- */
 const PHONE_ORDER: Record<string, string> = {
   "wider-reach": "order-1 tablet:order-none",
   income: "order-2 tablet:order-none",
@@ -61,32 +33,6 @@ const PHONE_ORDER: Record<string, string> = {
   "ready-clients": "order-5 tablet:order-none",
 };
 
-/*
- * The final state scatters the pills around the illustration, in a 706x637 box on
- * the 768 frame (`1037:32101`) and an 813x637 box on the 1440 frame (`998:20841`,
- * `997:21767`, end-aligned in the 1282 px row, beside the 709 px email column).
- * Positions (x, y) in that box:
- *
- *   pill               768                 1440
- *   Full Flexibility   (343, 118)          (327, 0)
- *   Ready Clients      (−5, 174)           (25, 80)
- *   Increase Income    (342, 238), 1.1°    (538, 141)
- *   Wider Reach        (4, 287)            (146, 189)
- *   Simple & Organized (440, 353), 1.1°    (633, 315)
- *   illustration       510 at (67, 279)    626 at (187, 166)
- *
- * On the phone frame (`1041:29327`) they are a column, Income and Simple also
- * turned 1.1°, with 12 px between the turned boxes: the column gap is 12 and the two
- * turned pills carry 3 px above and below, the height their 1.1° turn adds.
- *
- * The Arabic 1440 frame (`1028:22478`) is its own composition, not a mirror: the
- * 805 px box sits at the left beside a 529 px email column, the illustration at its
- * left (4, 214.5), and the pills at Ready Clients (22.5, 111.5), Full Flexibility
- * (325.5, 106.5), Wider Reach (−7.5, 225.5), Increase Income (441.5, 236.5) and
- * Simple (444.5, 380.5). In RTL `start` is the right edge, so the `rtl:` offsets
- * are those positions measured from the box's right edge with Figma's Arabic pill
- * widths (277, 273, 284, 258, 260).
- */
 const PLACE: Record<string, string> = {
   "full-flexibility":
     "tablet:absolute tablet:start-85.75 tablet:top-29.5 desktop:start-81.75 desktop:top-0 desktop:rtl:start-51.5 desktop:rtl:top-26.75",
@@ -100,7 +46,6 @@ const PLACE: Record<string, string> = {
     "my-0.75 rotate-[1.1deg] tablet:absolute tablet:my-0 tablet:start-110 tablet:top-88.25 desktop:start-158.25 desktop:top-78.75 desktop:rotate-0 desktop:rtl:start-25 desktop:rtl:top-95",
 };
 
-/** Increase Your Income and Simple & Organized System are Figma's compact pills. */
 const COMPACT = new Set(["income", "simple"]);
 
 export function ProviderSection({ content }: { content: SiteContent }) {

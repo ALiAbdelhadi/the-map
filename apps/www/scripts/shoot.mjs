@@ -1,9 +1,3 @@
-/**
- * Screenshots the site at the three widths the Figma file designs, so the build
- * can be compared against the Figma renders.
- *
- * Usage: node scripts/shoot.mjs <baseUrl> <outDir> [path...]
- */
 import { mkdir } from "node:fs/promises";
 import { chromium } from "playwright";
 
@@ -30,8 +24,6 @@ for (const route of routes) {
 
     const response = await page.goto(`${baseUrl}${route}`, { waitUntil: "networkidle" });
 
-    // Lazy-loaded images never fetch for an off-screen full-page screenshot, so
-    // walk the page to the bottom first and wait for everything to decode.
     await page.evaluate(async () => {
       const step = window.innerHeight;
       for (let y = 0; y < document.body.scrollHeight; y += step) {

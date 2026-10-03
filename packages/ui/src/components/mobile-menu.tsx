@@ -7,36 +7,13 @@ import { figmaTween } from "../motion/figma-easing";
 import { gsap, MOTION_OK, useGSAP } from "../motion/gsap";
 import { prototype } from "../motion/tokens";
 
-/**
- * Drawer navigation for the 375 and 768 frames.
- *
- * Figma `menu` — closed `1038:26943` (Natural/BG circle, padding 12, radius 39,
- * 24 px glyph), open `1038:26926` (primary/500 circle plus a panel filled
- * rgb(53 150 253 / .2), padding 20, radius 12, item gap 8). The panel carries the same
- * GLASS effect as the bar: its 1 px edge, plus the glass blur so the items stay legible
- * over the orbit behind them (Figma renders it over a flat backdrop).
- *
- * Keyboard behaviour is not in Figma and is required for the control to work:
- * Escape closes, focus moves into the panel on open and back to the toggle on
- * close, and focus is kept inside the panel while it is open.
- *
- * The header keeps the toggle at the right-hand end in both languages (see SiteHeader),
- * so the panel opens out of that corner in Arabic too. It is anchored to the header
- * (`relative` in SiteHeader), not the toggle, and spans the bar's full width.
- *
- * Motion: the panel opens out of the toggle — from 95 % and 6 px up, fading in
- * (0.25 s ease-out) — and closes the same way; it never grows from nothing.
- */
 export type MobileMenuProps = {
-  /** 24x24 menu glyph. */
   icon: ReactNode;
-  /** Accessible name for the toggle, e.g. "Menu". */
   label: string;
   children: ReactNode;
   className?: string;
 };
 
-/** The drawer's wrapper is `desktop:hidden` (SiteHeader): `--breakpoint-desktop`, 1023. */
 const DESKTOP = "(min-width: 63.9375rem)";
 
 export function MobileMenu({ icon, label, children, className }: MobileMenuProps) {
@@ -44,10 +21,8 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
   const panelId = useId();
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  // True while the closing tween runs (the panel is still mounted and `open` is true).
   const closing = useRef(false);
 
-  // Grow the panel out of the toggle on open; shrink it back before hiding it.
   const close = () => {
     const panel = panelRef.current;
     if (closing.current) return;
@@ -69,8 +44,6 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
     });
   };
 
-  // A tap on the toggle while the panel is still leaving brings it back from where it
-  // stands, instead of restarting the close.
   const reopen = () => {
     closing.current = false;
     gsap.to(panelRef.current, {
@@ -82,8 +55,6 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
     });
   };
 
-  // From 1023 up the drawer is hidden by CSS; an open one would keep the page's
-  // scroll locked with nothing on screen to close it, so it closes at once.
   useEffect(() => {
     if (!open) return;
     const query = window.matchMedia(DESKTOP);
@@ -110,7 +81,6 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
           opacity: 0,
           scale: 0.95,
           y: -6,
-          // The toggle sits at the right-hand end of the bar in both languages.
           transformOrigin: "top right",
         },
         { opacity: 1, scale: 1, y: 0, ...figmaTween(prototype.menu), overwrite: true },
@@ -119,7 +89,6 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
     { dependencies: [open] },
   );
 
-  // While the drawer is open the page behind it does not scroll.
   useEffect(() => {
     if (!open) return;
     const root = document.documentElement;
@@ -179,8 +148,6 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
           else close();
         }}
         className={cn(
-          // 44 px hit area around Figma's 32 px circle; the negative margin keeps the
-          // bar's layout at the 32 px Figma draws.
           "-m-1.5 flex size-11 select-none items-center justify-center rounded-full",
           "focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-primary-500",
         )}
@@ -200,10 +167,6 @@ export function MobileMenu({ icon, label, children, className }: MobileMenuProps
         id={panelId}
         hidden={!open}
         onClickCapture={(event) => {
-          // Following a link closes the drawer at once — the page is about to move.
-          // Capture phase: this runs before the link's own handler starts the smooth
-          // scroll (motion/scroll-to.ts), and the scroll lock is released here, not in
-          // the effect cleanup after the re-render, or the locked page could not move.
           if (!(event.target as HTMLElement).closest("a")) return;
           document.documentElement.classList.remove("overflow-hidden");
           setOpen(false);

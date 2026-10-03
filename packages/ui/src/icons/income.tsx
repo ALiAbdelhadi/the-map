@@ -1,6 +1,5 @@
 import type { SVGProps } from "react";
 
-/** income — Figma icon, recoloured to currentColor. */
 export function IncomeIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg

@@ -1,6 +1,5 @@
 import { useId, type SVGProps } from "react";
 
-/** areas — Figma icon, recoloured to currentColor. */
 export function AreasIcon(props: SVGProps<SVGSVGElement>) {
   const clipId = useId();
   return (

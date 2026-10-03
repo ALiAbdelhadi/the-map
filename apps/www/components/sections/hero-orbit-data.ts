@@ -1,14 +1,3 @@
-/**
- * Hero orbit geometry, read from Figma `Hero section` (`898:20007`; the Arabic set
- * `1028:21614` is identical). One entry per variant, in ring order, in Figma pixels of
- * the 669.642 x 767.626 orbit frame.
- *
- * - ring: centre x, centre y, rotation (°, clockwise) of `Ellipse 1593`;
- * - items: per item, the artwork's centre x, centre y, width and rotation, then its
- *   dot on the ring: centre x, centre y, diameter (32 = the dark marker on top).
- *
- * Generated from the Plugin API readout (read-only), 2026-09-22 — do not edit by hand.
- */
 export type OrbitItem = readonly [
   cx: number,
   cy: number,
@@ -24,7 +13,6 @@ export type OrbitState = {
 };
 
 export const ORBIT: readonly OrbitState[] = [
-  // The Map
   {
     ring: [331, 423.8, -0.6],
     items: {
@@ -40,7 +28,6 @@ export const ORBIT: readonly OrbitState[] = [
       blinkz: [159.7, 217, 120, -39.6, 227.2, 281.4, 18],
     },
   },
-  // Service
   {
     ring: [331, 423.8, -0.6],
     items: {
@@ -56,7 +43,6 @@ export const ORBIT: readonly OrbitState[] = [
       blinkz: [69.5, 365.5, 120, -79.7, 162.6, 371.3, 18],
     },
   },
-  // Needed
   {
     ring: [314.5, 419.5, -26.2],
     items: {
@@ -72,7 +58,6 @@ export const ORBIT: readonly OrbitState[] = [
       blinkz: [53.4, 479.7, 120, -105.2, 140, 444.8, 18],
     },
   },
-  // Medical
   {
     ring: [404.4, 427.2, -51.3],
     items: {
@@ -88,7 +73,6 @@ export const ORBIT: readonly OrbitState[] = [
       blinkz: [193.6, 592.5, 120, -130.4, 257.1, 524.2, 18],
     },
   },
-  // Employee
   {
     ring: [417.8, 439.4, -87.4],
     items: {
@@ -104,7 +88,6 @@ export const ORBIT: readonly OrbitState[] = [
       blinkz: [344.9, 697.2, 120, -166.5, 356, 604.6, 18],
     },
   },
-  // Emergency
   {
     ring: [410.5, 402.5, -118.9],
     items: {
@@ -120,7 +103,6 @@ export const ORBIT: readonly OrbitState[] = [
       blinkz: [525, 644.6, 120, 162.1, 486.1, 559.8, 18],
     },
   },
-  // special
   {
     ring: [409.6, 398.7, -151.5],
     items: {
@@ -136,7 +118,6 @@ export const ORBIT: readonly OrbitState[] = [
       blinkz: [636.6, 540.8, 120, 129.4, 558.1, 490.4, 18],
     },
   },
-  // Food
   {
     ring: [434.1, 375.2, -166.9],
     items: {
@@ -152,7 +133,6 @@ export const ORBIT: readonly OrbitState[] = [
       blinkz: [701.6, 354.9, 120, 98.7, 608.4, 351.6, 18],
     },
   },
-  // Real estate
   {
     ring: [425, 379.4, 167.6],
     items: {
@@ -168,7 +148,6 @@ export const ORBIT: readonly OrbitState[] = [
       blinkz: [657.8, 246.1, 120, 73.3, 572.2, 283.2, 18],
     },
   },
-  // Blinkz
   {
     ring: [409.3, 396.7, 133.4],
     items: {
@@ -186,7 +165,6 @@ export const ORBIT: readonly OrbitState[] = [
   },
 ];
 
-/** The default variant as starting CSS variables — written out in full so Tailwind finds them. */
 export const RING_START = "[--cx:331] [--cy:423.8] [--r:-0.6]";
 export const ITEM_START: Readonly<Record<string, { art: string; dot: string }>> = {
   "the-map": {

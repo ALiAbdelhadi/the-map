@@ -1,16 +1,5 @@
 import type { SiteContent } from "./types";
 
-/**
- * English copy, lifted verbatim from the Figma file jfNj5yN77f5lk3SULMAHjN.
- *
- * Node references: nav 888:20482 · hero card 888:19266/888:19268 ·
- * Why Choose Us 911:19547 · Get the App 936:20102/950:20363 ·
- * Service Areas 974:20059/982:20226 · provider 997:21768/998:20751 ·
- * reviews 1015:21030/1014:20669 · footer 1023:20739/1023:21020/1023:20741.
- *
- * External URLs are `#`: the real App Store, Google Play and social links do not
- * exist anywhere in the Figma file (docs/figma-gaps.md C4, C5).
- */
 export const en: SiteContent = {
   locale: "en",
   dir: "ltr",
@@ -178,7 +167,6 @@ export const en: SiteContent = {
       },
     ],
     illustrationAlt: "A phone showing provider analytics",
-    // Figma keeps this English in the Arabic frame too (1028:22477).
     clickHere: "Click here",
   },
   reviews: {

@@ -1,24 +1,3 @@
-/**
- * Figma prototype easings, as GSAP eases.
- *
- * Figma stores an easing *type* on each prototype transition (read with the Plugin
- * API, `reaction.actions[].transition.easing.type`). It does not publish the numbers
- * behind its presets, so they are recorded here with where each one comes from:
- *
- * - `EASE_OUT`, `EASE_IN_AND_OUT`: the CSS keyword curves of the same names
- *   (`ease-out` = cubic-bezier(0, 0, 0.58, 1), `ease-in-out` = (0.42, 0, 0.58, 1)).
- * - `EASE_IN_AND_OUT_BACK`: (0.7, -0.4, 0.4, 1.4) — the curve Figma's editor draws
- *   for that preset; not published as numbers (docs/figma-gaps.md M6).
- * - `GENTLE`, `QUICK`, `SLOW`: damped springs (mass, stiffness, damping) of
- *   (1, 100, 15), (1, 300, 20) and (1, 80, 20). Figma does not publish these; they
- *   are the values that reproduce the settle times Figma stores on this file's
- *   transitions — SLOW settles in exactly 1.25 s, QUICK ≈ 0.72 s against 0.744 s,
- *   GENTLE ≈ 0.98 s against 1.022 s (gap M6).
- *
- * A spring is turned into a CustomEase path by sampling its step response up to the
- * moment it settles, so the tween's duration is Figma's stored duration and the
- * curve keeps the spring's shape (including overshoot).
- */
 import { CustomEase } from "gsap/CustomEase";
 
 type Spring = { mass: number; stiffness: number; damping: number };
@@ -30,11 +9,6 @@ const SPRINGS = {
 } satisfies Record<string, Spring>;
 
 const BEZIERS = {
-  /*
-   * Site easings, approved 2026-09-22 (Figma's springs overshoot and its CSS-keyword
-   * curves are weak): a strong ease-out for things arriving or answering a click,
-   * and a strong ease-in-out for things moving across the screen.
-   */
   UI_OUT: "0.23,1,0.32,1",
   UI_IN_OUT: "0.77,0,0.175,1",
   EASE_OUT: "0,0,0.58,1",
@@ -44,7 +18,6 @@ const BEZIERS = {
 
 export type FigmaEasing = keyof typeof SPRINGS | keyof typeof BEZIERS;
 
-/** Position of a spring released from 0 towards 1 at rest, after `t` seconds. */
 function springAt({ mass, stiffness, damping }: Spring, t: number): number {
   const w0 = Math.sqrt(stiffness / mass);
   const zeta = damping / (2 * Math.sqrt(stiffness * mass));
@@ -62,7 +35,6 @@ function springAt({ mass, stiffness, damping }: Spring, t: number): number {
   return 1 - (a * Math.exp(r1 * t) + b * Math.exp(r2 * t));
 }
 
-/** Time after which the spring stays within 0.1 % of rest. */
 function settleTime(spring: Spring): number {
   const step = 1 / 1000;
   let last = 0;
@@ -85,7 +57,6 @@ function springPath(spring: Spring, samples = 96): string {
 
 let registered = false;
 
-/** Registers the Figma eases once; call before the first tween that uses them. */
 export function registerFigmaEases() {
   if (registered) return;
   registered = true;
@@ -97,16 +68,13 @@ export function registerFigmaEases() {
   }
 }
 
-/** GSAP ease name for a Figma easing type. */
 export function figmaEase(type: FigmaEasing): string {
   registerFigmaEases();
   return `figma-${type}`;
 }
 
-/** A Figma transition: its easing type and the duration Figma stores, in seconds. */
 export type FigmaTransition = { ease: FigmaEasing; duration: number };
 
-/** Tween vars for a Figma transition. */
 export function figmaTween({ ease, duration }: FigmaTransition) {
   return { ease: figmaEase(ease), duration };
 }

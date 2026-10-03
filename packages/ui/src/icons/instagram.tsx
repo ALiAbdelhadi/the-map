@@ -1,6 +1,5 @@
 import type { SVGProps } from "react";
 
-/** instagram — Figma icon, recoloured to currentColor. */
 export function InstagramIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg

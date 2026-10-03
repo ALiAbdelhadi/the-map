@@ -1,6 +1,5 @@
 import { useId, type SVGProps } from "react";
 
-/** full-flexibility — Figma icon, recoloured to currentColor. */
 export function FullFlexibilityIcon(props: SVGProps<SVGSVGElement>) {
   const clipId = useId();
   return (

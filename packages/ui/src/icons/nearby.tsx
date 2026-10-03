@@ -1,6 +1,5 @@
 import type { SVGProps } from "react";
 
-/** nearby — Figma icon, recoloured to currentColor. */
 export function NearbyIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg

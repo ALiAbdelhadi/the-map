@@ -9,47 +9,10 @@ import { revealOnce } from "@themap/ui/motion/reveal";
 import { prototype } from "@themap/ui/motion/tokens";
 import { useHoverTween } from "@themap/ui/motion/use-hover-tween";
 
-/**
- * The provider stage — Figma `Contact us` (`998:20842`), 1440 frame only.
- *
- * Figma plays the build-up on a loop and folds the full section away again 0.8 s
- * after `Click here`. Approved 2026-09-22 instead: the build-up plays once, when the
- * section scrolls into view — Wider Reach drops in, the other four pills slide in
- * one after another, then `Click here` appears — and waits. A click opens the full
- * section (the copy, email card and downloads), which then stays.
- *
- * The 899x850 stage sits at (196, 127) in the 1440x1024 section — 118 px into the
- * 1284 px container, with 47 px under it so the section stays 1024 tall. Positions
- * below are in that stage, read from `998:20840` (cart 5); the connectors run from
- * the illustration to the dot beside each pill. The Arabic `cart 5` (`1028:22867`)
- * uses the same positions, so the stage is placed physically (left margin) in both
- * directions; Figma's Arabic frame sets it at x 270, which runs the Increase Income
- * pill 27 px past the 1440 frame, so the English x 196 is used instead. Below 1023,
- * and with reduced motion, only the full section is shown.
- *
- * From 1023 to 1439 (responsive pass 2026-09-26) the stage is the same drawing scaled
- * down with the viewport: the stage redefines Tailwind's spacing step and its 24 / 20
- * px text in `--provider-stage-unit` (4 px from 1388 up, 2.91 px at 1023), so offsets,
- * boxes, connectors, pills and `Click here` all shrink together. At 1023 the factor is
- * 0.73 and the smallest text (the 20 px pill body) is 14.6 px. At 1440 the stage sits
- * 118 px into the container, which centres its 1340 px of pills on the container; below
- * 1440 it is centred instead (mx-auto, then 74 px back: the pills' centre lies 74.5 px
- * right of the 899 px stage's centre), so the scaled drawing stays centred too.
- */
-
 type Stage = "stage" | "full";
 
-/**
- * The stage plays wherever the landscape (`desktop:`, 63.9375rem = 1023 px) layout does, so the JS
- * switch and the CSS switch agree. Below 1440 the stage is the 1440 drawing scaled
- * with the viewport — see `--provider-stage-unit` in theme.css.
- */
 const STAGE_MEDIA = "(min-width: 63.9375rem)";
 
-/**
- * Where each pill group comes from — the direction of Figma's hidden variants, at a
- * third of the distance so the entrance stays calm.
- */
 const HIDDEN = {
   "wider-reach": { x: 0, y: -90 },
   income: { x: 80, y: 0 },
@@ -60,44 +23,34 @@ const HIDDEN = {
 
 export type StagePill = { id: keyof typeof HIDDEN; pill: ReactNode };
 
-/*
- * Pill boxes (left, top, width) and connectors (start at the illustration end,
- * length, angle) in the stage, from `998:20840`. Class strings are written out in
- * full for Tailwind.
- */
 const PLACES: Record<
   keyof typeof HIDDEN,
   { pill: string; line: string; src: string; width: number }
 > = {
-  // pill 380.657 wide, turned −0.82°; connector 133.583 straight up to it.
   "wider-reach": {
     pill: "left-81.75 top-0 w-max rotate-[-0.82deg]",
     line: "left-131.5 top-64 w-35 -rotate-90",
     src: "/svg/connector-43.svg",
     width: 140,
   },
-  // pill 386 at (812, 391); connector 127 to the right of the illustration.
   income: {
     pill: "left-203 top-97.75 w-max",
     line: "left-169.75 top-109.5 w-33.25",
     src: "/svg/connector-44.svg",
     width: 133,
   },
-  // pill 388 at (791, 191), turned 1.1°; connector 167 up and right at −31.93°.
   simple: {
     pill: "left-197.75 top-47.75 w-max rotate-[1.1deg]",
     line: "left-160.5 top-80 w-43.5 rotate-[-31.93deg]",
     src: "/svg/connector-45.svg",
     width: 175,
   },
-  // pill 425 at (−137, 370); connector 90 to its right, pointing left.
   "ready-clients": {
     pill: "-left-34.25 top-92.5 w-max",
     line: "left-99 top-104.5 w-24 rotate-180",
     src: "/svg/connector-46.svg",
     width: 95,
   },
-  // pill 419 at (−145, 120), turned 0.76°; connector 134 up and left at −135°.
   "full-flexibility": {
     pill: "-left-36.25 top-30 w-max rotate-[0.76deg]",
     line: "left-96.25 top-72 w-35 rotate-[-135deg]",
@@ -112,7 +65,6 @@ export function ProviderShowcase({
   illustration,
   clickHere,
 }: {
-  /** The section's final state — the copy, email card, downloads and pills. */
   full: ReactNode;
   pills: StagePill[];
   illustration: ReactNode;
@@ -122,13 +74,10 @@ export function ProviderShowcase({
   const button = useRef<HTMLButtonElement>(null);
   const [stage, setStage] = useState<Stage>("full");
   const [active, setActive] = useState(false);
-  // Once `Click here` has opened the full section it stays open — also after the
-  // viewport leaves and re-enters the stage layout (resize, tablet rotation).
   const opened = useRef(false);
 
   useHoverTween(button, { backgroundColor: "var(--color-primary-500)" }, prototype.hover.card);
 
-  // The stage only exists on the landscape layout (1023 up), with motion allowed.
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
@@ -147,7 +96,6 @@ export function ProviderShowcase({
     { scope: ref },
   );
 
-  // The build-up, once, when the stage comes into view.
   useGSAP(
     () => {
       if (!active || opened.current) return;
@@ -166,7 +114,6 @@ export function ProviderShowcase({
         .timeline({ paused: true })
         .to(groups, { x: 0, y: 0, autoAlpha: 1, ...figmaTween(step), stagger: step.stagger })
         .to("[data-click-here]", { autoAlpha: 1, scale: 1, ...figmaTween(step) }, "-=0.2");
-      // Loaded or jumped past the stage: show it built rather than building off-screen.
       const trigger = revealOnce({
         trigger: ref.current?.querySelector("[data-provider-stage]") ?? "[data-provider-stage]",
         start: "top 70%",
@@ -176,7 +123,6 @@ export function ProviderShowcase({
         },
       });
 
-      // The hand in `Click here` leans in on hover instead of pulsing forever.
       const hand = ref.current?.querySelector("[data-hand]");
       const target = button.current;
       const grow = () => gsap.to(hand ?? [], { scale: 1.15, ...figmaTween(prototype.hover.lift) });
@@ -190,12 +136,9 @@ export function ProviderShowcase({
         target?.removeEventListener("pointerleave", shrink);
       };
     },
-    // Reverted whenever `active` changes: leaving the stage layout must hand the full
-    // section back visible, with none of the build-up's inline styles left on it.
     { scope: ref, dependencies: [active], revertOnUpdate: true },
   );
 
-  // Click here → the full section, which stays.
   useGSAP(
     () => {
       if (!active || stage !== "full") return;
@@ -214,8 +157,6 @@ export function ProviderShowcase({
     <div ref={ref} className="relative grid w-full max-w-desktop">
       <div
         data-provider-full=""
-        // While the stage shows, the full section is laid out out of flow so it
-        // leaves no empty space under the illustration.
         className={`col-start-1 row-start-1 self-center ${active && stage === "stage" ? "absolute inset-x-0 top-0" : ""}`}
         inert={active && stage !== "full"}
       >
@@ -225,8 +166,6 @@ export function ProviderShowcase({
       {active ? (
         <div
           data-provider-stage=""
-          // Once the full section is open the stage is gone for good: not focusable, and
-          // hidden outright when it mounts again after a resize.
           inert={stage !== "stage"}
           className={`${stage === "stage" ? "" : "invisible "}relative col-start-1 row-start-1 mr-auto ml-29.5 mt-31.75 mb-11.75 h-212.5 w-224.75 opacity-0 max-wide:mx-auto max-wide:-translate-x-18.5 max-wide:[--spacing:var(--provider-stage-unit)] max-wide:[--text-20:calc(var(--provider-stage-unit)*5)] max-wide:[--text-24:calc(var(--provider-stage-unit)*6)]`}
         >
@@ -250,7 +189,6 @@ export function ProviderShowcase({
               );
             })}
 
-            {/* `Click here` (997:21359): 165x58, turned −28.97°, at (554, 561). */}
             <div
               data-click-here=""
               className="absolute top-140.25 left-138.5 flex h-32.75 w-43 items-center justify-center opacity-0"

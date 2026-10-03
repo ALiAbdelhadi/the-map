@@ -66,15 +66,6 @@ function LocaleSwitch({ content }: { content: SiteContent }) {
   );
 }
 
-/**
- * Header, floating over the hero exactly as in Figma `888:20482` (y 88 on the
- * 1440 frame, 1357 wide).
- *
- * From 1023 (`desktop:`) the bar shows the full nav row, the 1440 frame reduced by
- * `--scale-landscape` (theme.css). The outer box is the full-bleed query container that
- * unit is measured on, so its offset from the top is padding on the inner box (a
- * container cannot size its own box in its own units).
- */
 export function Header({ content }: { content: SiteContent }) {
   return (
     <div className="@container absolute inset-x-0 top-5 z-20 tablet:top-8.25 desktop:top-0">
@@ -106,28 +97,6 @@ const SOCIAL_ICONS = {
   instagram: InstagramIcon,
 } as const;
 
-/**
- * Footer, Figma `930:20465` (tablet `1037:32742`, phone `1041:29724`).
- *
- * Every frame: a 1 px top stroke painted with the primary/500 -> green/600 gradient
- * (blue on the left, green on the right, in the Arabic frame too) and the Footer
- * shadow; top corners 62 on the phone, 100 from the tablet up. CSS borders cannot
- * take a gradient on a rounded edge, so the outer box carries the gradient and the
- * inner panel sits 1 px lower with the same radius — the gradient shows only along
- * the top, tapering round the corners exactly like a top-only stroke.
- * Phone: 73 px above the column, and it overlaps the provider section by 51 px.
- * Tablet: 824 tall, the column 74 px down, a 408x92 logo.
- *
- * Watermark: `icon blue 2` (`1022:20737` / `1037:32743` / `1041:29725`) is the maze-pin
- * mark in primary/500 at 5 % opacity, drawn from a square image — 1662 on the 1440
- * frame, 853 on the tablet, 759 on the phone. The mark itself is `logo-mark.svg`
- * (the same artwork, vector), placed where the square puts it: phone 434 wide, 150
- * down, centre +8; tablet 488 wide, 131 down, centred; desktop 951 wide, 372 above
- * the top, centre +13. The Arabic frame (`1028:20725`) keeps the same physical
- * position, so it is placed with `left`, not a logical property.
- * 1023–1439: the desktop watermark and logo scale with viewport ÷ 1440 (`footer-*`
- * tokens), exact at 1440.
- */
 export function Footer({ content }: { content: SiteContent }) {
   return (
     <div className="relative -mt-12.75 w-full rounded-t-footer bg-gradient-to-r from-primary-500 to-green-600 pt-px shadow-footer tablet:mt-0 tablet:rounded-t-footer-wide">

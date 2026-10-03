@@ -1,6 +1,5 @@
 import type { SVGProps } from "react";
 
-/** wider-reach — Figma icon, recoloured to currentColor. */
 export function WiderReachIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg

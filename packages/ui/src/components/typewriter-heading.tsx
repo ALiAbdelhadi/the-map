@@ -8,24 +8,9 @@ import { gsap, MOTION_OK, useGSAP } from "../motion/gsap";
 import { revealOnce } from "../motion/reveal";
 import { prototype } from "../motion/tokens";
 
-/**
- * Heading that types itself once, when it scrolls into view.
- *
- * Figma `Trust Built on Real Reviews` (`1028:23286`) is a typewriter. Approved
- * 2026-09-22: it types once rather than looping, one character every 45 ms behind a
- * caret that fades away when the line is complete.
- *
- * The full heading is laid out invisibly underneath, so the line keeps its final
- * width and position while it types — nothing re-centres or jumps — and the
- * gradient spans the whole heading from the first letter. Typing grows the visible
- * text by whole grapheme clusters from a substring, so Arabic letters stay joined.
- * The full heading is the accessible name throughout; before JavaScript runs and
- * under reduced motion it is simply shown complete.
- */
 export type TypewriterHeadingProps = {
   children: string;
   className?: string;
-  /** Classes for the text itself — where the gradient goes. */
   textClassName?: string;
 };
 
@@ -40,7 +25,6 @@ function graphemes(text: string): string[] {
 
 export function TypewriterHeading({ children, className, textClassName }: TypewriterHeadingProps) {
   const ref = useRef<HTMLHeadingElement>(null);
-  // null: show everything (server render, reduced motion, finished).
   const [count, setCount] = useState<number | null>(null);
   const [typing, setTyping] = useState(false);
   const pieces = graphemes(children);
@@ -71,7 +55,6 @@ export function TypewriterHeading({ children, className, textClassName }: Typewr
           },
           onComplete: () => {
             setCount(null);
-            // Only this heading's caret; the fade is killed with the rest on revert.
             caretFade = gsap.to(heading.querySelector("[data-caret]"), {
               opacity: 0,
               ...figmaTween(prototype.typewriter.caret),
@@ -82,8 +65,6 @@ export function TypewriterHeading({ children, className, textClassName }: Typewr
             });
           },
         });
-        // revealOnce: if the page loaded or jumped past the heading, it is shown
-        // complete at once rather than typing off-screen.
         const trigger = revealOnce({
           trigger: heading,
           start: "top 85%",
@@ -103,7 +84,6 @@ export function TypewriterHeading({ children, className, textClassName }: Typewr
         mm.revert();
       };
     },
-    // Revert on every change of text, so a stale trigger or tween never outlives it.
     { scope: ref, dependencies: [children], revertOnUpdate: true },
   );
 
@@ -112,7 +92,6 @@ export function TypewriterHeading({ children, className, textClassName }: Typewr
   return (
     <h2 ref={ref} aria-label={children} className={cn("flex justify-center", className)}>
       <span aria-hidden="true" className={cn("grid", textClassName)}>
-        {/* The finished heading, invisible, holds the line's width and place. */}
         <span className="invisible col-start-1 row-start-1">{children}</span>
         <span className="col-start-1 row-start-1 text-start">
           {typed}

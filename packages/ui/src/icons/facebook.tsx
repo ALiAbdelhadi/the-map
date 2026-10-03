@@ -1,6 +1,5 @@
 import { useId, type SVGProps } from "react";
 
-/** facebook — Figma icon, recoloured to currentColor. */
 export function FacebookIcon(props: SVGProps<SVGSVGElement>) {
   const clipId = useId();
   return (

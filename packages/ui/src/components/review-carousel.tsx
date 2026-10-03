@@ -9,20 +9,6 @@ import { prototype } from "../motion/tokens";
 import { measureSizes, morphSizes, type Sizes } from "../motion/size-morph";
 import { ReviewCard } from "./review-card";
 
-/**
- * Reviews row.
- *
- * Figma `Real Reviews` `1015:20920` (tablet `1037:27514`): four cards, one per
- * reviewer, exactly one expanded; row gap 68 (tablet 20).
- *
- * Motion, rebuilt 2026-09-22: a click on a portrait expands it. Each card is a single
- * element in both states, so only widths move — the card and its photo column slide
- * from their old widths to their new ones (0.5 s strong ease-in-out), the photos
- * re-crop with object-cover instead of stretching, the old review text fades out
- * at once and the new one fades in once its card has room. Widths are measured
- * before and after the change and handed back to the classes when the move ends,
- * so the layout stays responsive.
- */
 export type Review = {
   id: string;
   name: string;
@@ -33,9 +19,7 @@ export type Review = {
 
 export type ReviewCarouselProps = {
   reviews: Review[];
-  /** 24x24 rating icon. */
   ratingIcon: ReactNode;
-  /** 53x53 decorative quote mark. */
   quoteMark?: ReactNode;
   label: string;
   className?: string;
@@ -68,14 +52,9 @@ export function ReviewCarousel({
       before.current = null;
       if (!root || !saved) return;
 
-      // A new choice cancels every text fade still pending from earlier clicks — a
-      // delayed fade-in must never land on a card that has closed since — and hands
-      // the texts back to their classes (closed: invisible).
       const texts = root.querySelectorAll("[data-review-text]");
       const oldText = root.querySelector(`[data-review='${saved.from}'] [data-review-text]`);
       const newText = root.querySelector(`[data-review='${expandedId}'] [data-review-text]`);
-      // Where the closing text stands now: fully shown, unless a quick click caught it
-      // still fading in (then GSAP's inline opacity says how far it got).
       const inline = oldText instanceof HTMLElement ? oldText.style.opacity : "";
       const oldOpacity = inline === "" ? 1 : Number(inline);
       gsap.killTweensOf(texts);

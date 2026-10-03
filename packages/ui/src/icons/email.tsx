@@ -1,6 +1,5 @@
 import { useId, type SVGProps } from "react";
 
-/** email — Figma icon, recoloured to currentColor. */
 export function EmailIcon(props: SVGProps<SVGSVGElement>) {
   const clipId = useId();
   return (

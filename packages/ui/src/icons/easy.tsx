@@ -1,6 +1,5 @@
 import type { SVGProps } from "react";
 
-/** easy — Figma icon, recoloured to currentColor. */
 export function EasyIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg

@@ -1,6 +1,5 @@
 import type { SVGProps } from "react";
 
-/** language — Figma icon, recoloured to currentColor. */
 export function LanguageIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg

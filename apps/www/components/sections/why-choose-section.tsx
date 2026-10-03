@@ -18,46 +18,6 @@ import { useAutoplay } from "@themap/ui/motion/use-autoplay";
 
 import type { SiteContent } from "../../content/types";
 
-/**
- * Why Choose Us.
- *
- * Figma `914:20605` (1440x1024) and the phone set `1038:25190` (375 wide): the maze
- * (`image 6676`, 2026-09-25) and the character (`image 6665`) behind a glass card
- * with the title row and five feature rows.
- *
- * 768 (`1037:26497`): the 608 px card sits 15 px down and 98 px in, at the 1440
- * type sizes, with the character (426 px) standing under it, its head 65 px over the
- * card; the section is 1024 tall.
- *
- * Six variants — the default and one per feature. Choosing a feature:
- * - zooms and pans the maze (each variant places the maze image differently);
- * - removes the character;
- * - outlines the row and shows the feature beside the card — a pill with the
- *   feature's chip, label and description, reached by a hand-drawn arrow on the
- *   1440 frame; below the desktop breakpoint (phone and tablet) the pill sits 62 px
- *   under the card, without the arrow — the tablet frame is too narrow to hold it
- *   beside the card.
- *
- * 1023–1439 (responsive pass 2026-09-26, no Figma frame): the 1440 composition,
- * reduced as one piece — `frame-scaled` re-bases every spacing step, the type sizes,
- * leading and card radius on `--frame-px` (100vw / 1440, 1 px from 1440 up), so the
- * card, the pill and its arrow, the section height and the gaps all shrink together
- * (0.71 at 1023: labels 28 px, rows 51 px tall, the description 23 px) and nothing
- * leaves the section. The maze and the character are already % of the section.
- *
- * Motion: clicking a row zooms the maze and moves the card over 0.8 s on a strong
- * ease-in-out; the feature pill rises in just after. Clicking the selected row goes
- * back to the default the same way. Hover only restyles the row.
- *
- * Autoplay, owner-approved 2026-09-29 (revised the same day): every
- * WHY_CHOOSE_AUTOPLAY_SECONDS (10 s) the next feature is chosen — the default on load,
- * then All-in-One → Flexible → Nearby → Fast → Easy → All-in-One, forever — through
- * the same path a click takes. No progress line and no hover or focus pause; it waits
- * only while the tab is hidden or less than half of the card is in view. A click
- * restarts the count. None under reduced motion. Silent to screen readers; the rows
- * keep `aria-selected`.
- */
-
 const ICONS = {
   "all-in-one": AllInOneIcon,
   flexible: FlexibleIcon,
@@ -68,33 +28,10 @@ const ICONS = {
 
 type Place = { scale: number; xPercent: number; yPercent: number };
 
-/**
- * The desktop composition (card left, pill and arrow beside it, character at the end)
- * starts where the CSS `desktop:` classes do — `--breakpoint-desktop`, 63.9375rem (1023).
- * Keep the two in step: the image `sizes` below are built from it too.
- */
 const DESKTOP = "(min-width: 63.9375rem)";
 
-/** Scale of the 1440 frame at this width — the JS twin of `--frame-px` (theme.css). */
 const frameScale = () => Math.min(1, window.innerWidth / 1440);
 
-/*
- * Where each variant puts the maze, as a transform of the default placement. The
- * `[data-maze]` box IS the default image rectangle, so the origin is its top-left
- * corner, the scale is (variant width / default width) and the shift is in % of the
- * box. Rectangles are the `image 6676`–`6692` nodes (2026-09-25 images, one source).
- * 1440 (`914:20600`–`914:20603`): default (−222, −93, 1721x1224);
- *   All-in-One (−458, 0, 2175), Flexible (−972, 0, 3427), Nearby (−1711, −57, 5133),
- *   Fast (−1451, −276, 3981), Easy (−1854, −534, 5481).
- * 768 (`1037:26497`, the 1440 composition placed at x −64): default
- *   (−303, −131, 1826x1300); the feature variants reuse the 1440 rectangles shifted
- *   by the same 64 px.
- * 375 (`1038:25191`–`1038:25300`): default (−445, 0, 1487x1058); All-in-One
- *   (−458, −146, 1896), Flexible (−972, −308, 2352), Nearby (−1273, −334, 3163),
- *   Fast (−1740, −200, 4293), Easy (0, 0, 4293).
- * The Arabic 1440 default (`1028:22136`) sits the maze slightly smaller; the feature
- * variants reuse the English transforms.
- */
 const MAZE = {
   desktop: {
     places: {
@@ -125,15 +62,6 @@ const MAZE = {
   },
 } as const;
 
-/**
- * Where the maze goes for a selection, kept covering the section.
- *
- * The Figma rectangles are drawn for the 375, 768 and 1440 frames. At other widths
- * (and in the Arabic 1440 frame, whose default box is smaller) the same transform
- * could leave a band of the section uncovered, so the result is scaled up just
- * enough to cover and its edges are pulled back inside the section. At the design
- * widths the Figma rectangles already cover, so they pass through unchanged.
- */
 function mazePlace(section: HTMLElement, box: HTMLElement, selected: string | null): Place {
   const phone = !window.matchMedia("(min-width: 48rem)").matches;
   const desktop = window.matchMedia(DESKTOP).matches;
@@ -142,7 +70,6 @@ function mazePlace(section: HTMLElement, box: HTMLElement, selected: string | nu
     ? maze.places[selected as FeatureId]
     : { scale: 1, xPercent: 0, yPercent: 0 };
 
-  // The section's natural height — a running height tween is set inline.
   const inline = section.style.height;
   section.style.height = "";
   const H = section.clientHeight;
@@ -158,13 +85,6 @@ function mazePlace(section: HTMLElement, box: HTMLElement, selected: string | nu
   return { scale, xPercent: ((left - x) / w) * 100, yPercent: ((top - y) / h) * 100 };
 }
 
-/*
- * How far the card moves from its default place in each variant (px of the frame; the
- * desktop shift is reduced with the composition below 1440, see `frameScale`).
- * 1440: default (48, 222); All-in-One (62, 195); Nearby (51, 236); others (51, 195).
- * 375: default (10, 90); All-in-One (18, 134), Flexible (17, 160), Nearby (17, 101),
- * Fast (17, 124 — its frame is 475 wide, the extra 50 px ignored), Easy (17, 196).
- */
 const CARD_SHIFT = {
   desktop: {
     "all-in-one": [14, -27],
@@ -184,7 +104,6 @@ const CARD_SHIFT = {
 
 type FeatureId = keyof typeof ICONS;
 
-/** The card's x / y for `selected` at the current width and direction. */
 function cardShift(selected: string | null) {
   const phone = !window.matchMedia("(min-width: 48rem)").matches;
   const shift = selected
@@ -204,14 +123,11 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
 
   const current = useRef<string | null>(null);
 
-  // A resize changes the section's shape (and maybe the breakpoint): re-fit the maze.
   useEffect(() => {
     const fit = () => {
       const section = ref.current;
       const box = section?.querySelector<HTMLElement>("[data-maze]");
       if (!section || !box) return;
-      // A move still running would finish at the target measured for the old width,
-      // so stop it and place the maze and the card for the new one straight away.
       gsap.killTweensOf(box);
       gsap.set(box, mazePlace(section, box, current.current));
       const card = section.querySelector("[data-why-card]");
@@ -268,7 +184,6 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
       gsap.to("[data-why-card]", { ...cardShift(selected), ...move, overwrite: "auto" });
 
       gsap.to("[data-character]", { autoAlpha: selected ? 0 : 1, ...arrive, overwrite: "auto" });
-      // The feature pill arrives after the card has started moving; the arrow draws with it.
       gsap.fromTo(
         "[data-why-tip]:not([hidden])",
         { autoAlpha: 0, y: 12 },
@@ -280,8 +195,6 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
         { opacity: 1, ...arrive, overwrite: true },
       );
 
-      // Below the desktop breakpoint the pill sits under the card, so the section grows
-      // to fit it.
       const stacked = !window.matchMedia(DESKTOP).matches;
       if (stacked && height.current) {
         gsap.fromTo(section, { height: height.current }, { height: "auto", ...move });
@@ -293,20 +206,11 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
   const title = content.whyChoose.title;
 
   return (
-    // The phone feature variants (`1038:25208`–`1038:25300`) are 1024 tall: the card
-    // moves down (a transform, outside layout) and the pill sits under it.
     <section
       ref={ref}
       id="why-us"
       className={`relative isolate flex w-full flex-col items-center overflow-hidden px-2 pt-22.5 pb-7.25 tablet:min-h-256 tablet:px-0 tablet:pt-3.75 tablet:pb-4 desktop:frame-scaled desktop:flex-row desktop:items-center desktop:justify-center desktop:px-8 desktop:py-0 ${selected ? "min-h-256" : ""}`}
     >
-      {/*
-        The maze box is the default `image 6676` rectangle at each frame, in % of the
-        section: 375 `1171:9057` (−445, 0, 1487 wide); 768 `1171:9038` (−303, −131,
-        1826x1300); 1440 `1171:9019` (−222, −93, 1721x1224), Arabic `1170:8755`
-        (−222, −79, 1681x1196). The maze is not mirrored in the Arabic 1440 frame, so
-        the desktop box is placed from the physical left.
-      */}
       <div
         data-maze=""
         aria-hidden="true"
@@ -321,13 +225,6 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
         />
       </div>
 
-      {/*
-        Phone: the card keeps Figma's place in the 375 frame (8 px in) inside a 359 px
-        column that is centred on wider phones, so it never drifts to one side.
-        Tablet: the 768 frame's column (98 px in), centred, so a wider tablet keeps the
-        card over the character instead of pushing the card to one side.
-        Desktop: the 1284 px content column of the 1440 frame, reduced with it.
-      */}
       <div className="flex w-full max-w-89.75 justify-start tablet:max-w-192 tablet:ps-24.5 desktop:w-321 desktop:max-w-none desktop:ps-0">
         <div ref={card} data-why-card="" className="relative flex max-w-full flex-col gap-15.5">
           <GlassCard surface="field" className="w-fit max-w-full tablet:w-152">
@@ -367,7 +264,6 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
                 hidden={selected !== feature.id}
                 className="desktop:absolute desktop:start-full desktop:top-1/2 desktop:h-133.75 desktop:w-182.5 desktop:-translate-y-1/2"
               >
-                {/* `arrow` (914:19995): 336.767 px, turned 13.22°, 130 px down. */}
                 <span
                   aria-hidden="true"
                   className="absolute start-0 top-32.5 hidden size-101.25 items-center justify-center desktop:flex rtl:-scale-x-100"
@@ -381,7 +277,6 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
                     className="size-84.25 rotate-[13.22deg]"
                   />
                 </span>
-                {/* Pill 914:19999 — phone 1038:25223. */}
                 <div className="flex items-center rounded-pill bg-surface-glass-strong px-7.5 py-3 text-bg tablet:px-10 tablet:py-5 desktop:absolute desktop:start-32.25 desktop:top-0 desktop:px-17 desktop:py-6">
                   <div className="flex flex-col gap-0 desktop:w-116.25 desktop:gap-3">
                     <div className="flex h-16.5 items-center gap-6 pe-5 py-1 desktop:h-auto">
@@ -403,17 +298,6 @@ export function WhyChooseSection({ content }: { content: SiteContent }) {
         </div>
       </div>
 
-      {/*
-        The character (`image 6665` 1440 `1170:8726`, 768 `1170:8751`, 375
-        `1170:8746`) is one uploaded cut-out; the file is cropped to the figure, so
-        the box below is the figure itself, not Figma's padded image box.
-        375: in flow under the card, 309 px tall, its head 66 px over the card and its
-        centre 83 px right of the column's centre. 768: 426 px tall, 65 px over the
-        card, centre 29.5 px right of centre. 1440: behind the card at the section's
-        end, 1003 px tall, 122 px in from the end, 1 px past the bottom. The Arabic
-        1440 frame (`1170:8730`) mirrors it and draws it smaller: 914 px tall, 139 px
-        in, 25 px up. It is not in any feature variant.
-      */}
       <Image
         data-character=""
         src="/images/why-choose-character-v2.webp"

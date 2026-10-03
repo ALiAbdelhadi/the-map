@@ -6,30 +6,13 @@ import { cn } from "../lib/cn";
 import { type FigmaTransition, figmaTween } from "../motion/figma-easing";
 import { gsap, useGSAP } from "../motion/gsap";
 
-/**
- * A gradient stroke drawn over its parent's border area.
- *
- * Figma strokes several components with a two-stop linear gradient and animates
- * the stops between variants — the `Get the App Now` badge (`936:20234`), the
- * `Service provider Cart` pills (`995:20700`), the search field (`984:20302`) and the
- * email card (`998:20792`). CSS cannot animate a gradient border directly, so this
- * is an overlay: a gradient in a ring cut out with a mask, its two stops held in CSS
- * variables that GSAP tweens. The parent needs `relative` and its own radius; the
- * overlay inherits the radius.
- *
- * `states` are the variants' stops, left to right, as (position 0–1, colour token):
- * state 0 at rest, state 1 while the parent is hovered or has focus. (Figma loops
- * some of these; the site only answers hover — approved 2026-09-22.)
- */
 export type GradientStop = [position: number, color: string];
 export type GradientState = [GradientStop, GradientStop] | null;
 
 export type GradientBorderProps = {
   states: [GradientState, GradientState];
   mode: "hover";
-  /** [in, out]. */
   steps: [FigmaTransition, FigmaTransition];
-  /** Border width class, e.g. `p-1` for Figma's 4 px stroke. */
   width: string;
   className?: string;
 };
@@ -40,7 +23,6 @@ function resolve(color: string): string {
 }
 
 function vars(state: GradientState) {
-  // No stroke is drawn as a fully transparent ring, so it can fade in.
   if (!state) return { "--gb-o": 0 };
   const [[p1, c1], [p2, c2]] = state;
   return {
@@ -55,8 +37,6 @@ function vars(state: GradientState) {
 export function GradientBorder({ states, steps, width, className }: GradientBorderProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const [state, setState] = useState<0 | 1>(0);
-  // The state last drawn. A run whose state has not changed (the first run, and
-  // React's strict-mode re-run after its revert) sets the stroke instead of tweening.
   const drawn = useRef<0 | 1 | null>(null);
 
   useGSAP(
@@ -71,7 +51,6 @@ export function GradientBorder({ states, steps, width, className }: GradientBord
       }
       drawn.current = state;
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      // The transition into state 1 is step 0; back into state 0 is step 1.
       const timing = reduce ? { duration: 0 } : figmaTween(steps[state === 1 ? 0 : 1]);
       if (!target) {
         gsap.to(ring, { "--gb-o": 0, ...timing, overwrite: "auto" });

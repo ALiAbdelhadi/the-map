@@ -5,39 +5,16 @@ import { type RefObject, useEffect, useRef } from "react";
 import { gsap, MOTION_OK } from "./gsap";
 
 export type AutoplayOptions = {
-  /** The current state. Any change rebuilds the timer, so it starts again from zero. */
   step: unknown;
-  /** Seconds before `next` runs. */
   seconds: number;
-  /**
-   * The progress line's fill for the current step, if it shows one. Its width grows
-   * from 0 to 100 % over `seconds`; that tween is the timer. Without a fill the timer
-   * is an invisible tween of the same length.
-   */
   fill?: (root: HTMLElement) => Element | null | undefined;
-  /** True while a change is still animating; `next` then waits for it to end. */
   busy?: (root: HTMLElement) => boolean;
-  /** Moves on to the next step. */
   next: () => void;
-  /** Freeze while a mouse is over `root` or keyboard focus is inside it (default true). */
   pauseOnInteraction?: boolean;
 };
 
-/**
- * Autoplay shared by the stepper and Why Choose Us (owner-approved 2026-09-26 and
- * 2026-09-29, docs/figma-gaps.md D1).
- *
- * Every `seconds` the component moves on through the same path a click takes. The
- * count freezes, and resumes where it stopped, while a mouse is over `root`, keyboard
- * focus (`:focus-visible`) is inside it, the tab is hidden, or less than half of
- * `root` is in view. A mouse click's focus does not pause it: hover already covers
- * that, and leaving it would stop autoplay for good after one click. Under reduced
- * motion there is no autoplay (and the component hides its line).
- */
 export function useAutoplay(ref: RefObject<HTMLElement | null>, options: AutoplayOptions) {
   const latest = useRef(options);
-  // Kept across rebuilds: the mouse is often still inside when a change (its own
-  // click) restarts the timer, and no new `pointerenter` will say so.
   const mouseInside = useRef(false);
   useEffect(() => {
     latest.current = options;
@@ -62,8 +39,6 @@ export function useAutoplay(ref: RefObject<HTMLElement | null>, options: Autopla
       wait.away;
 
     const next = () => {
-      // Never cut into a change still animating (it cannot be, `seconds` after the
-      // last change, but a retry costs nothing), and a retry still honours a pause.
       if (latest.current.busy?.(root) || waiting()) {
         ctx.add(() => gsap.delayedCall(0.1, next));
         return;
@@ -126,7 +101,6 @@ export function useAutoplay(ref: RefObject<HTMLElement | null>, options: Autopla
     );
     watch.observe(root);
 
-    // Focus can already be inside (keyboard focus made the change).
     wait.focus = root.contains(document.activeElement) && root.matches(":has(:focus-visible)");
     sync();
     return () => {

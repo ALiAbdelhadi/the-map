@@ -1,6 +1,5 @@
 import type { SVGProps } from "react";
 
-/** app-store — Figma icon, recoloured to currentColor. */
 export function AppStoreIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg

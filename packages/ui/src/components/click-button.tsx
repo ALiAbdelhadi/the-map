@@ -2,16 +2,8 @@ import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 
-/**
- * Primary call-to-action.
- *
- * Figma `Click here` — Default `996:20963`, Hover `997:21147`.
- * 165x58, px 20, py 8, radius 12, gap 7, label 24 px semibold,
- * trailing arrow 17x26. Default bg Secondary/500, hover bg primary/500.
- */
 export type ClickButtonProps = ComponentPropsWithoutRef<"button"> & {
   children: ReactNode;
-  /** Trailing arrow, 17x26 in Figma. */
   arrow?: ReactNode;
 };
 

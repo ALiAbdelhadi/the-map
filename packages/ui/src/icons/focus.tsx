@@ -1,6 +1,5 @@
 import { useId, type SVGProps } from "react";
 
-/** focus — Figma icon, recoloured to currentColor. */
 export function FocusIcon(props: SVGProps<SVGSVGElement>) {
   const clipId = useId();
   return (
