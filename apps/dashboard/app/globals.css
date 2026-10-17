@@ -12,7 +12,10 @@
   --color-primary-950: #001d3d;
 
   --color-neutral-50: #ffffff;
+  --color-neutral-100: #f2f2f2;
+  --color-neutral-300: #b5b5b5;
   --color-neutral-500: #8a8a8a;
+  --color-neutral-600: #747474;
 
   --color-error-600: #e90000;
 
@@ -20,5 +23,7 @@
 
   --shadow-icon: 0 0 1px 0 rgb(8 125 253 / 0.44);
   --shadow-card-hover: -1px 0 4px 0 rgb(8 125 253 / 0.32);
+  --shadow-pill: 0 0 2px 0 rgb(8 125 253 / 0.2);
+  --shadow-avatar: 0 -1px 0.5px 0 rgb(178 178 178 / 0.25), 0 1px 0.5px 0 rgb(178 178 178 / 0.25);
   --shadow-sidebar: -1px 0 4px 0 rgb(8 125 253 / 0.32);
 }
