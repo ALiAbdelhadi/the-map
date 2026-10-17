@@ -8,13 +8,17 @@
   --color-primary-300: #419bfd;
   --color-primary-500: #087dfd;
   --color-primary-800: #014692;
+  --color-primary-900: #013267;
   --color-primary-950: #001d3d;
 
   --color-neutral-50: #ffffff;
   --color-neutral-500: #8a8a8a;
 
+  --color-error-600: #e90000;
+
   --font-sans: var(--font-baloo-2), ui-sans-serif, system-ui, sans-serif;
 
   --shadow-icon: 0 0 1px 0 rgb(8 125 253 / 0.44);
   --shadow-card-hover: -1px 0 4px 0 rgb(8 125 253 / 0.32);
+  --shadow-sidebar: -1px 0 4px 0 rgb(8 125 253 / 0.32);
 }
