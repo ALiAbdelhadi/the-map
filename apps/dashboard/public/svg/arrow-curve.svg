@@ -1,0 +1,28 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="Arrow Curve" clip-path="url(#clip0_0_170)">
+<g id="Vector" filter="url(#filter0_d_0_170)">
+<use xlink:href="#stroke0_0_170" fill="#087DFD"/>
+<mask id="stroke1_0_170" maskUnits="userSpaceOnUse" x="0.503026" y="2.42764" width="14" height="10" fill="black">
+<rect fill="white" x="0.503026" y="2.42764" width="14" height="10"/>
+<use xlink:href="#stroke0_0_170"/>
+</mask>
+<path d="M13.3626 3.42795C13.2998 3.4233 13.2474 3.47175 13.2438 3.53385C13.2416 3.57255 12.9989 7.4202 11.0799 8.6157C10.343 9.075 9.43995 9.0846 8.39685 8.6448C4.31175 6.92145 2.2845 10.2018 1.84395 11.0439L1.72665 10.2829C1.7172 10.2216 1.66035 10.1799 1.5984 10.1889C1.53705 10.1984 1.4949 10.2558 1.50435 10.3171L1.68315 11.4768C1.689 11.515 1.7142 11.5477 1.74975 11.563C1.76415 11.5692 1.77915 11.5722 1.7943 11.5722C1.8168 11.5722 1.8393 11.5654 1.85835 11.5522L2.8206 10.8866C2.87175 10.8513 2.8845 10.7811 2.8491 10.7301C2.81355 10.6791 2.74365 10.6659 2.6925 10.7016L2.03595 11.1558C2.4327 10.363 4.3203 7.17 8.30955 8.8521C9.4239 9.32205 10.3959 9.3069 11.1989 8.80665C13.2158 7.55025 13.4591 3.70965 13.4685 3.54675C13.472 3.48465 13.4247 3.4314 13.3626 3.42795Z" stroke-width="0.4" stroke="#087DFD" mask="url(#stroke1_0_170)"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_d_0_170" x="1.303" y="3.22761" width="15.3657" height="10.5446" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="2" dy="1"/>
+<feGaussianBlur stdDeviation="0.5"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.0313726 0 0 0 0 0.490196 0 0 0 0 0.992157 0 0 0 0.23 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_170"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_0_170" result="shape"/>
+</filter>
+<clipPath id="clip0_0_170">
+<rect width="15" height="15" fill="white"/>
+</clipPath>
+<path id="stroke0_0_170" d="M13.3626 3.42795C13.2998 3.4233 13.2474 3.47175 13.2438 3.53385C13.2416 3.57255 12.9988 7.4202 11.0799 8.6157C10.3429 9.075 9.43995 9.0846 8.39685 8.6448C4.31175 6.92145 2.2845 10.2018 1.84395 11.0439L1.72665 10.2829C1.7172 10.2216 1.66035 10.1799 1.5984 10.1889C1.53705 10.1984 1.4949 10.2558 1.50435 10.3171L1.68315 11.4768C1.689 11.5151 1.7142 11.5477 1.74975 11.563C1.76415 11.5692 1.77915 11.5722 1.7943 11.5722C1.8168 11.5722 1.8393 11.5654 1.85835 11.5522L2.8206 10.8866C2.87175 10.8513 2.8845 10.7811 2.8491 10.7301C2.81355 10.6791 2.74365 10.6659 2.6925 10.7016L2.03595 11.1558C2.4327 10.363 4.3203 7.17 8.30955 8.8521C9.4239 9.32205 10.3959 9.3069 11.1988 8.80665C13.2157 7.55025 13.4591 3.70965 13.4685 3.54675C13.472 3.48465 13.4247 3.4314 13.3626 3.42795Z"/>
+</defs>
+</svg>
