@@ -105,16 +105,14 @@ const marker = (shape: string, cx: number, cy: number) => {
 
 export function UserGrowth() {
   return (
-    <section className="flex min-w-0 flex-1 flex-col gap-4 rounded-3xl bg-neutral-50 p-6 shadow-card">
-      <header className="flex flex-col gap-2">
-        <div className="flex items-start justify-between gap-6">
-          <h2 className="text-2xl leading-[normal]">User Growth Over Time</h2>
-          <div className="flex shrink-0 items-start gap-[46px]">
-            <RangeFilter label="User growth range" className="gap-1" />
-            <SortButton />
-          </div>
+    <section className="flex min-w-0 flex-1 flex-col gap-4 rounded-3xl bg-neutral-50 p-4 shadow-card sm:p-6">
+      <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-2">
+        <h2 className="text-2xl leading-[normal]">User Growth Over Time</h2>
+        <div className="order-last mt-2 flex flex-wrap items-start gap-4 sm:order-none sm:mt-0 sm:gap-[46px]">
+          <RangeFilter label="User growth range" className="gap-1" />
+          <SortButton />
         </div>
-        <p className="text-base leading-[normal] text-primary-800">
+        <p className="basis-full text-base leading-[normal] text-primary-800">
           Track how the number of users grows over time.
         </p>
       </header>
@@ -192,11 +190,11 @@ export function UserGrowth() {
         </div>
       </div>
 
-      <ul className="flex items-center justify-center gap-6">
+      <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
         {SERIES.map((series) => (
           <li
             key={series.label}
-            className="flex items-center gap-2 text-xl leading-[normal] text-neutral-600"
+            className="flex items-center gap-2 text-base leading-[normal] text-neutral-600 sm:text-xl"
           >
             <span aria-hidden className={series.swatch} />
             {series.label}

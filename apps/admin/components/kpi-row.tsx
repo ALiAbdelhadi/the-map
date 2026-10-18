@@ -42,7 +42,10 @@ const KPIS: Kpi[] = [
 
 export function KpiRow() {
   return (
-    <section aria-label="Key metrics" className="flex flex-wrap items-center justify-center gap-6">
+    <section
+      aria-label="Key metrics"
+      className="grid gap-4 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-6"
+    >
       {KPIS.map((kpi) => (
         <KpiCard key={kpi.label} {...kpi} />
       ))}

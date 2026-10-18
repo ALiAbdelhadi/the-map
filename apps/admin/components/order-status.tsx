@@ -102,13 +102,13 @@ const bar = (left: number, value: number) => {
 
 export function OrderStatus() {
   return (
-    <section className="flex min-w-0 flex-1 flex-col gap-9 rounded-3xl bg-neutral-50 p-6 shadow-card">
-      <header className="flex items-start justify-between gap-6">
+    <section className="flex min-w-0 flex-1 flex-col gap-9 rounded-3xl bg-neutral-50 p-4 shadow-card sm:p-6">
+      <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-4">
         <div className="flex flex-col gap-2 leading-[normal]">
           <h2 className="text-2xl leading-[normal]">Order Status</h2>
           <p className="text-base leading-[normal] text-primary-800">Overview of order status</p>
         </div>
-        <div className="flex items-start gap-[46px]">
+        <div className="flex flex-wrap items-start gap-4 sm:gap-[46px]">
           <RangeFilter label="Order status range" className="gap-1" />
           <SortButton />
         </div>
@@ -199,11 +199,11 @@ export function OrderStatus() {
         </div>
       </div>
 
-      <ul className="flex items-center justify-center gap-6">
+      <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
         {LEGEND.map((status) => (
           <li
             key={status.label}
-            className="flex items-center gap-2 text-xl leading-[normal] text-neutral-600"
+            className="flex items-center gap-2 text-base leading-[normal] text-neutral-600 sm:text-xl"
           >
             <span className={`h-[5px] w-[15px] rounded-xl bg-linear-to-l ${status.swatch}`} />
             {status.label}

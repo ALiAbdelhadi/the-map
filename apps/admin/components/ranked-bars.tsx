@@ -35,6 +35,7 @@ export function RankedBars({ items, unit, label, barX }: RankedBarsProps) {
       viewBox={`0 0 ${width} ${height}`}
       width={width}
       height={height}
+      className="h-auto max-w-full"
       role="img"
       aria-label={label}
     >

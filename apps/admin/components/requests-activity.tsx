@@ -59,15 +59,15 @@ const AREA = `${LINE} L${x(REQUESTS.length - 1)} ${BASELINE} L${x(0)} ${BASELINE
 
 export function RequestsActivity() {
   return (
-    <section className="flex min-w-0 flex-1 flex-col gap-9 rounded-3xl bg-neutral-50 p-6 shadow-card">
-      <header className="flex items-start justify-between gap-6">
+    <section className="flex min-w-0 flex-1 flex-col gap-9 rounded-3xl bg-neutral-50 p-4 shadow-card sm:p-6">
+      <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-4">
         <div className="flex flex-col gap-2 leading-[normal]">
           <h2 className="text-2xl leading-[normal]">Requests Activity</h2>
           <p className="text-base leading-[normal] text-primary-800">
             Track requests across the platform
           </p>
         </div>
-        <div className="flex items-start gap-[46px]">
+        <div className="flex flex-wrap items-start gap-4 sm:gap-[46px]">
           <RangeFilter label="Requests range" className="gap-1" />
           <SortButton />
         </div>

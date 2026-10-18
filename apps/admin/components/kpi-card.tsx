@@ -20,7 +20,7 @@ export function KpiCard({
   tightValue = false,
 }: Kpi) {
   return (
-    <article className="group relative flex h-[120px] w-[206px] shrink-0 flex-col items-center justify-center overflow-clip rounded-3xl border border-primary-200 bg-neutral-50 p-3 transition-[border-color,box-shadow] duration-300 hover:border-primary-300 hover:shadow-card-hover">
+    <article className="group relative flex h-[120px] w-full shrink-0 sm:w-[206px] flex-col items-center justify-center overflow-clip rounded-3xl border border-primary-200 bg-neutral-50 p-3 transition-[border-color,box-shadow] duration-300 hover:border-primary-300 hover:shadow-card-hover">
       <div className="relative flex flex-col items-start justify-center gap-2">
         <div className="flex flex-col items-start gap-2">
           <div className="flex items-center gap-2">
@@ -53,7 +53,7 @@ export function KpiCard({
       </div>
       <span
         aria-hidden
-        className="pointer-events-none absolute top-[-4px] left-[156px] size-[55px] transition-transform duration-300 group-hover:-translate-x-[15px] group-hover:-translate-y-2.5"
+        className="pointer-events-none absolute top-[-4px] -right-[5px] size-[55px] transition-transform duration-300 group-hover:-translate-x-[15px] group-hover:-translate-y-2.5"
       >
         <span className="absolute inset-[-181.82%]">
           <Image alt="" src="/svg/kpi-glow-1.svg" fill />

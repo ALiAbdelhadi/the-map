@@ -124,10 +124,10 @@ const labelRotation = (degrees: number) => ((((degrees + 90) % 180) + 180) % 180
 
 export function RevenueGrowth() {
   return (
-    <section className="relative flex w-[346px] shrink-0 flex-col overflow-clip rounded-2xl bg-neutral-50 px-[11px] py-2 shadow-card">
+    <section className="relative flex w-full shrink-0 xl:w-[346px] flex-col overflow-clip rounded-2xl bg-neutral-50 px-[11px] py-2 shadow-card">
       <span
         aria-hidden
-        className="pointer-events-none absolute -top-[35px] left-[303px] h-[63px] w-[74px] rounded-full bg-primary-500/37 blur-[50px]"
+        className="pointer-events-none absolute -top-[35px] -right-[31px] h-[63px] w-[74px] rounded-full bg-primary-500/37 blur-[50px]"
       />
       <div className="flex flex-col gap-4">
         <h2 className="text-2xl leading-[normal]">Revenue Growth</h2>

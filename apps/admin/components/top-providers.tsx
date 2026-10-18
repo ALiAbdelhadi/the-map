@@ -16,7 +16,7 @@ const PROVIDERS = [
 
 export function TopProviders() {
   return (
-    <section className="relative flex w-[346px] shrink-0 flex-col gap-3.5 overflow-clip rounded-2xl bg-neutral-50 px-[11px] py-4 shadow-card">
+    <section className="relative flex w-full shrink-0 xl:w-[346px] flex-col gap-3.5 overflow-clip rounded-2xl bg-neutral-50 px-[11px] py-4 shadow-card">
       <span
         aria-hidden
         className="pointer-events-none absolute -top-[45px] -left-[46.5px] h-[87px] w-[84px] rounded-full bg-primary-500/37 blur-[50px]"
