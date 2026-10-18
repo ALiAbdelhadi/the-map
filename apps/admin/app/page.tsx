@@ -4,6 +4,8 @@ import { OrderStatus } from "../components/order-status";
 import { RequestsActivity } from "../components/requests-activity";
 import { RevenueGrowth } from "../components/revenue-growth";
 import { TopBar } from "../components/top-bar";
+import { TopProviders } from "../components/top-providers";
+import { UserGrowth } from "../components/user-growth";
 
 export default function OverviewPage() {
   return (
@@ -17,6 +19,10 @@ export default function OverviewPage() {
       <div className="flex gap-4">
         <OrderStatus />
         <MostRequested />
+      </div>
+      <div className="flex gap-4">
+        <UserGrowth />
+        <TopProviders />
       </div>
     </main>
   );
