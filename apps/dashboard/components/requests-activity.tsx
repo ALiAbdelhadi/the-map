@@ -1,6 +1,5 @@
-import Image from "next/image";
-
 import { RangeFilter } from "./range-filter";
+import { SortButton } from "./sort-button";
 
 const HOURS = [
   "12:00PM",
@@ -70,14 +69,7 @@ export function RequestsActivity() {
         </div>
         <div className="flex items-start gap-[46px]">
           <RangeFilter label="Requests range" className="gap-1" />
-          <button
-            type="button"
-            className="flex cursor-pointer items-center gap-2 rounded-[30px] bg-secondary-50 p-2 text-base leading-[normal] transition-shadow duration-300 hover:shadow-pill"
-          >
-            <Image src="/svg/sort.svg" alt="" width={16} height={16} />
-            Sort by
-            <Image src="/svg/chevron-down.svg" alt="" width={16} height={16} />
-          </button>
+          <SortButton />
         </div>
       </header>
 

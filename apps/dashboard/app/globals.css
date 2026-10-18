@@ -24,13 +24,17 @@
   --color-secondary-100: #c4dbfb;
   --color-secondary-900: #062d62;
 
+  --color-success-100: #c0ffe1;
   --color-success-200: #95ffcd;
   --color-success-400: #30ff9e;
+  --color-success-500: #14ff91;
 
   --color-warning-600: #e9cd00;
   --color-warning-700: #bea700;
   --color-warning-800: #938200;
 
+  --color-error-200: #e8928b;
+  --color-error-500: #ff0000;
   --color-error-600: #e90000;
 
   --font-sans: var(--font-baloo-2), ui-sans-serif, system-ui, sans-serif;
